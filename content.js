@@ -2,30 +2,71 @@
 // alert("Content script loaded!");
 var count = 0;
 var anchorTags = document.querySelectorAll('a[jsname]');
-// var anchorTags = document.querySelectorAll('cite[role]');
+// var divs = document.querySelectorAll('div[data-bs][data-sgrd]');
 
+// console.log(divs)
 
-var optimizedList;
-// console.log(anchorTags);
+// var outerDiv = document.getElementById('outerDiv');
 
-// var citeList = Array.from(anchorTags).map(function (a) {
-// 	console.log(a.innerText)
-// 	cite_text = a.innerText
+//       // Array to store href values
+// var hrefs = [];
 
-// 	if (cite_text.startsWith("https://") ) {
+// // Function to retrieve hrefs recursively from nested divs
+// function retrieveHrefsRecursive(element) {
+// // Select all anchor elements within the element
+// var anchors = element.querySelectorAll('a');
 
-// 		return cite_text;
-
-// 	}
-// 	else{
-// 		console.log('none');
-// 		return null;
-// 	}
-// }).filter(function (href) {
-//     return href !== null; // Filter out null values from the array
+// // Iterate over each anchor and retrieve the href
+// anchors.forEach(function(anchor) {
+//   var href = anchor.getAttribute('href');
+//   hrefs.push(href);
 // });
 
+// // Recursively call the function for each child div
+// var childDivs = element.querySelectorAll('div');
+// childDivs.forEach(function(childDiv) {
+//   retrieveHrefsRecursive(childDiv);
+// });
+// }
 
+// // Start the recursive retrieval from the outer div
+// retrieveHrefsRecursive(divs);
+
+// // Log or use the hrefs array as needed
+// console.log('All Hrefs:', hrefs);
+
+
+
+// console.log(paa);
+
+// var divs = document.querySelectorAll('div');
+
+// Array to store href values
+// var hrefs = [];
+
+// // Iterate over each div
+// divs.forEach(function(div) {
+// // Select all anchor elements within the div
+// var anchors = div.querySelectorAll('a');
+
+// // Iterate over each anchor and retrieve the href
+// anchors.forEach(function(anchor) {
+//   var href = anchor.getAttribute('href');
+//   hrefs.push(href);
+// });
+// });
+
+// console.log(divs);
+
+
+// var paaList = Array.from(paa).map(function(a) {
+// 	var a = a.getAttribute('a');
+
+// 	var hrefValue = a.getAttribute('href')
+// 	// body...
+// 	console.log(hrefValue)
+// });
+// console.log(paaList);
 // Extract href attribute from selected anchor tags
 var hrefList = Array.from(anchorTags).map(function (a, index) {
 	// console.log(a.innerText);
@@ -34,20 +75,17 @@ var hrefList = Array.from(anchorTags).map(function (a, index) {
 
     // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
     if (/^https:\/\//.test(hrefValue) && !hrefValue.startsWith("https://support.google.com/websearch/answer/") && !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=") ) {
-
-    	// !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=")
-
-
-    	return hrefValue;
-        
-    } else {
+    	return hrefValue;  
+	} 
+		else {
     	// console.log('none');
         return null; // Return null for invalid href values
         
-    }
-}).filter(function (href) {
-    return href !== null; // Filter out null values from the array
-});
+    	}
+
+	}).filter(function (href) {
+	    return href !== null; // Filter out null values from the array
+	});
 
 
 for (let i = 0; i < hrefList.length; i++) {
@@ -117,7 +155,7 @@ function handleKeyDown(event) {
     console.log('Cursor is in an input field.');
   } else {
 
-    console.log('Cursor is not in an input field.');
+    console.log('Cursor is not in an input field.'+ event.key);
 			if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
 			console.log('Cmd or Ctrl + Number key combination allowed.');
 			} else if (event.keyCode >= 48 && event.keyCode <= 57) {
@@ -139,15 +177,29 @@ function handleKeyDown(event) {
 			}
 			if (event.keyCode === 74) {
 			// event.preventDefault();
-			window.location.href = hrefList[1];
+			// window.location.href = hrefList[1];
 
 			}
-  }
+			
+			// Check if the pressed key is 'j'
+			if (event.key.toLowerCase() === 'j') {
+			// Create a new keyboard event for the down arrow key
+			window.scrollBy(0, 100);
+			} else if (event.key.toLowerCase() === 'k'){
+				window.scrollBy(0, -100);
+			}
+  	}
+
+  	
+
 
   
 }
 
 
+    // document.addEventListener('keydown', function(event) {
+
+    // });
 
 
 // Add the keydown event listener to the document
@@ -188,3 +240,25 @@ document.addEventListener('keydown', handleKeyDown);
 
 
 console.log(hrefList);
+
+// obsolite code
+// var anchorTags = document.querySelectorAll('cite[role]');
+
+
+// var citeList = Array.from(anchorTags).map(function (a) {
+// 	console.log(a.innerText)
+// 	cite_text = a.innerText
+
+// 	if (cite_text.startsWith("https://") ) {
+
+// 		return cite_text;
+
+// 	}
+// 	else{
+// 		console.log('none');
+// 		return null;
+// 	}
+// }).filter(function (href) {
+//     return href !== null; // Filter out null values from the array
+// });
+
