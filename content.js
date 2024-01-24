@@ -62,10 +62,13 @@ for (let i = 0; i < hrefList.length; i++) {
 		console.log(imageElement);
 
 		// var imgHtml = new XMLSerializer().serializeToString(imageElement);
-
+		var aTag = document.createElement('span');
+		aTag.setAttribute('style',"font-size:1.5vw");
+		aTag.innerText = " " + i + " ";
         // Set the innerHTML of the target element to display the image
         // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
-        targetElements.innerHTML =    i + " " + targetElements.innerText ;
+        targetElements = targetElements.append(aTag)
+        // targetElements.innerHTML =    i + " " + targetElements.innerText ;
 
 		// targetElements.innerText = i + " " + imageElement
 	  	// targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
