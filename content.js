@@ -6,7 +6,7 @@ var anchorTags = document.querySelectorAll('a[jsname]');
 
 
 var optimizedList;
-console.log(anchorTags);
+// console.log(anchorTags);
 
 // var citeList = Array.from(anchorTags).map(function (a) {
 // 	console.log(a.innerText)
@@ -28,8 +28,8 @@ console.log(anchorTags);
 
 // Extract href attribute from selected anchor tags
 var hrefList = Array.from(anchorTags).map(function (a, index) {
-	console.log(a.innerText);
-	console.log(Object.keys(a));
+	// console.log(a.innerText);
+	// console.log(Object.keys(a));
     var hrefValue = a.getAttribute('href');
 
     // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
@@ -41,7 +41,7 @@ var hrefList = Array.from(anchorTags).map(function (a, index) {
     	return hrefValue;
         
     } else {
-    	console.log('none');
+    	// console.log('none');
         return null; // Return null for invalid href values
         
     }
@@ -54,12 +54,27 @@ for (let i = 0; i < hrefList.length; i++) {
     // console.log(scores[i]);
     targetHref = hrefList[i];
 		  // Find anchor elements with the specified href
-	var targetElements = document.querySelectorAll('a[href="' + targetHref + '"]');
+	var targetElements = document.querySelector('a[href="' + targetHref + '"]');
+
+	console.log(targetElements)
+	if (targetElements) {
+		var imageElement = targetElements.querySelector('img');
+		console.log(imageElement);
+
+		// var imgHtml = new XMLSerializer().serializeToString(imageElement);
+
+        // Set the innerHTML of the target element to display the image
+        // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
+        targetElements.innerHTML =    i + " " + targetElements.innerText ;
+
+		// targetElements.innerText = i + " " + imageElement
+	  	// targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
+
+
+	}
+
 	replacementText = i + " " + targetHref;
 	// Replace text content in each matching element
-	targetElements.forEach(function(element) {
-	  element.innerText = i + " "+ element.innerText;
-	});
 }
 
 
@@ -82,14 +97,23 @@ for (let i = 0; i < hrefList.length; i++) {
 
 function handleKeyDown(event) {
   const pressedKey = String.fromCharCode(event.keyCode);
+  console.log(pressedKey);
   // alert(pressedKey);
   // Check if the pressed key is a number
-  if (event.keyCode >= 48 && event.keyCode <= 57) {
+  if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
+        console.log('Cmd or Ctrl + Number key combination allowed.');
+      } else if (event.keyCode >= 48 && event.keyCode <= 57) {
     // Run your function here
+    // event.preventDefault();
     console.log('Pressed key is a number:', pressedKey + "\n" + hrefList[pressedKey]);
     // Replace the following line with your custom function
     // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
     window.location.href = hrefList[pressedKey];
+  }
+
+  if ((event.metaKey || event.ctrlKey) && event.key <= 1) {
+  	// event.preventDefault();	
+  	console.log('a pressed')
   }
   // Prevent default action for the space key (key code 32)
   if (event.keyCode === 32) {
@@ -109,30 +133,30 @@ function handleKeyDown(event) {
 document.addEventListener('keydown', handleKeyDown);
 
 // content.js
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.action === 'extractCiteData') {
-    // Extract cite data from Google search results
-    var citeElements = document.querySelectorAll('.tF2Cxc cite'); // Adjust the selector based on the current Google search result page structure
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+//   if (request.action === 'extractCiteData') {
+//     // Extract cite data from Google search results
+//     var citeElements = document.querySelectorAll('.tF2Cxc cite'); // Adjust the selector based on the current Google search result page structure
 
-    var citeData = Array.from(citeElements).map(function(cite) {
-      return cite.innerText.trim(); // Trim to remove leading/trailing whitespaces
-    });
+//     var citeData = Array.from(citeElements).map(function(cite) {
+//       return cite.innerText.trim(); // Trim to remove leading/trailing whitespaces
+//     });
 
-    // Remove empty items from citeData
-    citeData = citeData.filter(function(item) {
-      return item !== '';
-    });
+//     // Remove empty items from citeData
+//     citeData = citeData.filter(function(item) {
+//       return item !== '';
+//     });
 
-    // Extract proper URLs from citeData
-    var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i; // Basic URL regex
-    var validUrls = citeData.filter(function(item) {
-      return urlRegex.test(item);
-    });
+//     // Extract proper URLs from citeData
+//     var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i; // Basic URL regex
+//     var validUrls = citeData.filter(function(item) {
+//       return urlRegex.test(item);
+//     });
 
-    // Log or do something with the extracted valid URLs
-    console.log('Valid URLs:', validUrls);
-  }
-});
+//     // Log or do something with the extracted valid URLs
+//     console.log('Valid URLs:', validUrls);
+//   }
+// });
 
 
 // https://playwright.dev › docs › locators
