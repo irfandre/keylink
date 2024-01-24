@@ -99,31 +99,49 @@ function handleKeyDown(event) {
   const pressedKey = String.fromCharCode(event.keyCode);
   console.log(pressedKey);
   // alert(pressedKey);
+  
   // Check if the pressed key is a number
-  if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
-        console.log('Cmd or Ctrl + Number key combination allowed.');
-      } else if (event.keyCode >= 48 && event.keyCode <= 57) {
-    // Run your function here
-    // event.preventDefault();
-    console.log('Pressed key is a number:', pressedKey + "\n" + hrefList[pressedKey]);
-    // Replace the following line with your custom function
-    // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
-    window.location.href = hrefList[pressedKey];
+
+//   window.onkeydown = function(e){
+//   if ( e.target.nodeName == 'INPUT' ) return;
+
+//   handle_shortcut();
+// };
+
+  var activeElement = document.activeElement;
+
+  if (activeElement.tagName.toLowerCase() === 'textarea') {
+    console.log('Cursor is in an input field.');
+  } else {
+
+    console.log('Cursor is not in an input field.');
+			if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
+			console.log('Cmd or Ctrl + Number key combination allowed.');
+			} else if (event.keyCode >= 48 && event.keyCode <= 57) {
+				    // Run your function here
+				    // event.preventDefault();
+				    console.log('Pressed key is a number:', pressedKey + "\n" + hrefList[pressedKey]);
+				    // Replace the following line with your custom function
+				    // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
+				    window.location.href = hrefList[pressedKey];
+						}
+
+			if ((event.metaKey || event.ctrlKey) && event.key <= 1) {
+				// event.preventDefault();	
+				console.log('a pressed')
+			}
+			// Prevent default action for the space key (key code 32)
+			if (event.keyCode === 32) {
+			// event.preventDefault();
+			}
+			if (event.keyCode === 74) {
+			// event.preventDefault();
+			window.location.href = hrefList[1];
+
+			}
   }
 
-  if ((event.metaKey || event.ctrlKey) && event.key <= 1) {
-  	// event.preventDefault();	
-  	console.log('a pressed')
-  }
-  // Prevent default action for the space key (key code 32)
-  if (event.keyCode === 32) {
-    // event.preventDefault();
-  }
-  if (event.keyCode === 74) {
-    // event.preventDefault();
-    window.location.href = hrefList[1];
-
-  }
+  
 }
 
 
