@@ -1,124 +1,131 @@
 // content.js
 // alert("Content script loaded!");
-var count = 0;
-var anchorTags = document.querySelectorAll('a[jsname]');
-// var divs = document.querySelectorAll('div[data-bs][data-sgrd]');
-
-// console.log(divs)
-
-// var outerDiv = document.getElementById('outerDiv');
-
-//       // Array to store href values
-// var hrefs = [];
-
-// // Function to retrieve hrefs recursively from nested divs
-// function retrieveHrefsRecursive(element) {
-// // Select all anchor elements within the element
-// var anchors = element.querySelectorAll('a');
-
-// // Iterate over each anchor and retrieve the href
-// anchors.forEach(function(anchor) {
-//   var href = anchor.getAttribute('href');
-//   hrefs.push(href);
-// });
-
-// // Recursively call the function for each child div
-// var childDivs = element.querySelectorAll('div');
-// childDivs.forEach(function(childDiv) {
-//   retrieveHrefsRecursive(childDiv);
-// });
-// }
-
-// // Start the recursive retrieval from the outer div
-// retrieveHrefsRecursive(divs);
-
-// // Log or use the hrefs array as needed
-// console.log('All Hrefs:', hrefs);
+if ( window.location.hostname === 'www.google.com')
+{
 
 
 
-// console.log(paa);
+	var anchorTags = document.querySelectorAll('a[jsname]');
+	// var divs = document.querySelectorAll('div[data-bs][data-sgrd]');
 
-// var divs = document.querySelectorAll('div');
+	// console.log(divs)
 
-// Array to store href values
-// var hrefs = [];
+	// var outerDiv = document.getElementById('outerDiv');
 
-// // Iterate over each div
-// divs.forEach(function(div) {
-// // Select all anchor elements within the div
-// var anchors = div.querySelectorAll('a');
+	//       // Array to store href values
+	// var hrefs = [];
 
-// // Iterate over each anchor and retrieve the href
-// anchors.forEach(function(anchor) {
-//   var href = anchor.getAttribute('href');
-//   hrefs.push(href);
-// });
-// });
+	// // Function to retrieve hrefs recursively from nested divs
+	// function retrieveHrefsRecursive(element) {
+	// // Select all anchor elements within the element
+	// var anchors = element.querySelectorAll('a');
 
-// console.log(divs);
+	// // Iterate over each anchor and retrieve the href
+	// anchors.forEach(function(anchor) {
+	//   var href = anchor.getAttribute('href');
+	//   hrefs.push(href);
+	// });
 
+	// // Recursively call the function for each child div
+	// var childDivs = element.querySelectorAll('div');
+	// childDivs.forEach(function(childDiv) {
+	//   retrieveHrefsRecursive(childDiv);
+	// });
+	// }
 
-// var paaList = Array.from(paa).map(function(a) {
-// 	var a = a.getAttribute('a');
+	// // Start the recursive retrieval from the outer div
+	// retrieveHrefsRecursive(divs);
 
-// 	var hrefValue = a.getAttribute('href')
-// 	// body...
-// 	console.log(hrefValue)
-// });
-// console.log(paaList);
-// Extract href attribute from selected anchor tags
-var hrefList = Array.from(anchorTags).map(function (a, index) {
-	// console.log(a.innerText);
-	// console.log(Object.keys(a));
-    var hrefValue = a.getAttribute('href');
-
-    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
-    if (/^https:\/\//.test(hrefValue) && !hrefValue.startsWith("https://support.google.com/websearch/answer/") && !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=") ) {
-    	return hrefValue;  
-	} 
-		else {
-    	// console.log('none');
-        return null; // Return null for invalid href values
-        
-    	}
-
-	}).filter(function (href) {
-	    return href !== null; // Filter out null values from the array
-	});
+	// // Log or use the hrefs array as needed
+	// console.log('All Hrefs:', hrefs);
 
 
-for (let i = 0; i < hrefList.length; i++) {
-    // console.log(scores[i]);
-    targetHref = hrefList[i];
-		  // Find anchor elements with the specified href
-	var targetElements = document.querySelector('a[href="' + targetHref + '"]');
 
-	console.log(targetElements)
-	if (targetElements) {
-		var imageElement = targetElements.querySelector('img');
-		console.log(imageElement);
+	// console.log(paa);
 
-		// var imgHtml = new XMLSerializer().serializeToString(imageElement);
-		var aTag = document.createElement('span');
-		aTag.setAttribute('style',"font-size:1.5vw");
-		aTag.innerText = " " + i + " ";
-        // Set the innerHTML of the target element to display the image
-        // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
-        targetElements = targetElements.append(aTag)
-        // targetElements.innerHTML =    i + " " + targetElements.innerText ;
+	// var divs = document.querySelectorAll('div');
 
-		// targetElements.innerText = i + " " + imageElement
-	  	// targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
+	// Array to store href values
+	// var hrefs = [];
+
+	// // Iterate over each div
+	// divs.forEach(function(div) {
+	// // Select all anchor elements within the div
+	// var anchors = div.querySelectorAll('a');
+
+	// // Iterate over each anchor and retrieve the href
+	// anchors.forEach(function(anchor) {
+	//   var href = anchor.getAttribute('href');
+	//   hrefs.push(href);
+	// });
+	// });
+
+	// console.log(divs);
 
 
-	}
+	// var paaList = Array.from(paa).map(function(a) {
+	// 	var a = a.getAttribute('a');
 
-	replacementText = i + " " + targetHref;
-	// Replace text content in each matching element
+	// 	var hrefValue = a.getAttribute('href')
+	// 	// body...
+	// 	console.log(hrefValue)
+	// });
+	// console.log(paaList);
+
+
+
+	// #### Extract href attribute from selected anchor tags
+	var hrefList = Array.from(anchorTags).map(function (a, index) {
+		// console.log(a.innerText);
+		// console.log(Object.keys(a));
+	    var hrefValue = a.getAttribute('href');
+
+	    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
+	    if (/^https:\/\//.test(hrefValue) && !hrefValue.startsWith("https://support.google.com/websearch/answer/") && !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=") ) {
+	    	return hrefValue;  
+		} 
+			else {
+	    	// console.log('none');
+	        return null; // Return null for invalid href values
+	        
+	    	}
+
+		}).filter(function (href) {
+		    return href !== null; // Filter out null values from the array
+		});
+
+
+		for (let i = 0; i < hrefList.length; i++) {
+		    // console.log(scores[i]);
+		    targetHref = hrefList[i];
+				  // Find anchor elements with the specified href
+			var targetElements = document.querySelector('a[href="' + targetHref + '"]');
+
+			console.log(targetElements)
+			if (targetElements) {
+				var imageElement = targetElements.querySelector('img');
+				console.log(imageElement);
+
+				// var imgHtml = new XMLSerializer().serializeToString(imageElement);
+				var aTag = document.createElement('span');
+				aTag.setAttribute('style',"font-size:1.5vw");
+				aTag.innerText = " " + i + " ";
+		        // Set the innerHTML of the target element to display the image
+		        // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
+		        targetElements = targetElements.append(aTag)
+		        // targetElements.innerHTML =    i + " " + targetElements.innerText ;
+
+				// targetElements.innerText = i + " " + imageElement
+			  	// targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
+
+
+			}
+
+			replacementText = i + " " + targetHref;
+			// Replace text content in each matching element
+		}
+
 }
-
-
 
 // for (var i = 0, l = hrefList.length; i < l; i++) {
 // var els = document.querySelectorAll("a[href^='" + hrefList[0] + "']");
@@ -151,14 +158,14 @@ function handleKeyDown(event) {
 
   var activeElement = document.activeElement;
 
-  if (activeElement.tagName.toLowerCase() === 'textarea') {
+  if (activeElement.tagName.toLowerCase() === 'textarea' || activeElement.tagName.toLowerCase() === 'input' ) {
     console.log('Cursor is in an input field.');
   } else {
 
     console.log('Cursor is not in an input field.'+ event.key);
 			if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
 			console.log('Cmd or Ctrl + Number key combination allowed.');
-			} else if (event.keyCode >= 48 && event.keyCode <= 57) {
+			} else if (event.keyCode >= 48 && event.keyCode <= 57 && window.location.hostname === 'www.google.com') {
 				    // Run your function here
 				    // event.preventDefault();
 				    console.log('Pressed key is a number:', pressedKey + "\n" + hrefList[pressedKey]);
@@ -182,10 +189,10 @@ function handleKeyDown(event) {
 			}
 			
 			// Check if the pressed key is 'j'
-			if (event.key.toLowerCase() === 'j') {
+			if (event.key.toLowerCase() === 'j'  && window.location.hostname !== 'www.youtube.com') {
 			// Create a new keyboard event for the down arrow key
 			window.scrollBy(0, 100);
-			} else if (event.key.toLowerCase() === 'k'){
+			} else if (event.key.toLowerCase() === 'k'  && window.location.hostname !== 'www.youtube.com'){
 				window.scrollBy(0, -100);
 			}
   	}
