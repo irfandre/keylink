@@ -158,7 +158,8 @@ function handleKeyDown(event) {
 
   var activeElement = document.activeElement;
 
-  if (activeElement.tagName.toLowerCase() === 'textarea' || activeElement.tagName.toLowerCase() === 'input' ) {
+  var input_fields = ["textarea","input"]
+  if (input_fields.includes(activeElement.tagName.toLowerCase() ) ) {
     console.log('Cursor is in an input field.');
   } else {
 
