@@ -6,6 +6,51 @@ if ( window.location.hostname === 'www.google.com')
 
 
 	var anchorTags = document.querySelectorAll('a[jsname]');
+	// var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
+
+
+	var peopleAlsoAskDiv = document.querySelector('div[jsname][data-bs][data-sgrd]');
+
+	// var paalinks = [];
+
+    if (peopleAlsoAskDiv) {
+      // Get all anchor tags within the div
+      var paalinks = peopleAlsoAskDiv.querySelectorAll('a');
+
+      var paaList = Array.from(paalinks).map(function (a, index) {
+		// console.log(a.innerText);
+		// console.log(Object.keys(a));
+	    var hrefValue = a.getAttribute('href');
+
+	    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
+	    if (/^https:\/\//.test(hrefValue) && !hrefValue.startsWith("https://support.google.com/websearch/answer/") && !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=") ) {
+	    	return hrefValue;  
+		} 
+			else {
+	    	// console.log('none');
+	        return null; // Return null for invalid href values
+	        
+	    	}
+
+		}).filter(function (href) {
+		    return href !== null; // Filter out null values from the array
+		});
+
+
+	console.log(paaList)
+
+  		}
+ 
+
+	// var one = Array.from(paa).map(function (a, index) {
+	// 	// console.log(a.innerText);
+	// 	// console.log(Object.keys(a));
+
+	//     var hrefValue = a.getAttribute('href');
+
+	//     return hrefValue;
+	// });
+	// console.log(one)
 	// var divs = document.querySelectorAll('div[data-bs][data-sgrd]');
 
 	// console.log(divs)
@@ -95,15 +140,28 @@ if ( window.location.hostname === 'www.google.com')
 		});
 
 
-		for (let i = 0; i < hrefList.length; i++) {
+		// Remove links that match links in the linksToRemove array
+		var filteredLinks = hrefList.filter(function(link) {
+			if (paaList){
+		  		return !paaList.includes(link);
+			}
+			else {return hrefList}
+		});
+
+		// Log the filtered links
+		console.log('Filtered Links:', filteredLinks);
+
+		for (let i = 0; i < filteredLinks.length; i++) {
 		    // console.log(scores[i]);
-		    targetHref = hrefList[i];
+		    targetHref = filteredLinks[i];
 				  // Find anchor elements with the specified href
 			var targetElements = document.querySelector('a[href="' + targetHref + '"]');
 
 			console.log(targetElements)
 			if (targetElements) {
 				var imageElement = targetElements.querySelector('img');
+
+
 				console.log(imageElement);
 
 				// var imgHtml = new XMLSerializer().serializeToString(imageElement);
@@ -118,7 +176,7 @@ if ( window.location.hostname === 'www.google.com')
 				// targetElements.innerText = i + " " + imageElement
 			  	// targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
 
-
+		        if (i===0 && targetElements !== undefined ){ targetElements.style.border = '2px solid red'; }
 			}
 
 			replacementText = i + " " + targetHref;
@@ -159,8 +217,10 @@ function handleKeyDown(event) {
   var activeElement = document.activeElement;
 
   var input_fields = ["textarea","input"]
-  if (input_fields.includes(activeElement.tagName.toLowerCase() ) ) {
+
+  if ( input_fields.includes(activeElement.tagName.toLowerCase()) ) {
     console.log('Cursor is in an input field.');
+    console.dir(activeElement)
   } else {
 
     console.log('Cursor is not in an input field.'+ event.key);
@@ -247,7 +307,7 @@ document.addEventListener('keydown', handleKeyDown);
 
 
 
-console.log(hrefList);
+// console.log(hrefList);
 
 // obsolite code
 // var anchorTags = document.querySelectorAll('cite[role]');
