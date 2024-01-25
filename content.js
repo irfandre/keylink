@@ -1,188 +1,185 @@
 // content.js
 // alert("Content script loaded!");
-if ( window.location.hostname === 'www.google.com')
-{
+if (window.location.hostname === "www.google.com") {
+  var anchorTags = document.querySelectorAll("a[jsname]");
+  // var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
 
+  var peopleAlsoAskDiv = document.querySelector(
+    "div[jsname][data-bs][data-sgrd]",
+  );
 
+  // var paalinks = [];
 
-	var anchorTags = document.querySelectorAll('a[jsname]');
-	// var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
+  if (peopleAlsoAskDiv) {
+    // Get all anchor tags within the div
+    var paalinks = peopleAlsoAskDiv.querySelectorAll("a");
 
+    var paaList = Array.from(paalinks)
+      .map(function (a, index) {
+        // console.log(a.innerText);
+        // console.log(Object.keys(a));
+        var hrefValue = a.getAttribute("href");
 
-	var peopleAlsoAskDiv = document.querySelector('div[jsname][data-bs][data-sgrd]');
+        // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
+        if (
+          /^https:\/\//.test(hrefValue) &&
+          !hrefValue.startsWith(
+            "https://support.google.com/websearch/answer/",
+          ) &&
+          !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=")
+        ) {
+          return hrefValue;
+        } else {
+          // console.log('none');
+          return null; // Return null for invalid href values
+        }
+      })
+      .filter(function (href) {
+        return href !== null; // Filter out null values from the array
+      });
 
-	// var paalinks = [];
+    console.log(paaList);
+  }
 
-    if (peopleAlsoAskDiv) {
-      // Get all anchor tags within the div
-      var paalinks = peopleAlsoAskDiv.querySelectorAll('a');
+  // var one = Array.from(paa).map(function (a, index) {
+  // 	// console.log(a.innerText);
+  // 	// console.log(Object.keys(a));
 
-      var paaList = Array.from(paalinks).map(function (a, index) {
-		// console.log(a.innerText);
-		// console.log(Object.keys(a));
-	    var hrefValue = a.getAttribute('href');
+  //     var hrefValue = a.getAttribute('href');
 
-	    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
-	    if (/^https:\/\//.test(hrefValue) && !hrefValue.startsWith("https://support.google.com/websearch/answer/") && !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=") ) {
-	    	return hrefValue;  
-		} 
-			else {
-	    	// console.log('none');
-	        return null; // Return null for invalid href values
-	        
-	    	}
+  //     return hrefValue;
+  // });
+  // console.log(one)
+  // var divs = document.querySelectorAll('div[data-bs][data-sgrd]');
 
-		}).filter(function (href) {
-		    return href !== null; // Filter out null values from the array
-		});
+  // console.log(divs)
 
+  // var outerDiv = document.getElementById('outerDiv');
 
-	console.log(paaList)
+  //       // Array to store href values
+  // var hrefs = [];
 
-  		}
- 
+  // // Function to retrieve hrefs recursively from nested divs
+  // function retrieveHrefsRecursive(element) {
+  // // Select all anchor elements within the element
+  // var anchors = element.querySelectorAll('a');
 
-	// var one = Array.from(paa).map(function (a, index) {
-	// 	// console.log(a.innerText);
-	// 	// console.log(Object.keys(a));
+  // // Iterate over each anchor and retrieve the href
+  // anchors.forEach(function(anchor) {
+  //   var href = anchor.getAttribute('href');
+  //   hrefs.push(href);
+  // });
 
-	//     var hrefValue = a.getAttribute('href');
+  // // Recursively call the function for each child div
+  // var childDivs = element.querySelectorAll('div');
+  // childDivs.forEach(function(childDiv) {
+  //   retrieveHrefsRecursive(childDiv);
+  // });
+  // }
 
-	//     return hrefValue;
-	// });
-	// console.log(one)
-	// var divs = document.querySelectorAll('div[data-bs][data-sgrd]');
+  // // Start the recursive retrieval from the outer div
+  // retrieveHrefsRecursive(divs);
 
-	// console.log(divs)
+  // // Log or use the hrefs array as needed
+  // console.log('All Hrefs:', hrefs);
 
-	// var outerDiv = document.getElementById('outerDiv');
+  // console.log(paa);
 
-	//       // Array to store href values
-	// var hrefs = [];
+  // var divs = document.querySelectorAll('div');
 
-	// // Function to retrieve hrefs recursively from nested divs
-	// function retrieveHrefsRecursive(element) {
-	// // Select all anchor elements within the element
-	// var anchors = element.querySelectorAll('a');
+  // Array to store href values
+  // var hrefs = [];
 
-	// // Iterate over each anchor and retrieve the href
-	// anchors.forEach(function(anchor) {
-	//   var href = anchor.getAttribute('href');
-	//   hrefs.push(href);
-	// });
+  // // Iterate over each div
+  // divs.forEach(function(div) {
+  // // Select all anchor elements within the div
+  // var anchors = div.querySelectorAll('a');
 
-	// // Recursively call the function for each child div
-	// var childDivs = element.querySelectorAll('div');
-	// childDivs.forEach(function(childDiv) {
-	//   retrieveHrefsRecursive(childDiv);
-	// });
-	// }
+  // // Iterate over each anchor and retrieve the href
+  // anchors.forEach(function(anchor) {
+  //   var href = anchor.getAttribute('href');
+  //   hrefs.push(href);
+  // });
+  // });
 
-	// // Start the recursive retrieval from the outer div
-	// retrieveHrefsRecursive(divs);
+  // console.log(divs);
 
-	// // Log or use the hrefs array as needed
-	// console.log('All Hrefs:', hrefs);
+  // var paaList = Array.from(paa).map(function(a) {
+  // 	var a = a.getAttribute('a');
 
+  // 	var hrefValue = a.getAttribute('href')
+  // 	// body...
+  // 	console.log(hrefValue)
+  // });
+  // console.log(paaList);
 
+  // #### Extract href attribute from selected anchor tags
+  var hrefList = Array.from(anchorTags)
+    .map(function (a, index) {
+      // console.log(a.innerText);
+      // console.log(Object.keys(a));
+      var hrefValue = a.getAttribute("href");
 
-	// console.log(paa);
+      // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
+      if (
+        /^https:\/\//.test(hrefValue) &&
+        !hrefValue.startsWith("https://support.google.com/websearch/answer/") &&
+        !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=")
+      ) {
+        return hrefValue;
+      } else {
+        // console.log('none');
+        return null; // Return null for invalid href values
+      }
+    })
+    .filter(function (href) {
+      return href !== null; // Filter out null values from the array
+    });
 
-	// var divs = document.querySelectorAll('div');
+  // Remove links that match links in the linksToRemove array
+  var filteredLinks = hrefList.filter(function (link) {
+    if (paaList) {
+      return !paaList.includes(link);
+    } else {
+      return hrefList;
+    }
+  });
 
-	// Array to store href values
-	// var hrefs = [];
+  // Log the filtered links
+  console.log("Filtered Links:", filteredLinks);
 
-	// // Iterate over each div
-	// divs.forEach(function(div) {
-	// // Select all anchor elements within the div
-	// var anchors = div.querySelectorAll('a');
+  for (let i = 0; i < filteredLinks.length; i++) {
+    // console.log(scores[i]);
+    targetHref = filteredLinks[i];
+    // Find anchor elements with the specified href
+    var targetElements = document.querySelector('a[href="' + targetHref + '"]');
 
-	// // Iterate over each anchor and retrieve the href
-	// anchors.forEach(function(anchor) {
-	//   var href = anchor.getAttribute('href');
-	//   hrefs.push(href);
-	// });
-	// });
+    console.log(targetElements);
+    if (targetElements) {
+      var imageElement = targetElements.querySelector("img");
 
-	// console.log(divs);
+      console.log(imageElement);
 
+      // var imgHtml = new XMLSerializer().serializeToString(imageElement);
+      var aTag = document.createElement("span");
+      aTag.setAttribute("style", "font-size:1.5vw");
+      aTag.innerText = " " + i + " ";
+      // Set the innerHTML of the target element to display the image
+      // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
+      targetElements = targetElements.append(aTag);
+      // targetElements.innerHTML =    i + " " + targetElements.innerText ;
 
-	// var paaList = Array.from(paa).map(function(a) {
-	// 	var a = a.getAttribute('a');
+      // targetElements.innerText = i + " " + imageElement
+      // targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
 
-	// 	var hrefValue = a.getAttribute('href')
-	// 	// body...
-	// 	console.log(hrefValue)
-	// });
-	// console.log(paaList);
+      if (i === 0 && targetElements !== undefined) {
+        targetElements.style.border = "2px solid red";
+      }
+    }
 
-
-
-	// #### Extract href attribute from selected anchor tags
-	var hrefList = Array.from(anchorTags).map(function (a, index) {
-		// console.log(a.innerText);
-		// console.log(Object.keys(a));
-	    var hrefValue = a.getAttribute('href');
-
-	    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
-	    if (/^https:\/\//.test(hrefValue) && !hrefValue.startsWith("https://support.google.com/websearch/answer/") && !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=") ) {
-	    	return hrefValue;  
-		} 
-			else {
-	    	// console.log('none');
-	        return null; // Return null for invalid href values
-	        
-	    	}
-
-		}).filter(function (href) {
-		    return href !== null; // Filter out null values from the array
-		});
-
-
-		// Remove links that match links in the linksToRemove array
-		var filteredLinks = hrefList.filter(function(link) {
-			if (paaList){
-		  		return !paaList.includes(link);
-			}
-			else {return hrefList}
-		});
-
-		// Log the filtered links
-		console.log('Filtered Links:', filteredLinks);
-
-		for (let i = 0; i < filteredLinks.length; i++) {
-		    // console.log(scores[i]);
-		    targetHref = filteredLinks[i];
-				  // Find anchor elements with the specified href
-			var targetElements = document.querySelector('a[href="' + targetHref + '"]');
-
-			console.log(targetElements)
-			if (targetElements) {
-				var imageElement = targetElements.querySelector('img');
-
-
-				console.log(imageElement);
-
-				// var imgHtml = new XMLSerializer().serializeToString(imageElement);
-				var aTag = document.createElement('span');
-				aTag.setAttribute('style',"font-size:1.5vw");
-				aTag.innerText = " " + i + " ";
-		        // Set the innerHTML of the target element to display the image
-		        // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
-		        targetElements = targetElements.append(aTag)
-		        // targetElements.innerHTML =    i + " " + targetElements.innerText ;
-
-				// targetElements.innerText = i + " " + imageElement
-			  	// targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
-
-		        if (i===0 && targetElements !== undefined ){ targetElements.style.border = '2px solid red'; }
-			}
-
-			replacementText = i + " " + targetHref;
-			// Replace text content in each matching element
-		}
-
+    replacementText = i + " " + targetHref;
+    // Replace text content in each matching element
+  }
 }
 
 // for (var i = 0, l = hrefList.length; i < l; i++) {
@@ -192,7 +189,6 @@ if ( window.location.hostname === 'www.google.com')
 // el.innerHTML = "helow";
 // collection[0].innerHTML = "Hello World!";
 // }
-
 
 // for (var i = 0, l = hrefList.length; i < l; i++) {
 //     var els = document.querySelectorAll("a[href^='" + hrefList[i] + "']");
@@ -205,73 +201,77 @@ function handleKeyDown(event) {
   const pressedKey = String.fromCharCode(event.keyCode);
   console.log(pressedKey);
   // alert(pressedKey);
-  
+
   // Check if the pressed key is a number
 
-//   window.onkeydown = function(e){
-//   if ( e.target.nodeName == 'INPUT' ) return;
+  //   window.onkeydown = function(e){
+  //   if ( e.target.nodeName == 'INPUT' ) return;
 
-//   handle_shortcut();
-// };
+  //   handle_shortcut();
+  // };
 
   var activeElement = document.activeElement;
 
-  var input_fields = ["textarea","input"]
+  var input_fields = ["textarea", "input"];
 
-  if ( input_fields.includes(activeElement.tagName.toLowerCase()) ) {
-    console.log('Cursor is in an input field.');
-    console.dir(activeElement)
+  if (input_fields.includes(activeElement.tagName.toLowerCase())) {
+    console.log("Cursor is in an input field.");
+    console.dir(activeElement);
   } else {
+    console.log("Cursor is not in an input field." + event.key);
+    if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
+      console.log("Cmd or Ctrl + Number key combination allowed.");
+    } else if (
+      event.keyCode >= 48 &&
+      event.keyCode <= 57 &&
+      window.location.hostname === "www.google.com"
+    ) {
+      // Run your function here
+      // event.preventDefault();
+      console.log(
+        "Pressed key is a number:",
+        pressedKey + "\n" + hrefList[pressedKey],
+      );
+      // Replace the following line with your custom function
+      // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
+      window.location.href = hrefList[pressedKey];
+    }
 
-    console.log('Cursor is not in an input field.'+ event.key);
-			if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
-			console.log('Cmd or Ctrl + Number key combination allowed.');
-			} else if (event.keyCode >= 48 && event.keyCode <= 57 && window.location.hostname === 'www.google.com') {
-				    // Run your function here
-				    // event.preventDefault();
-				    console.log('Pressed key is a number:', pressedKey + "\n" + hrefList[pressedKey]);
-				    // Replace the following line with your custom function
-				    // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
-				    window.location.href = hrefList[pressedKey];
-						}
+    if ((event.metaKey || event.ctrlKey) && event.key <= 1) {
+      // event.preventDefault();
+      console.log("a pressed");
+    }
+    // Prevent default action for the space key (key code 32)
+    if (event.keyCode === 32) {
+      // event.preventDefault();
+    }
+    if (event.keyCode === 74) {
+      // event.preventDefault();
+      // window.location.href = hrefList[1];
+    }
 
-			if ((event.metaKey || event.ctrlKey) && event.key <= 1) {
-				// event.preventDefault();	
-				console.log('a pressed')
-			}
-			// Prevent default action for the space key (key code 32)
-			if (event.keyCode === 32) {
-			// event.preventDefault();
-			}
-			if (event.keyCode === 74) {
-			// event.preventDefault();
-			// window.location.href = hrefList[1];
-
-			}
-			
-			// Check if the pressed key is 'j'
-			if (event.key.toLowerCase() === 'j'  && window.location.hostname !== 'www.youtube.com') {
-			// Create a new keyboard event for the down arrow key
-			window.scrollBy(0, 100);
-			} else if (event.key.toLowerCase() === 'k'  && window.location.hostname !== 'www.youtube.com'){
-				window.scrollBy(0, -100);
-			}
-  	}
-
-  	
-
-
-  
+    // Check if the pressed key is 'j'
+    if (
+      event.key.toLowerCase() === "j" &&
+      window.location.hostname !== "www.youtube.com"
+    ) {
+      // Create a new keyboard event for the down arrow key
+      window.scrollBy(0, 100);
+    } else if (
+      event.key.toLowerCase() === "k" &&
+      window.location.hostname !== "www.youtube.com"
+    ) {
+      window.scrollBy(0, -100);
+    }
+  }
 }
 
+// document.addEventListener('keydown', function(event) {
 
-    // document.addEventListener('keydown', function(event) {
-
-    // });
-
+// });
 
 // Add the keydown event listener to the document
-document.addEventListener('keydown', handleKeyDown);
+document.addEventListener("keydown", handleKeyDown);
 
 // content.js
 // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -299,19 +299,14 @@ document.addEventListener('keydown', handleKeyDown);
 //   }
 // });
 
-
 // https://playwright.dev › docs › locators
 
-
 // console.log(citeData);
-
-
 
 // console.log(hrefList);
 
 // obsolite code
 // var anchorTags = document.querySelectorAll('cite[role]');
-
 
 // var citeList = Array.from(anchorTags).map(function (a) {
 // 	console.log(a.innerText)
@@ -329,4 +324,3 @@ document.addEventListener('keydown', handleKeyDown);
 // }).filter(function (href) {
 //     return href !== null; // Filter out null values from the array
 // });
-
