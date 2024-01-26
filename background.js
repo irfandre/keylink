@@ -24,3 +24,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     });
   }
 });
+
+// Chrome extension example
+chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+  var lastActiveTab = tabs[0];
+  console.log("Last active tab:", lastActiveTab);
+});
