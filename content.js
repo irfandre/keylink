@@ -1,5 +1,7 @@
 // content.js
 // alert("Content script loaded!");
+const lowercaseAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
 if (window.location.hostname === "www.google.com") {
     var anchorTags = document.querySelectorAll("a[jsname]");
     // var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
@@ -223,8 +225,13 @@ if (window.location.hostname === "www.google.com") {
             // var imgHtml = new XMLSerializer().serializeToString(imageElement);
             var aTag = document.createElement("span");
             aTag.setAttribute("style", "font-size:1.5vw");
-
+            if (i >= 10){
+            aTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
+            }
+            else {
             aTag.innerText = " " + i + " ";
+
+            }
             // Set the innerHTML of the target element to display the image
             // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
             targetElements = targetElements.append(aTag);
@@ -274,9 +281,7 @@ function handleKeyDown(event) {
     var activeElement = document.activeElement;
 
     var input_fields = ["textarea", "input"];
-    if (event.keyCode === 65) {
-        window.location.href = filteredLinks[10];
-    }
+    
     if (event.ctrlKey && (event.key === "Minus" || event.code === "Minus")) {
         // Your code to handle Ctrl and Minus key pressed together
         console.log("Ctrl and Minus keys pressed together");
@@ -286,11 +291,12 @@ function handleKeyDown(event) {
         console.dir(activeElement);
     } else {
         console.log("Cursor is not in an input field." + event.key);
+
         if ((event.metaKey || event.ctrlKey) && /^\d$/.test(event.key)) {
             console.log("Cmd or Ctrl + Number key combination allowed.");
         } else if (
-            event.keyCode >= 48 &&
-            event.keyCode <= 57 &&
+            (event.keyCode >= 48 &&event.keyCode <= 57 ) &&
+            // (event.keyCode >= 65 &&event.keyCode <= 73 ) &&
             window.location.hostname === "www.google.com"
         ) {
             // Run your function here
@@ -302,6 +308,17 @@ function handleKeyDown(event) {
             // Replace the following line with your custom function
             // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
             window.location.href = filteredLinks[pressedKey];
+        }
+        else if (
+            (event.keyCode >= 65 &&event.keyCode <= 73) 
+            ||
+            (event.keyCode >= 76 &&event.keyCode <= 90)
+
+            &&
+            window.location.hostname === "www.google.com"
+            ){
+            window.location.href = filteredLinks[event.keyCode - 55];
+
         }
 
         if ((event.metaKey || event.ctrlKey) && event.key <= 1) {
