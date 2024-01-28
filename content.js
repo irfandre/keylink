@@ -41,19 +41,16 @@ window.onload = function () {
     if (window.location.hostname === "www.google.com") {
         // var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
 
-
         var peopleAlsoAskDiv = document.querySelector(
             "div[jsname][data-bs][data-sgrd]",
         );
-
-        
 
         var keyMomentsInVideo = document.querySelectorAll(
             "a[jsname][data-time]",
         );
 
         var imagesSection = document.querySelector("g-section-with-header");
-
+        // var complementary = document.querySelector("div[role]");
 
         if (keyMomentsInVideo) {
             console.log("keyMomentsInVideo:", keyMomentsInVideo);
@@ -62,26 +59,29 @@ window.onload = function () {
         }
 
         if (imagesSection) {
-          var imagesSectionAnchorTags = imagesSection.querySelectorAll("a");
+            var imagesSectionAnchorTags = imagesSection.querySelectorAll("a");
 
-          var imagesSectionLinks = getLinks(imagesSectionAnchorTags);
-          console.log(imagesSectionLinks)
+            var imagesSectionLinks = getLinks(imagesSectionAnchorTags);
+            console.log(imagesSectionLinks);
         }
         removeSection(peopleAlsoAskDiv);
         removeSection(keyMomentsInVideo);
         removeSection(imagesSection);
+        
+        // if (complementary && complementary === "complementary") {
+        //     removeSection(complementary);
+        // }
 
         function removeSection(section) {
-
-          // body...
-          if (section && section.parentNode) {
+            // body...
+            if (section && section.parentNode) {
                 section.parentNode.removeChild(section);
-              } else {
-                console.log('Element or parent not found.');
-              }
+            } else {
+                console.log("Element or parent not found.");
+            }
         }
 
-        var paalinks
+        var paalinks;
 
         if (peopleAlsoAskDiv) {
             paalinks = peopleAlsoAskDiv.querySelectorAll("a");
@@ -227,14 +227,14 @@ window.onload = function () {
 
         // #### Extract href attribute from selected anchor tags
         var anchorTags = document.querySelectorAll("a[jsname]");
-        console.log(anchorTags);
+        console.log("anchor tags", anchorTags);
 
         var hrefList = Array.from(anchorTags)
             .map(function (a, index) {
                 // console.log(a.innerText);
                 // console.log(Object.keys(a));
                 var hrefValue = a.getAttribute("href");
-
+                console.log(hrefValue);
                 // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
                 if (
                     /^https:\/\//.test(hrefValue) &&
@@ -254,7 +254,7 @@ window.onload = function () {
             .filter(function (href) {
                 return href !== null; // Filter out null values from the array
             });
-
+        console.log("href list", hrefList);
         // Remove links that match links in the linksToRemove array
         var filteredLinks = hrefList.filter(function (link) {
             if (paaList && paaList.includes(link)) {
@@ -277,20 +277,20 @@ window.onload = function () {
         console.log("Filtered Links:", filteredLinks);
         filteredLinks.push(...uniqueVL);
         console.log(filteredLinks);
-
+        var center_col = document.getElementById("center_col");
         for (let i = 0; i < filteredLinks.length; i++) {
             // console.log(scores[i]);
             targetHref = filteredLinks[i];
             // Find anchor elements with the specified href
-            var targetElements = document.querySelector(
+            var targetElements = center_col.querySelectorAll(
                 'a[href="' + targetHref + '"]',
             );
 
-            console.log("dict", i + "  " + targetElements);
+            // console.log("dict", i + "  " + targetElements);
             if (targetElements) {
-                var imageElement = targetElements.querySelector("img");
+                // var imageElement = targetElements.querySelector("img");
 
-                console.log(imageElement);
+                // console.log(imageElement);
 
                 // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                 var aTag = document.createElement("span");
@@ -302,15 +302,20 @@ window.onload = function () {
                 }
                 // Set the innerHTML of the target element to display the image
                 // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
-                targetElements = targetElements.append(aTag);
+                for (target of targetElements) {
+                    targetHeading = target.querySelector("h3");
+                    if (targetHeading) {
+                        targetHeading.prepend(aTag);
+                    }
+                }
                 // targetElements.innerHTML =    i + " " + targetElements.innerText ;
 
                 // targetElements.innerText = i + " " + imageElement
                 // targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
 
-                if (i === 0 && targetElements !== undefined) {
-                    targetElements.style.border = "2px solid red";
-                }
+                // if (i === 0 && targetElements !== undefined) {
+                //     targetElements.style.border = "2px solid red";
+                // }
             }
 
             replacementText = i + " " + targetHref;
@@ -332,176 +337,185 @@ window.onload = function () {
     //   var el = els[i];
     //   el.innerHTML = el.innerHTML.replace(/link/gi, 'dead link');
     // }
-// };
-function handleKeyDown(event) {
-    const pressedKey = String.fromCharCode(event.keyCode);
-    console.log(pressedKey);
-    // alert(pressedKey);
-
-    // Check if the pressed key is a number
-
-    //   window.onkeydown = function(e){
-    //   if ( e.target.nodeName == 'INPUT' ) return;
-
-    //   handle_shortcut();
     // };
+    function handleKeyDown(event) {
+        const pressedKey = String.fromCharCode(event.keyCode);
+        console.log(pressedKey);
+        // alert(pressedKey);
 
-    var activeElement = document.activeElement;
+        // Check if the pressed key is a number
 
-    var input_fields = ["textarea", "input"];
+        //   window.onkeydown = function(e){
+        //   if ( e.target.nodeName == 'INPUT' ) return;
 
-    if (event.ctrlKey && (event.key === "Minus" || event.code === "Minus")) {
-        // Your code to handle Ctrl and Minus key pressed together
-        console.log("Ctrl and Minus keys pressed together");
-    }
+        //   handle_shortcut();
+        // };
 
-    
+        var activeElement = document.activeElement;
 
-    if (input_fields.includes(activeElement.tagName.toLowerCase())) {
-        console.log("Cursor is in an input field.");
-        console.dir(activeElement);
-    } else {
-        console.log("Cursor is not in an input field. " + event.key);
+        var input_fields = ["textarea", "input"];
+
         if (
-          ((event.metaKey || event.ctrlKey || event.altKey) && /^\d$/.test(event.key) )
-          // (event.metaKey || event.ctrlKey || event.altKey) && (pressedKey >= 'a' && pressedKey <= 'z') 
-          ) {
-            console.log("Cmd or Ctrl + Number key combination allowed.");
-          } else if (
-            event.keyCode >= 48 &&
-            event.keyCode <= 57 &&
-            // (event.keyCode >= 65 &&event.keyCode <= 73 ) &&
-            window.location.hostname === "www.google.com"
+            event.ctrlKey &&
+            (event.key === "Minus" || event.code === "Minus")
         ) {
-            // Run your function here
-            // event.preventDefault();
-            console.log(
-                "Pressed key is a number:",
-                pressedKey + "\n" + filteredLinks[pressedKey],
-            );
-            // Replace the following line with your custom function
-            // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
-            window.location.href = filteredLinks[pressedKey];
-        } else if (
-            (!event.metaKey && event.keyCode >= 65 && event.keyCode <= 73) ||
-            (!event.metaKey && event.keyCode >= 76 &&
-                event.keyCode <= 90 &&
-                window.location.hostname === "www.google.com")
-        ) {
-            window.location.href = filteredLinks[event.keyCode - 55];
+            // Your code to handle Ctrl and Minus key pressed together
+            console.log("Ctrl and Minus keys pressed together");
         }
 
-        if ((event.metaKey || event.ctrlKey) && event.key <= 1) {
-            // event.preventDefault();
-            console.log("a pressed");
-        }
-        // Prevent default action for the space key (key code 32)
-        if (event.keyCode === 32) {
-            // event.preventDefault();
-        }
-        if (event.keyCode === 74) {
-            // event.preventDefault();
-            // window.location.href = hrefList[1];
-        }
-
-        // Check if the pressed key is 'j'
-        if (event.key !== undefined) {
+        if (input_fields.includes(activeElement.tagName.toLowerCase())) {
+            console.log("Cursor is in an input field.");
+            console.dir(activeElement);
+        } else {
+            console.log("Cursor is not in an input field. " + event.key);
             if (
-                event.key.toLowerCase() === "j" &&
-                window.location.hostname !== "www.youtube.com"
+                (event.metaKey || event.ctrlKey || event.altKey) &&
+                /^\d$/.test(event.key)
+                // (event.metaKey || event.ctrlKey || event.altKey) && (pressedKey >= 'a' && pressedKey <= 'z')
             ) {
-                // Create a new keyboard event for the down arrow key
-                window.scrollBy(0, 100);
-                document.dispatchEvent(downArrowEvent);
+                console.log("Cmd or Ctrl + Number key combination allowed.");
             } else if (
-                event.key.toLowerCase() === "k" &&
-                window.location.hostname !== "www.youtube.com"
+                event.keyCode >= 48 &&
+                event.keyCode <= 57 &&
+                // (event.keyCode >= 65 &&event.keyCode <= 73 ) &&
+                window.location.hostname === "www.google.com"
             ) {
-                window.scrollBy(0, -100);
+                // Run your function here
+                // event.preventDefault();
+                console.log(
+                    "Pressed key is a number:",
+                    pressedKey + "\n" + filteredLinks[pressedKey],
+                );
+                // Replace the following line with your custom function
+                // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
+                window.location.href = filteredLinks[pressedKey];
+            } else if (
+                (!event.metaKey &&
+                    event.keyCode >= 65 &&
+                    event.keyCode <= 73) ||
+                (!event.metaKey &&
+                    event.keyCode >= 76 &&
+                    event.keyCode <= 90 &&
+                    window.location.hostname === "www.google.com")
+            ) {
+                if (filteredLinks[event.keyCode - 55]) {
+                    window.location.href = filteredLinks[event.keyCode - 55];
+                }
+            }
+
+            // Check if the pressed key is 'j'
+            if (event.key !== undefined) {
+                if (
+                    event.key.toLowerCase() === "j" &&
+                    window.location.hostname !== "www.youtube.com"
+                ) {
+                    // Create a new keyboard event for the down arrow key
+                    window.scrollBy(0, 100);
+                    document.dispatchEvent(downArrowEvent);
+                } else if (
+                    event.key.toLowerCase() === "k" &&
+                    window.location.hostname !== "www.youtube.com"
+                ) {
+                    window.scrollBy(0, -100);
+                }
             }
         }
     }
-}
+    // window.addEventListener('scroll', function() {
+    //   // Get the current vertical scroll position
+    //   var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-// document.addEventListener('keydown', function(event) {
+    //   // Get the total height of the document, including scrollable area
+    //   var totalHeight = document.documentElement.scrollHeight;
 
-// });
+    //   // Get the height of the viewport
+    //   var windowHeight = window.innerHeight;
 
-// Add the keydown event listener to the document
-document.addEventListener("keydown", handleKeyDown);
+    //   // Check if the user has scrolled to the bottom
+    //   if (scrollTop + windowHeight >= totalHeight) {
+    //     console.log('Scrolled to the bottom!');
+    //   }
+    // });
 
-// content.js
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//   if (request.action === 'extractCiteData') {
-//     // Extract cite data from Google search results
-//     var citeElements = document.querySelectorAll('.tF2Cxc cite'); // Adjust the selector based on the current Google search result page structure
+    // document.addEventListener('keydown', function(event) {
 
-//     var citeData = Array.from(citeElements).map(function(cite) {
-//       return cite.innerText.trim(); // Trim to remove leading/trailing whitespaces
-//     });
+    // });
 
-//     // Remove empty items from citeData
-//     citeData = citeData.filter(function(item) {
-//       return item !== '';
-//     });
+    // Add the keydown event listener to the document
+    document.addEventListener("keydown", handleKeyDown);
 
-//     // Extract proper URLs from citeData
-//     var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i; // Basic URL regex
-//     var validUrls = citeData.filter(function(item) {
-//       return urlRegex.test(item);
-//     });
+    // content.js
+    // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    //   if (request.action === 'extractCiteData') {
+    //     // Extract cite data from Google search results
+    //     var citeElements = document.querySelectorAll('.tF2Cxc cite'); // Adjust the selector based on the current Google search result page structure
 
-//     // Log or do something with the extracted valid URLs
-//     console.log('Valid URLs:', validUrls);
-//   }
-// });
+    //     var citeData = Array.from(citeElements).map(function(cite) {
+    //       return cite.innerText.trim(); // Trim to remove leading/trailing whitespaces
+    //     });
 
-// https://playwright.dev › docs › locators
+    //     // Remove empty items from citeData
+    //     citeData = citeData.filter(function(item) {
+    //       return item !== '';
+    //     });
 
-// console.log(citeData);
+    //     // Extract proper URLs from citeData
+    //     var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i; // Basic URL regex
+    //     var validUrls = citeData.filter(function(item) {
+    //       return urlRegex.test(item);
+    //     });
 
-// console.log(hrefList);
+    //     // Log or do something with the extracted valid URLs
+    //     console.log('Valid URLs:', validUrls);
+    //   }
+    // });
 
-// obsolite code
-// var anchorTags = document.querySelectorAll('cite[role]');
+    // https://playwright.dev › docs › locators
 
-// var citeList = Array.from(anchorTags).map(function (a) {
-// 	console.log(a.innerText)
-// 	cite_text = a.innerText
+    // console.log(citeData);
 
-// 	if (cite_text.startsWith("https://") ) {
+    // console.log(hrefList);
 
-// 		return cite_text;
+    // obsolite code
+    // var anchorTags = document.querySelectorAll('cite[role]');
 
-// 	}
-// 	else{
-// 		console.log('none');
-// 		return null;
-// 	}
-// }).filter(function (href) {
-//     return href !== null; // Filter out null values from the array
-// });
+    // var citeList = Array.from(anchorTags).map(function (a) {
+    // 	console.log(a.innerText)
+    // 	cite_text = a.innerText
+
+    // 	if (cite_text.startsWith("https://") ) {
+
+    // 		return cite_text;
+
+    // 	}
+    // 	else{
+    // 		console.log('none');
+    // 		return null;
+    // 	}
+    // }).filter(function (href) {
+    //     return href !== null; // Filter out null values from the array
+    // });
 };
 
-window.onscroll = function() {
-  // Check if the user has scrolled to the bottom
-  console.log('scrolling start');
-  if (isPageScrolledToBottom()) {
-    console.log('Scrolled to the bottom!');
-    // Add your code to handle reaching the bottom of the page
-  }
+window.onscroll = function () {
+    // Check if the user has scrolled to the bottom
+    console.log("scrolling start");
+    if (isPageScrolledToBottom()) {
+        console.log("Scrolled to the bottom!");
+        // Add your code to handle reaching the bottom of the page
+    }
 };
 
 function isPageScrolledToBottom() {
-  // Calculate the current scroll position
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    // Calculate the current scroll position
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-  // Calculate the total height of the page
-  const totalHeight = document.documentElement.scrollHeight;
+    // Calculate the total height of the page
+    const totalHeight = document.documentElement.scrollHeight;
 
-  // Calculate the height of the viewport
-  const windowHeight = window.innerHeight;
+    // Calculate the height of the viewport
+    const windowHeight = window.innerHeight;
 
-  // Check if the user has scrolled to the bottom
-  return scrollTop + windowHeight >= totalHeight;
+    // Check if the user has scrolled to the bottom
+    return scrollTop + windowHeight >= totalHeight;
 }

@@ -1,6 +1,6 @@
 /* popup.css */
 body {
-  width: 200px;
-  height: 200px;
-  text-align: center;
+  width: 500px;
+  margin: 10px;
+  text-align: left;
 }
