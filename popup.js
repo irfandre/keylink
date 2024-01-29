@@ -1,10 +1,4 @@
 // popup.js
-document.getElementById("setting2").addEventListener("input", function () {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "paa" });
-        console.log("jlsdkj");
-    });
-});
 
 document.addEventListener("DOMContentLoaded", function () {
     // Button 1 click event

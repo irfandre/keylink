@@ -4,11 +4,15 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Button 1 click event
 
-    // Button 2 click event
-    document.getElementById("setting2").addEventListener("input", function () {
-        console.log("Button 2 clicked!");
-        // Add your code for Button 2 click event
-    });
+    // // Button 2 click event
+    // document.getElementById("setting2").addEventListener("input", function () {
+    //     console.log("Button 2 clicked!");
+    //     // Add your code for Button 2 click event
+    // });
+
+
+    
+    
 });
 const lowercaseAlphabets = [
     "a",
@@ -45,15 +49,52 @@ function handleSetting1Input() {
     console.log("from handleSetting1Input");
 }
 
-const downArrowEvent = new KeyboardEvent("keydown", {
-    key: "ArrowDown",
-    code: "ArrowDown",
-    keyCode: 40,
-    which: 40,
-    // Add other properties as needed
-});
+
 
 window.onload = function () {
+
+
+    let checkbox = document.getElementById('setting2');
+
+    let paaFrom;
+
+chrome.storage.sync.get({ showPAA: false }, function (items) {
+  paaFrom = items.showPAA;
+  console.log('paa from 1', paaFrom); // Move the console.log inside the callback
+  updateUI(paaFrom);
+});
+
+
+
+    console.log('paa from ',paaFrom);
+
+
+    if (checkbox){
+
+        // Load the checkbox state from storage
+      chrome.storage.sync.get({ showPAA: false }, function (items) {
+        checkbox.checked = items.showPAA;
+          console.log('showPAAValue:', checkbox.checked);
+          paaFrom = checkbox.checked;
+          // alert(checkbox.checked);
+        // updateUI(checkbox.checked);
+      });
+
+      // Update storage when checkbox state changes
+      checkbox.addEventListener('change', function () {
+        const showPAA = checkbox.checked;
+
+        // Save the checkbox state to storage
+        chrome.storage.sync.set({ showPAA: showPAA }, function () {
+          console.log('Checkbox state saved:', showPAA);
+        });
+      });
+
+    };
+      
+   
+    // console.log("checkbox value -----------",checkbox.checked);
+
     if (window.location.hostname === "www.google.com") {
         // var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
 
@@ -81,7 +122,7 @@ window.onload = function () {
             console.log(imagesSectionLinks);
         }
         // removeSection(peopleAlsoAskDiv);
-        // removeSection(keyMomentsInVideo);
+        removeSection(keyMomentsInVideo);
         // removeSection(imagesSection);
 
         // if (complementary && complementary === "complementary") {
@@ -276,16 +317,43 @@ window.onload = function () {
 
         console.log(setting1);
 
+        var filteredLinks;
+
+        function getFilteredLinks(){
         // Remove links that match links in the linksToRemove array
-        var filteredLinks = hrefList.filter(function (link) {
-            if (paaList && paaList.includes(link)) {
+         filteredLinks = hrefList.filter(function (link) {
+            if (paaFrom){
+                if (paaList && paaList.includes(link)) {
+                console.log('removing paa section', paaFrom)
                 return true; // Exclude links that are in paaList
+                }
+            } else {
+
+                // if (paaList.includes(link) === hrefList.includes(link) ){
+                //     return true;
+                // }
+
+                // if (paaList && paaList.includes(link) && hrefList.includes(link) && !paaFrom) {
+                // console.log('removing paa section', paaFrom)
+                // return false; // Exclude links that are in paaList
+                // }
+
+                if (paaList && paaList.includes(link)) {
+                console.log('removing paa section', paaFrom)
+                return false; // Exclude links that are in paaList
+                }
+
+                
+
             }
+            
+
 
             if (keyMomentsList && keyMomentsList.includes(link)) {
+                return false;
                 if (setting1) {
                     console.log("true");
-                    return true;
+                    return false;
                 } else {
                     console.log("false");
                     return false; // Exclude links that are in keyMomentsList
@@ -307,6 +375,7 @@ window.onload = function () {
         var center_col = document.getElementById("center_col");
         for (let i = 0; i < filteredLinks.length; i++) {
             // console.log(scores[i]);
+            console.log(i);
             targetHref = filteredLinks[i];
             // Find anchor elements with the specified href
             var targetElements = center_col.querySelectorAll(
@@ -369,6 +438,15 @@ window.onload = function () {
         }
     }
 
+    };
+    // all();
+
+    function updateUI(showPAA) {
+  // Your UI update logic here
+  console.log('Updating UI based on showPAA:', showPAA);
+  paaFrom = showPAA;
+  getFilteredLinks();
+}
     // for (var i = 0, l = hrefList.length; i < l; i++) {
     // var els = document.querySelectorAll("a[href^='" + hrefList[0] + "']");
 
@@ -384,6 +462,29 @@ window.onload = function () {
     //   el.innerHTML = el.innerHTML.replace(/link/gi, 'dead link');
     // }
     // };
+
+    function simulateArrowDown() {
+          // Create a new key down event for the arrow down key
+          var arrowDownEvent = new KeyboardEvent('keydown', {
+            key: 'ArrowDown',
+            keyCode: 40,
+            which: 40,
+            code: 'ArrowDown',
+          });
+
+          // Dispatch the event on the input element
+          document.dispatchEvent(arrowDownEvent);
+        }
+
+        // document.getElementById("setting2").addEventListener("input", function () {
+        //       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        //           chrome.tabs.sendMessage(tabs[0].id, { action: "paa" });
+        //           console.log("jlsdkj");
+        //           alert('one')
+        //       });
+        //   });
+
+
     function handleKeyDown(event) {
         const pressedKey = String.fromCharCode(event.keyCode);
         console.log(pressedKey);
@@ -457,16 +558,31 @@ window.onload = function () {
                 ) {
                     // Create a new keyboard event for the down arrow key
                     window.scrollBy(0, 100);
-                    document.dispatchEvent(downArrowEvent);
+                    // document.dispatchEvent(downArrowEvent);
                 } else if (
                     event.key.toLowerCase() === "k" &&
                     window.location.hostname !== "www.youtube.com"
                 ) {
                     window.scrollBy(0, -100);
                 }
+                if (event.key.toLowerCase() === "y" && window.location.hostname === "www.youtube.com"){
+                  // alert('lsjdlkf');
+                    // document.dispatchEvent(downArrowEvent);
+                    // const downArrowEvent = new KeyboardEvent("keydown", {
+                    //     key: "ArrowDown",
+                    //     code: "ArrowDown",
+                    //     keyCode: 40,
+                    //     which: 40,
+                    //     // Add other properties as needed
+                    // });
+                    simulateArrowDown();
+
+                }
             }
         }
     }
+
+
     // window.addEventListener('scroll', function() {
     //   // Get the current vertical scroll position
     //   var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
