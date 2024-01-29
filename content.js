@@ -1,5 +1,15 @@
 // content.js
 // alert("Content script loaded!");
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Button 1 click event
+
+    // Button 2 click event
+    document.getElementById("setting2").addEventListener("input", function () {
+        console.log("Button 2 clicked!");
+        // Add your code for Button 2 click event
+    });
+});
 const lowercaseAlphabets = [
     "a",
     "b",
@@ -28,6 +38,12 @@ const lowercaseAlphabets = [
     "y",
     "z",
 ];
+
+function handleSetting1Input() {
+    // var settingValue = document.getElementById('setting1').value;
+    // document.getElementById('output').innerText = 'Setting 1 value: ' + settingValue;
+    console.log("from handleSetting1Input");
+}
 
 const downArrowEvent = new KeyboardEvent("keydown", {
     key: "ArrowDown",
@@ -64,10 +80,10 @@ window.onload = function () {
             var imagesSectionLinks = getLinks(imagesSectionAnchorTags);
             console.log(imagesSectionLinks);
         }
-        removeSection(peopleAlsoAskDiv);
-        removeSection(keyMomentsInVideo);
-        removeSection(imagesSection);
-        
+        // removeSection(peopleAlsoAskDiv);
+        // removeSection(keyMomentsInVideo);
+        // removeSection(imagesSection);
+
         // if (complementary && complementary === "complementary") {
         //     removeSection(complementary);
         // }
@@ -255,6 +271,11 @@ window.onload = function () {
                 return href !== null; // Filter out null values from the array
             });
         console.log("href list", hrefList);
+
+        var setting1;
+
+        console.log(setting1);
+
         // Remove links that match links in the linksToRemove array
         var filteredLinks = hrefList.filter(function (link) {
             if (paaList && paaList.includes(link)) {
@@ -262,7 +283,13 @@ window.onload = function () {
             }
 
             if (keyMomentsList && keyMomentsList.includes(link)) {
-                return true; // Exclude links that are in keyMomentsList
+                if (setting1) {
+                    console.log("true");
+                    return true;
+                } else {
+                    console.log("false");
+                    return false; // Exclude links that are in keyMomentsList
+                }
             }
 
             if (imagesSectionLinks && imagesSectionLinks.includes(link)) {
@@ -294,7 +321,7 @@ window.onload = function () {
 
                 // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                 var aTag = document.createElement("span");
-                aTag.setAttribute("style", "font-size:1.5vw");
+                aTag.setAttribute("style", "font-size:1.0vw");
                 if (i >= 10) {
                     aTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
                 } else {
@@ -303,9 +330,28 @@ window.onload = function () {
                 // Set the innerHTML of the target element to display the image
                 // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
                 for (target of targetElements) {
-                    targetHeading = target.querySelector("h3");
+                    if (target.querySelector("g-img")) {
+                        targetHeading = target
+                            .querySelector("g-img")
+                            .parentNode.querySelector("span");
+                        console.log(targetHeading);
+                    } else {
+                        targetHeading = target.querySelector("cite");
+                        if (targetHeading) {
+                            console.log(
+                                targetHeading.parentNode.parentNode.querySelector(
+                                    "span",
+                                ),
+                            );
+                            targetHeading =
+                                targetHeading.parentNode.parentNode.querySelector(
+                                    "span",
+                                );
+                        }
+                    }
+
                     if (targetHeading) {
-                        targetHeading.prepend(aTag);
+                        targetHeading.append(aTag);
                     }
                 }
                 // targetElements.innerHTML =    i + " " + targetElements.innerText ;
@@ -367,7 +413,7 @@ window.onload = function () {
             console.log("Cursor is in an input field.");
             console.dir(activeElement);
         } else {
-            console.log("Cursor is not in an input field. " + event.key);
+            // console.log("Cursor is not in an input field. " + event.key);
             if (
                 (event.metaKey || event.ctrlKey || event.altKey) &&
                 /^\d$/.test(event.key)
@@ -445,30 +491,6 @@ window.onload = function () {
     document.addEventListener("keydown", handleKeyDown);
 
     // content.js
-    // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    //   if (request.action === 'extractCiteData') {
-    //     // Extract cite data from Google search results
-    //     var citeElements = document.querySelectorAll('.tF2Cxc cite'); // Adjust the selector based on the current Google search result page structure
-
-    //     var citeData = Array.from(citeElements).map(function(cite) {
-    //       return cite.innerText.trim(); // Trim to remove leading/trailing whitespaces
-    //     });
-
-    //     // Remove empty items from citeData
-    //     citeData = citeData.filter(function(item) {
-    //       return item !== '';
-    //     });
-
-    //     // Extract proper URLs from citeData
-    //     var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i; // Basic URL regex
-    //     var validUrls = citeData.filter(function(item) {
-    //       return urlRegex.test(item);
-    //     });
-
-    //     // Log or do something with the extracted valid URLs
-    //     console.log('Valid URLs:', validUrls);
-    //   }
-    // });
 
     // https://playwright.dev › docs › locators
 
@@ -519,3 +541,32 @@ function isPageScrolledToBottom() {
     // Check if the user has scrolled to the bottom
     return scrollTop + windowHeight >= totalHeight;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    chrome.runtime.onMessage.addListener(
+        function (request, sender, sendResponse) {
+            if (request.action === "extractCiteData") {
+                // Extract cite data from Google search results
+                var citeElements = document.querySelectorAll(".tF2Cxc cite"); // Adjust the selector based on the current Google search result page structure
+
+                var citeData = Array.from(citeElements).map(function (cite) {
+                    return cite.innerText.trim(); // Trim to remove leading/trailing whitespaces
+                });
+
+                // Remove empty items from citeData
+                citeData = citeData.filter(function (item) {
+                    return item !== "";
+                });
+
+                // Extract proper URLs from citeData
+                var urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i; // Basic URL regex
+                var validUrls = citeData.filter(function (item) {
+                    return urlRegex.test(item);
+                });
+
+                // Log or do something with the extracted valid URLs
+                console.log("Valid URLs:", validUrls);
+            }
+        },
+    );
+});
