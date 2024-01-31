@@ -776,7 +776,6 @@ const observer = new MutationObserver((mutations) => {
     }
   });
 });
-});
 
 // Define the configuration of the observer
 const config = { childList: true, subtree: true };
@@ -790,6 +789,7 @@ if (container) {
   console.error('Container element not found');
 }
 
+});
 
 
 // Function to handle the dynamically added div
