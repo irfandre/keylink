@@ -3,16 +3,12 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     // Button 1 click event
-
     // // Button 2 click event
     // document.getElementById("setting2").addEventListener("input", function () {
-    //     console.log("Button 2 clicked!");
+        console.log("Button 2 clicked!");
     //     // Add your code for Button 2 click event
     // });
 
-
-    
-    
 });
 const lowercaseAlphabets = [
     "a",
@@ -43,60 +39,118 @@ const lowercaseAlphabets = [
     "z",
 ];
 
-function handleSetting1Input() {
-    // var settingValue = document.getElementById('setting1').value;
-    // document.getElementById('output').innerText = 'Setting 1 value: ' + settingValue;
-    console.log("from handleSetting1Input");
+// Storing multiple values
+// const dataToStore = {
+//   key1: 'value1',
+//   key2: 'value2',
+//   key3: 'value3'
+// };
+
+// chrome.storage.local.set(dataToStore, function() {
+//   console.log('Data saved');
+// });
+
+
+
+
+function chromeStorageSet() {
+    let checkbox = document.getElementById("setting2");
+
+    if (checkbox) {
+        // Load the checkbox state from storage
+        // chrome.storage.sync.get({ showPAA: false }, function (items) {
+        //     checkbox.checked = items.showPAA;
+        //     console.log("showPAAValue:", checkbox.checked);
+        //     paaFrom = checkbox.checked;
+        //     // alert(checkbox.checked);
+        //     // updateUI(checkbox.checked);
+        // });
+        // Retrieving multiple values
+        // const keysToRetrieve = [{showPAA: false}];
+        // chrome.storage.local.get(keysToRetrieve, function(result) {
+        //     paaFrom = result.showPAA;
+        //     console.log("paa from 1", paaFrom);
+        // });
+        const dataToStore = {
+                showPAA: false,
+              key2: 'value2',
+              key3: 'value3'
+            };
+
+        chrome.storage.local.set(dataToStore, function() {
+          console.log('Data saved');
+        });
+
+        // Update storage when checkbox state changes
+        checkbox.addEventListener("change", function () {
+            const showPAA = checkbox.checked;
+
+            // Save the checkbox state to storage
+            chrome.storage.local.set({ showPAA: showPAA }, function() {
+              if (chrome.runtime.lastError) {
+                console.error('Error saving data:', chrome.runtime.lastError);
+              } else {
+                console.log('Data saved', showPAA);
+              }
+            });
+        });
+    }
+        // Error handling when saving data
+    
+
+    // // Error handling when retrieving data
+    // chrome.storage.local.get('key', function(result) {
+    //   if (chrome.runtime.lastError) {
+    //     console.error('Error retrieving data:', chrome.runtime.lastError);
+    //   } else {
+    //     console.log('Retrieved value:', result.key);
+    //   }
+    // });
+
 }
 
 
-
-window.onload = function () {
-
-
-    let checkbox = document.getElementById('setting2');
-
+function everything () 
+{
+    let checkbox = document.getElementById("setting2");
     let paaFrom;
 
-chrome.storage.sync.get({ showPAA: false }, function (items) {
-  paaFrom = items.showPAA;
-  console.log('paa from 1', paaFrom); // Move the console.log inside the callback
-  updateUI(paaFrom);
-});
+    chromeStorageSet();
+    // chrome.storage.sync.get({ showPAA: false }, function (items) {
+    //     paaFrom = items.showPAA;
+    //     console.log("paa from 1", paaFrom); // Move the console.log inside the callback
+    //     updateUI(paaFrom);
+    // });
 
+    // console.log("paa from ", paaFrom);
 
+    // if (checkbox) {
+    //     // Load the checkbox state from storage
+    //     chrome.storage.sync.get({ showPAA: false }, function (items) {
+    //         checkbox.checked = items.showPAA;
+    //         console.log("showPAAValue:", checkbox.checked);
+    //         paaFrom = checkbox.checked;
+    //         // alert(checkbox.checked);
+    //         // updateUI(checkbox.checked);
+    //     });
 
-    console.log('paa from ',paaFrom);
+    //     // Update storage when checkbox state changes
+    //     checkbox.addEventListener("change", function () {
+    //         const showPAA = checkbox.checked;
 
+    //         // Save the checkbox state to storage
+    //         chrome.storage.sync.set({ showPAA: showPAA }, function () {
+    //             console.log("Checkbox state saved:", showPAA);
+    //         });
+    //     });
+    // }
 
-    if (checkbox){
-
-        // Load the checkbox state from storage
-      chrome.storage.sync.get({ showPAA: false }, function (items) {
-        checkbox.checked = items.showPAA;
-          console.log('showPAAValue:', checkbox.checked);
-          paaFrom = checkbox.checked;
-          // alert(checkbox.checked);
-        // updateUI(checkbox.checked);
-      });
-
-      // Update storage when checkbox state changes
-      checkbox.addEventListener('change', function () {
-        const showPAA = checkbox.checked;
-
-        // Save the checkbox state to storage
-        chrome.storage.sync.set({ showPAA: showPAA }, function () {
-          console.log('Checkbox state saved:', showPAA);
-        });
-      });
-
-    };
-      
-   
     // console.log("checkbox value -----------",checkbox.checked);
 
     if (window.location.hostname === "www.google.com") {
         // var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
+
+
 
         var peopleAlsoAskDiv = document.querySelector(
             "div[jsname][data-bs][data-sgrd]",
@@ -283,170 +337,172 @@ chrome.storage.sync.get({ showPAA: false }, function (items) {
         // console.log(paaList);
 
         // #### Extract href attribute from selected anchor tags
-        var anchorTags = document.querySelectorAll("a[jsname]");
-        console.log("anchor tags", anchorTags);
+        function getHrefList(){
 
-        var hrefList = Array.from(anchorTags)
-            .map(function (a, index) {
-                // console.log(a.innerText);
-                // console.log(Object.keys(a));
-                var hrefValue = a.getAttribute("href");
-                console.log(hrefValue);
-                // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
-                if (
-                    /^https:\/\//.test(hrefValue) &&
-                    !hrefValue.startsWith(
-                        "https://support.google.com/websearch/answer/",
-                    ) &&
-                    !hrefValue.startsWith(
-                        "https://maps.google.com/maps?sca_esv=",
-                    )
-                ) {
-                    return hrefValue;
-                } else {
-                    // console.log('none');
-                    return null; // Return null for invalid href values
-                }
-            })
-            .filter(function (href) {
-                return href !== null; // Filter out null values from the array
-            });
-        console.log("href list", hrefList);
+            var anchorTags = document.querySelectorAll("a[jsname]");
+            console.log("anchor tags", anchorTags);
 
+            var hrefList = Array.from(anchorTags)
+                .map(function (a, index) {
+                    // console.log(a.innerText);
+                    // console.log(Object.keys(a));
+                    var hrefValue = a.getAttribute("href");
+                    console.log(hrefValue);
+                    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
+                    if (
+                        /^https:\/\//.test(hrefValue) &&
+                        !hrefValue.startsWith(
+                            "https://support.google.com/websearch/answer/",
+                        ) &&
+                        !hrefValue.startsWith(
+                            "https://maps.google.com/maps?sca_esv=",
+                        )
+                    ) {
+                        return hrefValue;
+                    } else {
+                        // console.log('none');
+                        return null; // Return null for invalid href values
+                    }
+                })
+                .filter(function (href) {
+                    return href !== null; // Filter out null values from the array
+                });
+            console.log("href list", hrefList);
+            return hrefList;
+        }
+        var hrefList = getHrefList();
         var setting1;
 
         console.log(setting1);
 
         var filteredLinks;
 
-        function getFilteredLinks(){
-        // Remove links that match links in the linksToRemove array
-         filteredLinks = hrefList.filter(function (link) {
-            if (paaFrom){
-                if (paaList && paaList.includes(link)) {
-                console.log('removing paa section', paaFrom)
-                return true; // Exclude links that are in paaList
+        function getFilteredLinks() 
+        {
+            // Remove links that match links in the linksToRemove array
+            filteredLinks = hrefList.filter(function (link) {
+                if (paaFrom) {
+                    if (paaList && paaList.includes(link)) {
+                        console.log("removing paa section", paaFrom);
+                        return true; // Exclude links that are in paaList
+                    }
+                } else {
+                    // if (paaList.includes(link) === hrefList.includes(link) ){
+                    //     return true;
+                    // }
+
+                    // if (paaList && paaList.includes(link) && hrefList.includes(link) && !paaFrom) {
+                    // console.log('removing paa section', paaFrom)
+                    // return false; // Exclude links that are in paaList
+                    // }
+
+                    if (paaList && paaList.includes(link)) {
+                        console.log("removing paa section", paaFrom);
+                        return false; // Exclude links that are in paaList
+                    }
                 }
-            } else {
 
-                // if (paaList.includes(link) === hrefList.includes(link) ){
-                //     return true;
-                // }
-
-                // if (paaList && paaList.includes(link) && hrefList.includes(link) && !paaFrom) {
-                // console.log('removing paa section', paaFrom)
-                // return false; // Exclude links that are in paaList
-                // }
-
-                if (paaList && paaList.includes(link)) {
-                console.log('removing paa section', paaFrom)
-                return false; // Exclude links that are in paaList
-                }
-
-                
-
-            }
-            
-
-
-            if (keyMomentsList && keyMomentsList.includes(link)) {
-                return false;
-                if (setting1) {
-                    console.log("true");
+                if (keyMomentsList && keyMomentsList.includes(link)) {
                     return false;
-                } else {
-                    console.log("false");
-                    return false; // Exclude links that are in keyMomentsList
-                }
-            }
-
-            if (imagesSectionLinks && imagesSectionLinks.includes(link)) {
-                return true;
-            }
-
-            // Include links that are not in either paaList or keyMomentsList
-            return true;
-        });
-
-        // Log the filtered links
-        console.log("Filtered Links:", filteredLinks);
-        filteredLinks.push(...uniqueVL);
-        console.log(filteredLinks);
-        var center_col = document.getElementById("center_col");
-        for (let i = 0; i < filteredLinks.length; i++) {
-            // console.log(scores[i]);
-            console.log(i);
-            targetHref = filteredLinks[i];
-            // Find anchor elements with the specified href
-            var targetElements = center_col.querySelectorAll(
-                'a[href="' + targetHref + '"]',
-            );
-
-            // console.log("dict", i + "  " + targetElements);
-            if (targetElements) {
-                // var imageElement = targetElements.querySelector("img");
-
-                // console.log(imageElement);
-
-                // var imgHtml = new XMLSerializer().serializeToString(imageElement);
-                var aTag = document.createElement("span");
-                aTag.setAttribute("style", "font-size:1.0vw");
-                if (i >= 10) {
-                    aTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
-                } else {
-                    aTag.innerText = " " + i + " ";
-                }
-                // Set the innerHTML of the target element to display the image
-                // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
-                for (target of targetElements) {
-                    if (target.querySelector("g-img")) {
-                        targetHeading = target
-                            .querySelector("g-img")
-                            .parentNode.querySelector("span");
-                        console.log(targetHeading);
+                    if (setting1) {
+                        console.log("true");
+                        return false;
                     } else {
-                        targetHeading = target.querySelector("cite");
-                        if (targetHeading) {
-                            console.log(
-                                targetHeading.parentNode.parentNode.querySelector(
-                                    "span",
-                                ),
-                            );
-                            targetHeading =
-                                targetHeading.parentNode.parentNode.querySelector(
-                                    "span",
+                        console.log("false");
+                        return false; // Exclude links that are in keyMomentsList
+                    }
+                }
+
+                if (imagesSectionLinks && imagesSectionLinks.includes(link)) {
+                    return true;
+                }
+
+                // Include links that are not in either paaList or keyMomentsList
+                return true;
+            });
+
+            // Log the filtered links
+            console.log("Filtered Links:", filteredLinks);
+            filteredLinks.push(...uniqueVL);
+            console.log(filteredLinks);
+            var center_col = document.getElementById("center_col");
+            for (let i = 0; i < filteredLinks.length; i++) {
+                // console.log(scores[i]);
+                console.log(i);
+                targetHref = filteredLinks[i];
+                // Find anchor elements with the specified href
+                var targetElements = center_col.querySelectorAll(
+                    'a[href="' + targetHref + '"]',
+                );
+
+                // console.log("dict", i + "  " + targetElements);
+                if (targetElements) {
+                    // var imageElement = targetElements.querySelector("img");
+
+                    // console.log(imageElement);
+
+                    // var imgHtml = new XMLSerializer().serializeToString(imageElement);
+                    var aTag = document.createElement("span");
+                    aTag.setAttribute("style", "font-size:1.0vw");
+                    if (i >= 10) {
+                        aTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
+                    } else {
+                        aTag.innerText = " " + i + " ";
+                    }
+                    // Set the innerHTML of the target element to display the image
+                    // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
+                    for (target of targetElements) {
+                        if (target.querySelector("g-img")) {
+                            targetHeading = target
+                                .querySelector("g-img")
+                                .parentNode.querySelector("span");
+                            console.log(targetHeading);
+                        } else {
+                            targetHeading = target.querySelector("cite");
+                            if (targetHeading) {
+                                console.log(
+                                    targetHeading.parentNode.parentNode.querySelector(
+                                        "span",
+                                    ),
                                 );
+                                targetHeading =
+                                    targetHeading.parentNode.parentNode.querySelector(
+                                        "span",
+                                    );
+                            }
+                        }
+
+                        if (targetHeading) {
+                            targetHeading.append(aTag);
                         }
                     }
+                    // targetElements.innerHTML =    i + " " + targetElements.innerText ;
 
-                    if (targetHeading) {
-                        targetHeading.append(aTag);
-                    }
+                    // targetElements.innerText = i + " " + imageElement
+                    // targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
+
+                    // if (i === 0 && targetElements !== undefined) {
+                    //     targetElements.style.border = "2px solid red";
+                    // }
                 }
-                // targetElements.innerHTML =    i + " " + targetElements.innerText ;
 
-                // targetElements.innerText = i + " " + imageElement
-                // targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
-
-                // if (i === 0 && targetElements !== undefined) {
-                //     targetElements.style.border = "2px solid red";
-                // }
+                replacementText = i + " " + targetHref;
+                // Replace text content in each matching element
             }
-
-            replacementText = i + " " + targetHref;
-            // Replace text content in each matching element
         }
-    }
+        
+        getFilteredLinks();
 
-    };
+    }
     // all();
 
     function updateUI(showPAA) {
-  // Your UI update logic here
-  console.log('Updating UI based on showPAA:', showPAA);
-  paaFrom = showPAA;
-  getFilteredLinks();
-}
+        // Your UI update logic here
+        console.log("Updating UI based on showPAA:", showPAA);
+        paaFrom = showPAA;
+        getFilteredLinks();
+        everything()
+    }
     // for (var i = 0, l = hrefList.length; i < l; i++) {
     // var els = document.querySelectorAll("a[href^='" + hrefList[0] + "']");
 
@@ -464,26 +520,25 @@ chrome.storage.sync.get({ showPAA: false }, function (items) {
     // };
 
     function simulateArrowDown() {
-          // Create a new key down event for the arrow down key
-          var arrowDownEvent = new KeyboardEvent('keydown', {
-            key: 'ArrowDown',
+        // Create a new key down event for the arrow down key
+        var arrowDownEvent = new KeyboardEvent("keydown", {
+            key: "ArrowDown",
             keyCode: 40,
             which: 40,
-            code: 'ArrowDown',
-          });
+            code: "ArrowDown",
+        });
 
-          // Dispatch the event on the input element
-          document.dispatchEvent(arrowDownEvent);
-        }
+        // Dispatch the event on the input element
+        document.dispatchEvent(arrowDownEvent);
+    }
 
-        // document.getElementById("setting2").addEventListener("input", function () {
-        //       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        //           chrome.tabs.sendMessage(tabs[0].id, { action: "paa" });
-        //           console.log("jlsdkj");
-        //           alert('one')
-        //       });
-        //   });
-
+    // document.getElementById("setting2").addEventListener("input", function () {
+    //       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    //           chrome.tabs.sendMessage(tabs[0].id, { action: "paa" });
+    //           console.log("jlsdkj");
+    //           alert('one')
+    //       });
+    //   });
 
     function handleKeyDown(event) {
         const pressedKey = String.fromCharCode(event.keyCode);
@@ -550,38 +605,8 @@ chrome.storage.sync.get({ showPAA: false }, function (items) {
                 }
             }
 
-            // Check if the pressed key is 'j'
-            if (event.key !== undefined) {
-                if (
-                    event.key.toLowerCase() === "j" &&
-                    window.location.hostname !== "www.youtube.com"
-                ) {
-                    // Create a new keyboard event for the down arrow key
-                    window.scrollBy(0, 100);
-                    // document.dispatchEvent(downArrowEvent);
-                } else if (
-                    event.key.toLowerCase() === "k" &&
-                    window.location.hostname !== "www.youtube.com"
-                ) {
-                    window.scrollBy(0, -100);
-                }
-                if (event.key.toLowerCase() === "y" && window.location.hostname === "www.youtube.com"){
-                  // alert('lsjdlkf');
-                    // document.dispatchEvent(downArrowEvent);
-                    // const downArrowEvent = new KeyboardEvent("keydown", {
-                    //     key: "ArrowDown",
-                    //     code: "ArrowDown",
-                    //     keyCode: 40,
-                    //     which: 40,
-                    //     // Add other properties as needed
-                    // });
-                    simulateArrowDown();
-
-                }
-            }
         }
     }
-
 
     // window.addEventListener('scroll', function() {
     //   // Get the current vertical scroll position
@@ -634,6 +659,9 @@ chrome.storage.sync.get({ showPAA: false }, function (items) {
     //     return href !== null; // Filter out null values from the array
     // });
 };
+// getFilteredLinks();
+// everything();
+
 
 window.onscroll = function () {
     // Check if the user has scrolled to the bottom
@@ -657,6 +685,123 @@ function isPageScrolledToBottom() {
     // Check if the user has scrolled to the bottom
     return scrollTop + windowHeight >= totalHeight;
 }
+
+
+function scrollEvents(event){
+
+            // Check if the pressed key is 'j'
+            if (event.key !== undefined) {
+                if (
+                    event.key.toLowerCase() === "j" &&
+                    window.location.hostname !== "www.youtube.com"
+                ) {
+                    // Create a new keyboard event for the down arrow key
+                    window.scrollBy(0, 100);
+                    // document.dispatchEvent(downArrowEvent);
+                } else if (
+                    event.key.toLowerCase() === "k" &&
+                    window.location.hostname !== "www.youtube.com"
+                ) {
+                    window.scrollBy(0, -100);
+                }
+                if (
+                    event.key.toLowerCase() === "y" &&
+                    window.location.hostname === "www.youtube.com"
+                ) {
+                    // alert('lsjdlkf');
+                    // document.dispatchEvent(downArrowEvent);
+                    // const downArrowEvent = new KeyboardEvent("keydown", {
+                    //     key: "ArrowDown",
+                    //     code: "ArrowDown",
+                    //     keyCode: 40,
+                    //     which: 40,
+                    //     // Add other properties as needed
+                    // });
+                    simulateArrowDown();
+                }
+
+                if (event.getModifierState('Alt') && event.code === 'Minus') {
+                    console.log('Alt key + Minus key pressed');
+                    chrome.runtime.sendMessage({ action: 'switchToPreviousTab' });
+                    
+                    // Your logic when the Alt key and minus key are pressed
+                  }
+            }
+}
+
+
+document.addEventListener("keydown", scrollEvents);
+
+
+// Load the tab history from local storage on extension startup
+chrome.storage.local.get(['tabHistory'], function (result) {
+  if (result.tabHistory) {
+    tabHistory = result.tabHistory;
+    console.log('Tab history loaded from local storage:', tabHistory);
+  }
+});
+
+window.addEventListener('load', function () {
+  // Code to execute after all resources are loaded
+  console.log('All resources are loaded');
+  everything()
+  // Add your additional logic here
+});
+// window.onload = handleDynamicDivAdded('test');
+
+// Select the target div element
+document.addEventListener('DOMContentLoaded', function () {
+    
+const container = document.querySelector('#botstuff');
+const targetDiv = document.querySelector('div[jsaction]')
+// Select the container where the dynamic divs might be added
+// const container = document.getElementById('yourContainerId');
+
+// Create a new Mutation Observer
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    // Check if nodes were added
+    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+      // Iterate through added nodes
+      mutation.addedNodes.forEach((node) => {
+        // Check if the added node is a div with data-async-type="arc"
+        if (node.nodeType === 1 && node.tagName.toLowerCase() === 'div' && node.getAttribute('data-async-type') === 'arc') {
+          // The div with data-async-type="arc" has been added dynamically
+          console.log('Dynamic div with data-async-type="arc" added:', node);
+
+          // Call your function or perform actions based on the change
+          handleDynamicDivAdded(node);
+        }
+      });
+    }
+  });
+});
+});
+
+// Define the configuration of the observer
+const config = { childList: true, subtree: true };
+
+// Start observing the container for changes
+if (container) {
+  // Observe the container here
+
+  observer.observe(container, config);
+} else {
+  console.error('Container element not found');
+}
+
+
+
+// Function to handle the dynamically added div
+function handleDynamicDivAdded(addedDiv) {
+  // Your logic to handle the added div goes here
+  console.log('Handling dynamically added div:', addedDiv);
+  // alert('lsjdlkf')
+  // getHrefList();
+  // getFilteredLinks();
+  // everything();
+}
+
 
 document.addEventListener("DOMContentLoaded", function () {
     chrome.runtime.onMessage.addListener(

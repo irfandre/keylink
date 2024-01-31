@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
     //   // Add your code for Button 1 click event
     //   alert('jlskdj');
     // });
-    document
-        .getElementById("setting1")
-        .addEventListener("input", handleSetting1Input);
+    // document
+    //     .getElementById("setting1")
+    //     .addEventListener("input", handleSetting1Input);
 
     // Button 2 click event
     document.getElementById("setting2").addEventListener("input", function () {
