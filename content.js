@@ -26,23 +26,14 @@ const callback = function(mutationsList, observer) {
             const targetNode = document.getElementById('botstuff');
 
             var at = targetNode.querySelectorAll("a[jsname]");
-
-              alert("from list ", at);
-
-            // var srp = node.querySelectorAll('[id^="arc-srp"]');
-            // alert("srp",srp);
-        // Check if the added node is an anchor tag
-              // const anchorTags = node.querySelectorAll('a');
+            
               at.forEach(anchor => {
                 // Do something with each anchor tag
                 console.log('Anchor Href:', anchor.getAttribute('href'));
               });
 
               botstuffHrefList = getList(at);
-              alert(botstuffHrefList);
-              updateAlpha();
-
-        }
+              updateAlpha()};
       });
     }
   }
@@ -60,6 +51,10 @@ function updateAlpha() {
       span.remove();
     });
     }
+
+    setTimeout(() => {
+        console.log('Hello, World!');
+    }, 1000);
     everything()
 }
 
@@ -93,6 +88,7 @@ function getList(list) {
             console.log(hrefList);
             return hrefList;
 }
+
 const targetNode = document.getElementById('botstuff');
 
 // Select the target node
@@ -100,7 +96,10 @@ const targetNode = document.getElementById('botstuff');
 const observer = new MutationObserver(callback);
 
 // Start observing the target node for added nodes
-observer.observe(targetNode, { childList: true, subtree: true });
+if (targetNode) {
+
+    observer.observe(targetNode, { childList: true, subtree: true });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     // Button 1 click event
