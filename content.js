@@ -1,5 +1,106 @@
 // content.js
 // alert("Content script loaded!");
+document.addEventListener("visibilitychange", (event) => {
+  if (document.visibilityState == "visible") {
+    console.log("tab is active")
+  } else {
+    console.log("tab is inactive")
+  }
+});
+
+
+var botstuffHrefList;
+// alert('sdjlfksd');
+const targetDiv = document.querySelector('div[jsaction]')
+    // Select the container where the dynamic divs might be added
+    // const container = document.getElementById('yourContainerId');
+
+const callback = function(mutationsList, observer) {
+  for (const mutation of mutationsList) {
+    // alert('lkjds');
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === 1 && node.tagName === 'DIV' && node.id && node.id.startsWith('arc-srp')) {
+          console.log('New div element with id starting with "arc-srp_" added:', node);
+          // Do something with the new div element
+            const targetNode = document.getElementById('botstuff');
+
+            var at = targetNode.querySelectorAll("a[jsname]");
+
+              alert("from list ", at);
+
+            // var srp = node.querySelectorAll('[id^="arc-srp"]');
+            // alert("srp",srp);
+        // Check if the added node is an anchor tag
+              // const anchorTags = node.querySelectorAll('a');
+              at.forEach(anchor => {
+                // Do something with each anchor tag
+                console.log('Anchor Href:', anchor.getAttribute('href'));
+              });
+
+              botstuffHrefList = getList(at);
+              alert(botstuffHrefList);
+              updateAlpha();
+
+        }
+      });
+    }
+  }
+};
+
+function updateAlpha() {
+    // body...
+    const spanElements = document.querySelectorAll('span[style="font-size:1.0vw"]');
+
+    // Remove each selected span element
+    if (spanElements){
+
+
+    spanElements.forEach(span => {
+      span.remove();
+    });
+    }
+    everything()
+}
+
+function getList(list) {
+            // body...
+            var hrefList = Array.from(list)
+                .map(function (a, index) {
+                    // console.log(a.innerText);
+                    // console.log(Object.keys(a));
+                    var hrefValue = a.getAttribute("href");
+
+                    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
+                    if (
+                        /^https:\/\//.test(hrefValue) &&
+                        !hrefValue.startsWith(
+                            "https://support.google.com/websearch/answer/",
+                        ) &&
+                        !hrefValue.startsWith(
+                            "https://maps.google.com/maps?sca_esv=",
+                        )
+                    ) {
+                        return hrefValue;
+                    } else {
+                        return null; // Return null for invalid href values
+                    }
+                })
+                .filter(function (href) {
+                    return href !== null; // Filter out null values from the array
+                });
+
+            console.log(hrefList);
+            return hrefList;
+}
+const targetNode = document.getElementById('botstuff');
+
+// Select the target node
+// Create an observer instance linked to the callback function
+const observer = new MutationObserver(callback);
+
+// Start observing the target node for added nodes
+observer.observe(targetNode, { childList: true, subtree: true });
 
 document.addEventListener("DOMContentLoaded", function () {
     // Button 1 click event
@@ -8,6 +109,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Button 2 clicked!");
     //     // Add your code for Button 2 click event
     // });
+        // const targetNode = document.querySelector('#botstuff');
+    
 
 });
 const lowercaseAlphabets = [
@@ -210,36 +313,7 @@ function everything ()
             }
         }
 
-        function getList(list) {
-            // body...
-            var hrefList = Array.from(list)
-                .map(function (a, index) {
-                    // console.log(a.innerText);
-                    // console.log(Object.keys(a));
-                    var hrefValue = a.getAttribute("href");
-
-                    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
-                    if (
-                        /^https:\/\//.test(hrefValue) &&
-                        !hrefValue.startsWith(
-                            "https://support.google.com/websearch/answer/",
-                        ) &&
-                        !hrefValue.startsWith(
-                            "https://maps.google.com/maps?sca_esv=",
-                        )
-                    ) {
-                        return hrefValue;
-                    } else {
-                        return null; // Return null for invalid href values
-                    }
-                })
-                .filter(function (href) {
-                    return href !== null; // Filter out null values from the array
-                });
-
-            console.log(hrefList);
-            return hrefList;
-        }
+        
 
         var paaList = paalinks;
         var keyMomentsList = getLinks(keyMomentsInVideo);
@@ -704,6 +778,8 @@ function scrollEvents(event){
                 ) {
                     window.scrollBy(0, -100);
                 }
+
+                // Youtube 
                 if (
                     event.key.toLowerCase() === "y" &&
                     window.location.hostname === "www.youtube.com"
@@ -717,8 +793,12 @@ function scrollEvents(event){
                     //     which: 40,
                     //     // Add other properties as needed
                     // });
-                    simulateArrowDown();
+                    alert('in youtube');
+
+                    // document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+
                 }
+
 
                 if (event.getModifierState('Alt') && event.code === 'Minus') {
                     console.log('Alt key + Minus key pressed');
@@ -726,6 +806,14 @@ function scrollEvents(event){
                     
                     // Your logic when the Alt key and minus key are pressed
                   }
+
+                // go to textarea in chatgpt with / 
+                if (window.location.hostname === "chat.openai.com" && event.key === "/"){
+                        const textarea = document.getElementById('prompt-textarea');
+                        if (textarea) {
+                        textarea.focus();
+                        }
+                }
             }
 }
 
@@ -747,60 +835,7 @@ window.addEventListener('load', function () {
   everything()
   // Add your additional logic here
 });
-// window.onload = handleDynamicDivAdded('test');
 
-// Select the target div element
-document.addEventListener('DOMContentLoaded', function () {
-    
-const container = document.querySelector('#botstuff');
-const targetDiv = document.querySelector('div[jsaction]')
-// Select the container where the dynamic divs might be added
-// const container = document.getElementById('yourContainerId');
-
-// Create a new Mutation Observer
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    // Check if nodes were added
-    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-      // Iterate through added nodes
-      mutation.addedNodes.forEach((node) => {
-        // Check if the added node is a div with data-async-type="arc"
-        if (node.nodeType === 1 && node.tagName.toLowerCase() === 'div' && node.getAttribute('data-async-type') === 'arc') {
-          // The div with data-async-type="arc" has been added dynamically
-          console.log('Dynamic div with data-async-type="arc" added:', node);
-
-          // Call your function or perform actions based on the change
-          handleDynamicDivAdded(node);
-        }
-      });
-    }
-  });
-});
-
-// Define the configuration of the observer
-const config = { childList: true, subtree: true };
-
-// Start observing the container for changes
-if (container) {
-  // Observe the container here
-
-  observer.observe(container, config);
-} else {
-  console.error('Container element not found');
-}
-
-});
-
-
-// Function to handle the dynamically added div
-function handleDynamicDivAdded(addedDiv) {
-  // Your logic to handle the added div goes here
-  console.log('Handling dynamically added div:', addedDiv);
-  // alert('lsjdlkf')
-  // getHrefList();
-  // getFilteredLinks();
-  // everything();
-}
 
 
 document.addEventListener("DOMContentLoaded", function () {

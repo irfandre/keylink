@@ -6,10 +6,8 @@
   "description": "Linking keys to links",
   "permissions": ["tabs","activeTab","storage"],
   "action": {
-
     "default_popup": "popup.html"
   },
-
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
