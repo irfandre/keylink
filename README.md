@@ -2,13 +2,13 @@
 
 This is a simple chrome extension created to navigate webpages.
 
+Note: This extension is still in ALPHA stage 
 
 ## Install/Usage
 
 Steps to install this extension on google chrome
 
-This is extension is not on __Chrome Web Store__ as of yet, we can use developer mode to use it for now.
-
+This is extension is not on **Chrome Web Store** as of yet, we can use developer mode to use it for now.
 
 ### Steps to install
 
@@ -22,22 +22,17 @@ Enable `Developer mode` at top right hand side.
 
 After enabling, select `Load Unpacked` button on top left corner and choose the cloned repository directory.
 
-
-
-
-### Scrolling 
+### Scrolling
 
 Pressing space bar move page alot, using this extension we can scroll properly.
 
-
 > use **j** and **k** keys to scroll down and up respectively # aka up and down
 
+Note: Some website use custom script for scrolling **longpress scrolling** might not work properly on those websites (will try to fix that when i have time), normal keypress scrolling will work fine.
 
-Note: Some website use custom script for scrolling __longpress scrolling__ might not work properly on those websites (will try to fix that when i have time), normal keypress scrolling will work fine.
-
-### Navigation 
+### Navigation
 
 This extension scrapes the google search results and append a alphanumeric characters at the end, we can navigate to corresponding link by just pressing the alphanumeric characters associated with it.
 
-
+Use Alt/Opt + minus(-) to switch to previous tab.
 

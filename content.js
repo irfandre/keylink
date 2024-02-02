@@ -1,95 +1,180 @@
 // content.js
 // alert("Content script loaded!");
 document.addEventListener("visibilitychange", (event) => {
-  if (document.visibilityState == "visible") {
-    console.log("tab is active")
-  } else {
-    console.log("tab is inactive")
-  }
+    if (document.visibilityState == "visible") {
+        console.log("tab is active");
+        updateAlpha();
+        alert("running alpha");
+    } else {
+        console.log("tab is inactive");
+    }
 });
 
+function scrollEvents(event) {
+    // Check if the pressed key is 'j'
+    if (event.key !== undefined) {
+        if (
+            event.key.toLowerCase() === "j" &&
+            window.location.hostname !== "www.youtube.com"
+        ) {
+            // Create a new keyboard event for the down arrow key
+            window.scrollBy(0, 100);
+            // document.dispatchEvent(downArrowEvent);
+        } else if (
+            event.key.toLowerCase() === "k" &&
+            window.location.hostname !== "www.youtube.com"
+        ) {
+            window.scrollBy(0, -100);
+        }
+
+        // Youtube
+        if (
+            event.key.toLowerCase() === "y" &&
+            window.location.hostname === "www.youtube.com"
+        ) {
+            // alert('lsjdlkf');
+            // document.dispatchEvent(downArrowEvent);
+            // const downArrowEvent = new KeyboardEvent("keydown", {
+            //     key: "ArrowDown",
+            //     code: "ArrowDown",
+            //     keyCode: 40,
+            //     which: 40,
+            //     // Add other properties as needed
+            // });
+            alert("in youtube");
+
+            // document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
+        }
+
+        if (event.getModifierState("Alt") && event.code === "Minus") {
+            console.log("Alt key + Minus key pressed");
+            chrome.runtime.sendMessage({ action: "switchToPreviousTab" });
+
+            // Your logic when the Alt key and minus key are pressed
+        }
+
+        // go to textarea in chatgpt with /
+        if (
+            window.location.hostname === "chat.openai.com" &&
+            event.key === "/"
+        ) {
+            const textarea = document.getElementById("prompt-textarea");
+            if (textarea) {
+                textarea.focus();
+            }
+        }
+    }
+}
+
+document.addEventListener("keydown", scrollEvents);
+
+window.addEventListener("load", function () {
+    // Code to execute after all resources are loaded
+    console.log("All resources are loaded");
+    // removeSpanTag();
+    updateAlpha();
+    // Add your additional logic here
+});
 
 var botstuffHrefList;
 // alert('sdjlfksd');
-const targetDiv = document.querySelector('div[jsaction]')
-    // Select the container where the dynamic divs might be added
-    // const container = document.getElementById('yourContainerId');
+const targetDiv = document.querySelector("div[jsaction]");
+// Select the container where the dynamic divs might be added
+// const container = document.getElementById('yourContainerId');
 
-const callback = function(mutationsList, observer) {
-  for (const mutation of mutationsList) {
-    // alert('lkjds');
-    if (mutation.type === 'childList') {
-      mutation.addedNodes.forEach(node => {
-        if (node.nodeType === 1 && node.tagName === 'DIV' && node.id && node.id.startsWith('arc-srp')) {
-          console.log('New div element with id starting with "arc-srp_" added:', node);
-          // Do something with the new div element
-            const targetNode = document.getElementById('botstuff');
+const callback = function (mutationsList, observer) {
+    for (const mutation of mutationsList) {
+        // alert('lkjds');
+        if (mutation.type === "childList") {
+            mutation.addedNodes.forEach((node) => {
+                if (
+                    node.nodeType === 1 &&
+                    node.tagName === "DIV" &&
+                    node.id &&
+                    node.id.startsWith("arc-srp")
+                ) {
+                    console.log(
+                        'New div element with id starting with "arc-srp_" added:',
+                        node,
+                    );
+                    // Do something with the new div element
+                    const targetNode = document.getElementById("botstuff");
 
-            var at = targetNode.querySelectorAll("a[jsname]");
-            
-              at.forEach(anchor => {
-                // Do something with each anchor tag
-                console.log('Anchor Href:', anchor.getAttribute('href'));
-              });
+                    var at = targetNode.querySelectorAll("a[jsname]");
 
-              botstuffHrefList = getList(at);
-              updateAlpha()};
-      });
+                    at.forEach((anchor) => {
+                        // Do something with each anchor tag
+                        console.log(
+                            "Anchor Href:",
+                            anchor.getAttribute("href"),
+                        );
+                    });
+
+                    botstuffHrefList = getList(at);
+                    updateAlpha();
+                }
+            });
+        }
     }
-  }
 };
 
 function updateAlpha() {
     // body...
-    const spanElements = document.querySelectorAll('span[style="font-size:1.0vw"]');
+
+    removeSpanTag();
+    var aa = document.querySelectorAll("a[jsname]");
+    var allanchor = getList(aa);
+
+    everything();
+}
+
+function removeSpanTag() {
+    // body...
+    const spanElements = document.querySelectorAll(
+        'span[style="font-size:1.0vw"]',
+    );
 
     // Remove each selected span element
-    if (spanElements){
-
-
-    spanElements.forEach(span => {
-      span.remove();
-    });
+    if (spanElements) {
+        spanElements.forEach((span) => {
+            span.remove();
+        });
     }
-
     setTimeout(() => {
-        console.log('Hello, World!');
+        console.log("Hello, World!");
     }, 1000);
-    everything()
 }
 
 function getList(list) {
-            // body...
-            var hrefList = Array.from(list)
-                .map(function (a, index) {
-                    // console.log(a.innerText);
-                    // console.log(Object.keys(a));
-                    var hrefValue = a.getAttribute("href");
+    // body...
+    var hrefList = Array.from(list)
+        .map(function (a, index) {
+            // console.log(a.innerText);
+            // console.log(Object.keys(a));
+            var hrefValue = a.getAttribute("href");
 
-                    // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
-                    if (
-                        /^https:\/\//.test(hrefValue) &&
-                        !hrefValue.startsWith(
-                            "https://support.google.com/websearch/answer/",
-                        ) &&
-                        !hrefValue.startsWith(
-                            "https://maps.google.com/maps?sca_esv=",
-                        )
-                    ) {
-                        return hrefValue;
-                    } else {
-                        return null; // Return null for invalid href values
-                    }
-                })
-                .filter(function (href) {
-                    return href !== null; // Filter out null values from the array
-                });
+            // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
+            if (
+                /^https:\/\//.test(hrefValue) &&
+                !hrefValue.startsWith(
+                    "https://support.google.com/websearch/answer/",
+                ) &&
+                !hrefValue.startsWith("https://maps.google.com/maps?sca_esv=")
+            ) {
+                return hrefValue;
+            } else {
+                return null; // Return null for invalid href values
+            }
+        })
+        .filter(function (href) {
+            return href !== null; // Filter out null values from the array
+        });
 
-            console.log(hrefList);
-            return hrefList;
+    console.log(hrefList);
+    return hrefList;
 }
 
-const targetNode = document.getElementById('botstuff');
+const targetNode = document.getElementById("botstuff");
 
 // Select the target node
 // Create an observer instance linked to the callback function
@@ -97,7 +182,6 @@ const observer = new MutationObserver(callback);
 
 // Start observing the target node for added nodes
 if (targetNode) {
-
     observer.observe(targetNode, { childList: true, subtree: true });
 }
 
@@ -105,12 +189,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Button 1 click event
     // // Button 2 click event
     // document.getElementById("setting2").addEventListener("input", function () {
-        console.log("Button 2 clicked!");
+    console.log("Button 2 clicked!");
     //     // Add your code for Button 2 click event
     // });
-        // const targetNode = document.querySelector('#botstuff');
-    
-
+    // const targetNode = document.querySelector('#botstuff');
 });
 const lowercaseAlphabets = [
     "a",
@@ -152,9 +234,6 @@ const lowercaseAlphabets = [
 //   console.log('Data saved');
 // });
 
-
-
-
 function chromeStorageSet() {
     let checkbox = document.getElementById("setting2");
 
@@ -174,13 +253,13 @@ function chromeStorageSet() {
         //     console.log("paa from 1", paaFrom);
         // });
         const dataToStore = {
-                showPAA: false,
-              key2: 'value2',
-              key3: 'value3'
-            };
+            showPAA: false,
+            key2: "value2",
+            key3: "value3",
+        };
 
-        chrome.storage.local.set(dataToStore, function() {
-          console.log('Data saved');
+        chrome.storage.local.set(dataToStore, function () {
+            console.log("Data saved");
         });
 
         // Update storage when checkbox state changes
@@ -188,17 +267,19 @@ function chromeStorageSet() {
             const showPAA = checkbox.checked;
 
             // Save the checkbox state to storage
-            chrome.storage.local.set({ showPAA: showPAA }, function() {
-              if (chrome.runtime.lastError) {
-                console.error('Error saving data:', chrome.runtime.lastError);
-              } else {
-                console.log('Data saved', showPAA);
-              }
+            chrome.storage.local.set({ showPAA: showPAA }, function () {
+                if (chrome.runtime.lastError) {
+                    console.error(
+                        "Error saving data:",
+                        chrome.runtime.lastError,
+                    );
+                } else {
+                    console.log("Data saved", showPAA);
+                }
             });
         });
     }
-        // Error handling when saving data
-    
+    // Error handling when saving data
 
     // // Error handling when retrieving data
     // chrome.storage.local.get('key', function(result) {
@@ -208,12 +289,9 @@ function chromeStorageSet() {
     //     console.log('Retrieved value:', result.key);
     //   }
     // });
-
 }
 
-
-function everything () 
-{
+function everything() {
     let checkbox = document.getElementById("setting2");
     let paaFrom;
 
@@ -251,8 +329,6 @@ function everything ()
 
     if (window.location.hostname === "www.google.com") {
         // var paa = document.querySelectorAll('div[jsname][data-bs][data-sgrd]')
-
-
 
         var peopleAlsoAskDiv = document.querySelector(
             "div[jsname][data-bs][data-sgrd]",
@@ -311,8 +387,6 @@ function everything ()
                 return getList(element);
             }
         }
-
-        
 
         var paaList = paalinks;
         var keyMomentsList = getLinks(keyMomentsInVideo);
@@ -410,8 +484,7 @@ function everything ()
         // console.log(paaList);
 
         // #### Extract href attribute from selected anchor tags
-        function getHrefList(){
-
+        function getHrefList() {
             var anchorTags = document.querySelectorAll("a[jsname]");
             console.log("anchor tags", anchorTags);
 
@@ -450,8 +523,7 @@ function everything ()
 
         var filteredLinks;
 
-        function getFilteredLinks() 
-        {
+        function getFilteredLinks() {
             // Remove links that match links in the linksToRemove array
             filteredLinks = hrefList.filter(function (link) {
                 if (paaFrom) {
@@ -563,9 +635,8 @@ function everything ()
                 // Replace text content in each matching element
             }
         }
-        
-        getFilteredLinks();
 
+        getFilteredLinks();
     }
     // all();
 
@@ -574,7 +645,7 @@ function everything ()
         console.log("Updating UI based on showPAA:", showPAA);
         paaFrom = showPAA;
         getFilteredLinks();
-        everything()
+        everything();
     }
     // for (var i = 0, l = hrefList.length; i < l; i++) {
     // var els = document.querySelectorAll("a[href^='" + hrefList[0] + "']");
@@ -677,7 +748,6 @@ function everything ()
                     window.location.href = filteredLinks[event.keyCode - 55];
                 }
             }
-
         }
     }
 
@@ -731,10 +801,8 @@ function everything ()
     // }).filter(function (href) {
     //     return href !== null; // Filter out null values from the array
     // });
-};
+}
 // getFilteredLinks();
-// everything();
-
 
 window.onscroll = function () {
     // Check if the user has scrolled to the bottom
@@ -759,83 +827,13 @@ function isPageScrolledToBottom() {
     return scrollTop + windowHeight >= totalHeight;
 }
 
-
-function scrollEvents(event){
-
-            // Check if the pressed key is 'j'
-            if (event.key !== undefined) {
-                if (
-                    event.key.toLowerCase() === "j" &&
-                    window.location.hostname !== "www.youtube.com"
-                ) {
-                    // Create a new keyboard event for the down arrow key
-                    window.scrollBy(0, 100);
-                    // document.dispatchEvent(downArrowEvent);
-                } else if (
-                    event.key.toLowerCase() === "k" &&
-                    window.location.hostname !== "www.youtube.com"
-                ) {
-                    window.scrollBy(0, -100);
-                }
-
-                // Youtube 
-                if (
-                    event.key.toLowerCase() === "y" &&
-                    window.location.hostname === "www.youtube.com"
-                ) {
-                    // alert('lsjdlkf');
-                    // document.dispatchEvent(downArrowEvent);
-                    // const downArrowEvent = new KeyboardEvent("keydown", {
-                    //     key: "ArrowDown",
-                    //     code: "ArrowDown",
-                    //     keyCode: 40,
-                    //     which: 40,
-                    //     // Add other properties as needed
-                    // });
-                    alert('in youtube');
-
-                    // document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
-
-                }
-
-
-                if (event.getModifierState('Alt') && event.code === 'Minus') {
-                    console.log('Alt key + Minus key pressed');
-                    chrome.runtime.sendMessage({ action: 'switchToPreviousTab' });
-                    
-                    // Your logic when the Alt key and minus key are pressed
-                  }
-
-                // go to textarea in chatgpt with / 
-                if (window.location.hostname === "chat.openai.com" && event.key === "/"){
-                        const textarea = document.getElementById('prompt-textarea');
-                        if (textarea) {
-                        textarea.focus();
-                        }
-                }
-            }
-}
-
-
-document.addEventListener("keydown", scrollEvents);
-
-
 // Load the tab history from local storage on extension startup
-chrome.storage.local.get(['tabHistory'], function (result) {
-  if (result.tabHistory) {
-    tabHistory = result.tabHistory;
-    console.log('Tab history loaded from local storage:', tabHistory);
-  }
+chrome.storage.local.get(["tabHistory"], function (result) {
+    if (result.tabHistory) {
+        tabHistory = result.tabHistory;
+        console.log("Tab history loaded from local storage:", tabHistory);
+    }
 });
-
-window.addEventListener('load', function () {
-  // Code to execute after all resources are loaded
-  console.log('All resources are loaded');
-  everything()
-  // Add your additional logic here
-});
-
-
 
 document.addEventListener("DOMContentLoaded", function () {
     chrome.runtime.onMessage.addListener(
