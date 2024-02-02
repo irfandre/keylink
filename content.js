@@ -4,7 +4,7 @@ document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
         console.log("tab is active");
         updateAlpha();
-        alert("running alpha");
+        // alert("running alpha");
     } else {
         console.log("tab is inactive");
     }
