@@ -48,7 +48,20 @@ function scrollEvents(event) {
 
         if (event.getModifierState("Alt") && event.code === "Minus") {
             console.log("Alt key + Minus key pressed");
-            chrome.runtime.sendMessage({ action: "switchToPreviousTab" });
+            try {
+                // Attempt to send a message
+                chrome.runtime.sendMessage(
+                    { action: "switchToPreviousTab" },
+                    function (response) {
+                        console.log(
+                            "Response from background script:",
+                            response,
+                        );
+                    },
+                );
+            } catch (error) {
+                console.error("An error occurred:", error.message);
+            }
 
             // Your logic when the Alt key and minus key are pressed
         }
