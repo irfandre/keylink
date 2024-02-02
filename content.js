@@ -68,14 +68,6 @@ function scrollEvents(event) {
 
 document.addEventListener("keydown", scrollEvents);
 
-window.addEventListener("load", function () {
-    // Code to execute after all resources are loaded
-    console.log("All resources are loaded");
-    // removeSpanTag();
-    updateAlpha();
-    // Add your additional logic here
-});
-
 var botstuffHrefList;
 // alert('sdjlfksd');
 const targetDiv = document.querySelector("div[jsaction]");
@@ -185,15 +177,39 @@ if (targetNode) {
     observer.observe(targetNode, { childList: true, subtree: true });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Button 1 click event
-    // // Button 2 click event
-    // document.getElementById("setting2").addEventListener("input", function () {
-    console.log("Button 2 clicked!");
-    //     // Add your code for Button 2 click event
-    // });
-    // const targetNode = document.querySelector('#botstuff');
-});
+function throttle(func, delay) {
+    let lastCallTime = 0;
+
+    return function (...args) {
+        const currentTime = new Date().getTime();
+
+        if (currentTime - lastCallTime >= delay) {
+            func.apply(this, args);
+            lastCallTime = currentTime;
+        }
+    };
+}
+
+if (window.location.hostname === "www.google.com") {
+    const throttledScrollHandler = throttle(function () {
+        console.log("Scrolled!");
+        var scrollTop = window.scrollY || document.documentElement.scrollTop;
+        var scrollHeight = document.documentElement.scrollHeight;
+        var clientHeight = document.documentElement.clientHeight;
+
+        // Calculate the middle point
+        var middlePoint = (scrollHeight - clientHeight) / 2;
+
+        // Check if the scrollbar is scrolled to the middle
+        if (scrollTop >= middlePoint) {
+            console.log("Scrollbar is scrolled to the middle.");
+            updateAlpha();
+        }
+    }, 1000); // Throttle to 1000 milliseconds
+
+    window.addEventListener("scroll", throttledScrollHandler);
+}
+
 const lowercaseAlphabets = [
     "a",
     "b",
@@ -645,7 +661,7 @@ function everything() {
         console.log("Updating UI based on showPAA:", showPAA);
         paaFrom = showPAA;
         getFilteredLinks();
-        everything();
+        updateAlpha();
     }
     // for (var i = 0, l = hrefList.length; i < l; i++) {
     // var els = document.querySelectorAll("a[href^='" + hrefList[0] + "']");
@@ -811,6 +827,13 @@ window.onscroll = function () {
         console.log("Scrolled to the bottom!");
         // Add your code to handle reaching the bottom of the page
     }
+};
+updateAlpha();
+
+window.onbeforeunload = function () {
+    // return "Dude, are you sure you want to refresh? Think of the kittens!";
+    updateAlpha();
+    alert("coming here");
 };
 
 function isPageScrolledToBottom() {

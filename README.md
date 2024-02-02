@@ -2,7 +2,7 @@
 
 This is a simple chrome extension created to navigate webpages.
 
-Note: This extension is still in ALPHA stage 
+Note: This extension is still __in-development__ stage 
 
 ## Install/Usage
 
