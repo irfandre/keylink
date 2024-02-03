@@ -41,7 +41,7 @@ function scrollEvents(event) {
             //     which: 40,
             //     // Add other properties as needed
             // });
-            alert("in youtube");
+            // alert("in youtube");
 
             // document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
         }
@@ -218,7 +218,7 @@ if (window.location.hostname === "www.google.com") {
             console.log("Scrollbar is scrolled to the middle.");
             updateAlpha();
         }
-    }, 1000); // Throttle to 1000 milliseconds
+    }, 2000); // Throttle to 1000 milliseconds
 
     window.addEventListener("scroll", throttledScrollHandler);
 }
