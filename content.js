@@ -851,26 +851,26 @@ window.onscroll = function () {
 console.dir(window);
 updateAlpha();
 
-window.onloadeddata = function () {
-    updateAlpha();
-    alert("coming here");
-};
-window.onloadstart = function () {
-    updateAlpha();
-    alert("coming here");
-};
-window.onreload = function () {
-    updateAlpha();
-    alert("coming here");
-};
-window.load = function () {
-    updateAlpha();
-    alert("coming here");
-};
+// window.onloadeddata = function () {
+//     updateAlpha();
+//     alert("coming here");
+// };
+// window.onloadstart = function () {
+//     updateAlpha();
+//     alert("coming here");
+// };
+// window.onreload = function () {
+//     updateAlpha();
+//     alert("coming here");
+// };
+// window.load = function () {
+//     updateAlpha();
+//     alert("coming here");
+// };
 window.addEventListener("popstate", function (event) {
     // Handle the popstate event here
     updateAlpha();
-    alert("coming here");
+    // alert("coming here");
 
     console.log("Popstate event triggered");
     console.log("State:", event.state);
