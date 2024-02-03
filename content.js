@@ -3,8 +3,12 @@
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
         console.log("tab is active");
-        updateAlpha();
-        // alert("running alpha");
+        setTimeout(() => {}, 2000);
+
+        if (window.location.hostname === "www.google.com") {
+            updateAlpha();
+            // alert("running alpha");
+        }
     } else {
         console.log("tab is inactive");
     }
@@ -42,7 +46,6 @@ function scrollEvents(event) {
             //     // Add other properties as needed
             // });
             // alert("in youtube");
-
             // document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
         }
 
@@ -79,7 +82,13 @@ function scrollEvents(event) {
     }
 }
 
+function wait() {
+    setTimeout(() => {}, 2000);
+    updateAlpha();
+}
+
 document.addEventListener("keydown", scrollEvents);
+window.onload = wait;
 
 var botstuffHrefList;
 // alert('sdjlfksd');
@@ -98,10 +107,10 @@ const callback = function (mutationsList, observer) {
                     node.id &&
                     node.id.startsWith("arc-srp")
                 ) {
-                    console.log(
-                        'New div element with id starting with "arc-srp_" added:',
-                        node,
-                    );
+                    // console.log(
+                    //     'New div element with id starting with "arc-srp_" added:',
+                    //     node,
+                    // );
                     // Do something with the new div element
                     const targetNode = document.getElementById("botstuff");
 
@@ -109,10 +118,10 @@ const callback = function (mutationsList, observer) {
 
                     at.forEach((anchor) => {
                         // Do something with each anchor tag
-                        console.log(
-                            "Anchor Href:",
-                            anchor.getAttribute("href"),
-                        );
+                        // console.log(
+                        //     "Anchor Href:",
+                        //     anchor.getAttribute("href"),
+                        // );
                     });
 
                     botstuffHrefList = getList(at);
@@ -145,9 +154,7 @@ function removeSpanTag() {
             span.remove();
         });
     }
-    setTimeout(() => {
-        console.log("Hello, World!");
-    }, 1000);
+    setTimeout(() => {}, 1000);
 }
 
 function getList(list) {
@@ -175,7 +182,7 @@ function getList(list) {
             return href !== null; // Filter out null values from the array
         });
 
-    console.log(hrefList);
+    // console.log(hrefList);
     return hrefList;
 }
 
@@ -218,7 +225,7 @@ if (window.location.hostname === "www.google.com") {
             console.log("Scrollbar is scrolled to the middle.");
             updateAlpha();
         }
-    }, 2000); // Throttle to 1000 milliseconds
+    }, 2000); // Throttle to specified milliseconds
 
     window.addEventListener("scroll", throttledScrollHandler);
 }
@@ -371,16 +378,16 @@ function everything() {
         // var complementary = document.querySelector("div[role]");
 
         if (keyMomentsInVideo) {
-            console.log("keyMomentsInVideo:", keyMomentsInVideo);
+            // console.log("keyMomentsInVideo:", keyMomentsInVideo);
             var keyMomentsList = getLinks(keyMomentsInVideo);
-            console.log("keyMomentsList: ", keyMomentsList);
+            // console.log("keyMomentsList: ", keyMomentsList);
         }
 
         if (imagesSection) {
             var imagesSectionAnchorTags = imagesSection.querySelectorAll("a");
 
             var imagesSectionLinks = getLinks(imagesSectionAnchorTags);
-            console.log(imagesSectionLinks);
+            // console.log(imagesSectionLinks);
         }
         // removeSection(peopleAlsoAskDiv);
         removeSection(keyMomentsInVideo);
@@ -430,15 +437,15 @@ function everything() {
             // Create a Set to keep only unique cleaned links
             const uniqueCleanedLinks = new Set(cleanedLinks);
 
-            console.log([...uniqueCleanedLinks]);
+            // console.log([...uniqueCleanedLinks]);
             return uniqueCleanedLinks;
         }
 
         var uniqueVL = uniqueVideoLinks(keyMomentsList);
 
-        if (keyMomentsList) {
-            console.log("keyMomentsList: ", keyMomentsList);
-        }
+        // if (keyMomentsList) {
+        //     console.log("keyMomentsList: ", keyMomentsList);
+        // }
 
         // var one = Array.from(paa).map(function (a, index) {
         // 	// console.log(a.innerText);
@@ -515,14 +522,14 @@ function everything() {
         // #### Extract href attribute from selected anchor tags
         function getHrefList() {
             var anchorTags = document.querySelectorAll("a[jsname]");
-            console.log("anchor tags", anchorTags);
+            // console.log("anchor tags", anchorTags);
 
             var hrefList = Array.from(anchorTags)
                 .map(function (a, index) {
                     // console.log(a.innerText);
                     // console.log(Object.keys(a));
                     var hrefValue = a.getAttribute("href");
-                    console.log(hrefValue);
+                    // console.log(hrefValue);
                     // if (hrefValue === null || hrefValue === undefined || hrefValue === "#" ||  hrefValue.startsWith("/search")) {
                     if (
                         /^https:\/\//.test(hrefValue) &&
@@ -542,13 +549,13 @@ function everything() {
                 .filter(function (href) {
                     return href !== null; // Filter out null values from the array
                 });
-            console.log("href list", hrefList);
+            // console.log("href list", hrefList);
             return hrefList;
         }
         var hrefList = getHrefList();
         var setting1;
 
-        console.log(setting1);
+        // console.log(setting1);
 
         var filteredLinks;
 
@@ -557,7 +564,7 @@ function everything() {
             filteredLinks = hrefList.filter(function (link) {
                 if (paaFrom) {
                     if (paaList && paaList.includes(link)) {
-                        console.log("removing paa section", paaFrom);
+                        // console.log("removing paa section", paaFrom);
                         return true; // Exclude links that are in paaList
                     }
                 } else {
@@ -571,7 +578,7 @@ function everything() {
                     // }
 
                     if (paaList && paaList.includes(link)) {
-                        console.log("removing paa section", paaFrom);
+                        // console.log("removing paa section", paaFrom);
                         return false; // Exclude links that are in paaList
                     }
                 }
@@ -579,10 +586,10 @@ function everything() {
                 if (keyMomentsList && keyMomentsList.includes(link)) {
                     return false;
                     if (setting1) {
-                        console.log("true");
+                        // console.log("true");
                         return false;
                     } else {
-                        console.log("false");
+                        // console.log("false");
                         return false; // Exclude links that are in keyMomentsList
                     }
                 }
@@ -596,13 +603,13 @@ function everything() {
             });
 
             // Log the filtered links
-            console.log("Filtered Links:", filteredLinks);
+            // console.log("Filtered Links:", filteredLinks);
             filteredLinks.push(...uniqueVL);
-            console.log(filteredLinks);
+            // console.log(filteredLinks);
             var center_col = document.getElementById("center_col");
             for (let i = 0; i < filteredLinks.length; i++) {
                 // console.log(scores[i]);
-                console.log(i);
+                // console.log(i);
                 targetHref = filteredLinks[i];
                 // Find anchor elements with the specified href
                 var targetElements = center_col.querySelectorAll(
@@ -630,15 +637,15 @@ function everything() {
                             targetHeading = target
                                 .querySelector("g-img")
                                 .parentNode.querySelector("span");
-                            console.log(targetHeading);
+                            // console.log(targetHeading);
                         } else {
                             targetHeading = target.querySelector("cite");
                             if (targetHeading) {
-                                console.log(
-                                    targetHeading.parentNode.parentNode.querySelector(
-                                        "span",
-                                    ),
-                                );
+                                // console.log(
+                                //     targetHeading.parentNode.parentNode.querySelector(
+                                //         "span",
+                                //     ),
+                                // );
                                 targetHeading =
                                     targetHeading.parentNode.parentNode.querySelector(
                                         "span",
@@ -671,7 +678,7 @@ function everything() {
 
     function updateUI(showPAA) {
         // Your UI update logic here
-        console.log("Updating UI based on showPAA:", showPAA);
+        // console.log("Updating UI based on showPAA:", showPAA);
         paaFrom = showPAA;
         getFilteredLinks();
         updateAlpha();
@@ -715,7 +722,7 @@ function everything() {
 
     function handleKeyDown(event) {
         const pressedKey = String.fromCharCode(event.keyCode);
-        console.log(pressedKey);
+        // console.log(pressedKey);
         // alert(pressedKey);
 
         // Check if the pressed key is a number
@@ -740,7 +747,7 @@ function everything() {
 
         if (input_fields.includes(activeElement.tagName.toLowerCase())) {
             console.log("Cursor is in an input field.");
-            console.dir(activeElement);
+            // console.dir(activeElement);
         } else {
             // console.log("Cursor is not in an input field. " + event.key);
             if (
@@ -757,10 +764,10 @@ function everything() {
             ) {
                 // Run your function here
                 // event.preventDefault();
-                console.log(
-                    "Pressed key is a number:",
-                    pressedKey + "\n" + filteredLinks[pressedKey],
-                );
+                // console.log(
+                //     "Pressed key is a number:",
+                //     pressedKey + "\n" + filteredLinks[pressedKey],
+                // );
                 // Replace the following line with your custom function
                 // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
                 window.location.href = filteredLinks[pressedKey];
@@ -835,20 +842,40 @@ function everything() {
 
 window.onscroll = function () {
     // Check if the user has scrolled to the bottom
-    console.log("scrolling start");
+    // console.log("scrolling start");
     if (isPageScrolledToBottom()) {
         console.log("Scrolled to the bottom!");
         // Add your code to handle reaching the bottom of the page
     }
 };
+console.dir(window);
 updateAlpha();
 
-window.onbeforeunload = function () {
-    // return "Dude, are you sure you want to refresh? Think of the kittens!";
+window.onloadeddata = function () {
     updateAlpha();
     alert("coming here");
 };
+window.onloadstart = function () {
+    updateAlpha();
+    alert("coming here");
+};
+window.onreload = function () {
+    updateAlpha();
+    alert("coming here");
+};
+window.load = function () {
+    updateAlpha();
+    alert("coming here");
+};
+window.addEventListener("popstate", function (event) {
+    // Handle the popstate event here
+    updateAlpha();
+    alert("coming here");
 
+    console.log("Popstate event triggered");
+    console.log("State:", event.state);
+    console.log("Location:", document.location.href);
+});
 function isPageScrolledToBottom() {
     // Calculate the current scroll position
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -867,7 +894,7 @@ function isPageScrolledToBottom() {
 chrome.storage.local.get(["tabHistory"], function (result) {
     if (result.tabHistory) {
         tabHistory = result.tabHistory;
-        console.log("Tab history loaded from local storage:", tabHistory);
+        // console.log("Tab history loaded from local storage:", tabHistory);
     }
 });
 
@@ -894,7 +921,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 // Log or do something with the extracted valid URLs
-                console.log("Valid URLs:", validUrls);
+                // console.log("Valid URLs:", validUrls);
             }
         },
     );
