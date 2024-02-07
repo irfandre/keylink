@@ -1,6 +1,6 @@
 # KeyLink Chrome Extension
 
-This is a simple chrome extension created to navigate webpages.
+This is a simple chrome extension created to navigate google search results.
 
 Note: This extension is still __in-development__ stage 
 
