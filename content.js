@@ -17,7 +17,15 @@ document.addEventListener("visibilitychange", (event) => {
 function scrollEvents(event) {
     // Check if the pressed key is 'j'
     if (event.key !== undefined) {
-        if (
+
+        var activeElement = document.activeElement;
+
+        var input_fields = ["textarea", "input"];
+
+        if (input_fields.includes(activeElement.tagName.toLowerCase())) {
+            console.log("Cursor is in an input field.");
+            // console.dir(activeElement);
+        } else if (
             event.key.toLowerCase() === "j" &&
             window.location.hostname !== "www.youtube.com"
         ) {
@@ -145,7 +153,7 @@ function updateAlpha() {
 function removeSpanTag() {
     // body...
     const spanElements = document.querySelectorAll(
-        'span[style="font-size:1.0vw"]',
+        'span[style="font-size: 1.0vw; color: green;"]',
     );
 
     // Remove each selected span element
@@ -623,12 +631,12 @@ function everything() {
                     // console.log(imageElement);
 
                     // var imgHtml = new XMLSerializer().serializeToString(imageElement);
-                    var aTag = document.createElement("span");
-                    aTag.setAttribute("style", "font-size:1.0vw");
+                    var spanTag = document.createElement("span");
+                    spanTag.setAttribute("style", "font-size: 1.0vw; color: green;");
                     if (i >= 10) {
-                        aTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
+                        spanTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
                     } else {
-                        aTag.innerText = " " + i + " ";
+                        spanTag.innerText = " " + i + " ";
                     }
                     // Set the innerHTML of the target element to display the image
                     // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
@@ -654,7 +662,7 @@ function everything() {
                         }
 
                         if (targetHeading) {
-                            targetHeading.append(aTag);
+                            targetHeading.append(spanTag);
                         }
                     }
                     // targetElements.innerHTML =    i + " " + targetElements.innerText ;
@@ -680,7 +688,7 @@ function everything() {
         // Your UI update logic here
         // console.log("Updating UI based on showPAA:", showPAA);
         paaFrom = showPAA;
-        getFilteredLinks();
+        // getFilteredLinks();
         updateAlpha();
     }
     // for (var i = 0, l = hrefList.length; i < l; i++) {
