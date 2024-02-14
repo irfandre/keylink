@@ -81,12 +81,31 @@ function getCurrentTab() {
 // Execute the function when the extension is clicked
 chrome.action.onClicked.addListener(getCurrentTab);
 
-// Listen for messages from other parts of the extension (e.g., popup)
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "switchToPreviousTab") {
-        switchToPreviousTab();
+// background.js
+
+/// background.js
+
+// Listen for messages from content scripts
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.action === "setCheckboxValue") {
+        // Retrieve the value to set
+        var value = request.value;
+        // Set the value of the checkbox in Chrome storage
+        chrome.storage.local.set({ showPAA: value }, function() {
+            console.log("Checkbox value set to", value);
+        });
+    } else if (request.action === "getCheckboxValue") {
+        // Retrieve the value of the checkbox from Chrome storage
+        chrome.storage.local.get({ showPAA: false }, function (items) {
+            // Send the retrieved value back to the content script
+            sendResponse({ checkboxValue: items.showPAA });
+        });
+        // To indicate that sendResponse will be asynchronously
+        return true;
     }
 });
+
+
 
 // Listen for tab switching events
 chrome.tabs.onActivated.addListener((info) => {

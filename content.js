@@ -37,6 +37,18 @@ function scrollEvents(event) {
             window.location.hostname !== "www.youtube.com"
         ) {
             window.scrollBy(0, -100);
+        } else if (
+            window.location.hostname !== "www.google.com"
+            ){
+            if (event.key.toLowerCase() === "j" || event.key.toLowerCase() === "z" ){
+                window.scrollBy(0, 100);
+
+            } else if (event.key.toLowerCase() === "k" || event.key.toLowerCase() === "w" 
+                ){
+                window.scrollBy(0, -100);
+
+            }
+
         }
 
         // Youtube
@@ -79,20 +91,147 @@ function scrollEvents(event) {
 
         // go to textarea in chatgpt with /
         if (
-            window.location.hostname === "chat.openai.com" &&
+
             event.key === "/"
         ) {
             const textarea = document.getElementById("prompt-textarea");
             if (textarea) {
                 textarea.focus();
             }
+
+            var inputField = document.querySelector('input');
+            if (inputField){
+                inputField.focus
+            }
+
         }
     }
 }
 
+let isPaachecked;
+
+
+// Get the value of the checkbox in the webpage's DOM
+function getCheckboxValue() {
+    var checkbox = document.getElementById("setting2");
+    if (checkbox) {
+        return checkbox.checked;
+    }
+    return false; // Return false if checkbox not found
+}
+
+// Send a message to the background script requesting to set the value of the checkbox in Chrome storage
+function requestSetCheckboxValue(value) {
+    chrome.runtime.sendMessage({ action: "setCheckboxValue", value: value }, function() {
+        console.log("Checkbox value set to", value);
+    });
+}
+
+// Send a message to the background script requesting to get the value of the checkbox from Chrome storage
+function requestGetCheckboxValue() {
+    chrome.runtime.sendMessage({ action: "getCheckboxValue" }, function(response) {
+        if (response && response.checkboxValue !== undefined) {
+            // Access the retrieved value
+            var checkboxValue = response.checkboxValue;
+            // Do something with the retrieved value
+            console.log("Checkbox Value:", checkboxValue);
+            // Update the checkbox state in the webpage's DOM
+            var checkbox = document.getElementById("setting2");
+            if (checkbox) {
+                checkbox.checked = checkboxValue;
+                updateAlpha();
+            }
+        }
+    });
+}
+
+// Example: Getting the checkbox value from Chrome storage
+requestGetCheckboxValue();
+
+// Example: Setting the checkbox value in Chrome storage
+var checkboxValue = getCheckboxValue();
+requestSetCheckboxValue(checkboxValue);
+
+function chromeStorageSet() {
+    let checkbox ;
+    // content.js
+
+
+    if (checkbox) {
+        // Load the checkbox state from storage
+        // chrome.storage.sync.get({ showPAA: false }, function (items) {
+        //     checkbox.checked = items.showPAA;
+        //     console.log("showPAAValue:", checkbox.checked);
+        //     paaFrom = checkbox.checked;
+        //     // alert(checkbox.checked);
+        //     // updateUI(checkbox.checked);
+        // });
+        // Retrieving multiple values
+        alert('going here')
+        // Load the checkbox state from local storage
+        chrome.storage.local.get('showPAA', function (items) {
+            checkbox.checked = items.showPAA;
+            console.log("showPAAValue:", checkbox.checked);
+            showPAA = checkbox.checked;
+            // alert(checkbox.checked);
+            // updateUI(checkbox.checked);
+            isPaachecked = checkbox.checked;
+        });
+
+        // const keysToRetrieve = [{showPAA: false}];
+        // chrome.storage.local.get(keysToRetrieve, function(result) {
+        //     paaFrom = result.showPAA;
+        //     console.log("paa from 1", paaFrom);
+        //     alert(2)
+
+        // });
+        // const dataToStore = {
+        //     showPAA: false,
+        //     key2: "value2",
+        //     key3: "value3",
+        // };
+
+        // chrome.storage.local.set(dataToStore, function () {
+        //     console.log("Data saved");
+        // });
+
+        // Update storage when checkbox state changes
+        checkbox.addEventListener("change", function () {
+            alert(1);
+            const showPAA = checkbox.checked;
+
+            // Save the checkbox state to storage
+            chrome.storage.local.set({ showPAA: showPAA }, function () {
+                if (chrome.runtime.lastError) {
+                    console.error(
+                        "Error saving data:",
+                        chrome.runtime.lastError,
+                    );
+                } else {
+                    console.log("Data saved", showPAA);
+                    isPaachecked = showPAA;
+                }
+            });
+        });
+    }
+    // Error handling when saving data
+
+    // // Error handling when retrieving data
+    // chrome.storage.local.get('key', function(result) {
+    //   if (chrome.runtime.lastError) {
+    //     console.error('Error retrieving data:', chrome.runtime.lastError);
+    //   } else {
+    //     console.log('Retrieved value:', result.key);
+    //   }
+    // });
+}
+
 function wait() {
+    // isPaachecked = chromeStorageSet();
     setTimeout(() => {}, 2000);
     updateAlpha();
+    // alert(isPaachecked);
+
 }
 
 document.addEventListener("keydown", scrollEvents);
@@ -153,7 +292,7 @@ function updateAlpha() {
 function removeSpanTag() {
     // body...
     const spanElements = document.querySelectorAll(
-        'span[style="font-size: 1.0vw; color: green;"]',
+        'span[style="font-size: 1vw; font-weight: bold;"]',
     );
 
     // Remove each selected span element
@@ -278,68 +417,12 @@ const lowercaseAlphabets = [
 //   console.log('Data saved');
 // });
 
-function chromeStorageSet() {
-    let checkbox = document.getElementById("setting2");
 
-    if (checkbox) {
-        // Load the checkbox state from storage
-        // chrome.storage.sync.get({ showPAA: false }, function (items) {
-        //     checkbox.checked = items.showPAA;
-        //     console.log("showPAAValue:", checkbox.checked);
-        //     paaFrom = checkbox.checked;
-        //     // alert(checkbox.checked);
-        //     // updateUI(checkbox.checked);
-        // });
-        // Retrieving multiple values
-        // const keysToRetrieve = [{showPAA: false}];
-        // chrome.storage.local.get(keysToRetrieve, function(result) {
-        //     paaFrom = result.showPAA;
-        //     console.log("paa from 1", paaFrom);
-        // });
-        const dataToStore = {
-            showPAA: false,
-            key2: "value2",
-            key3: "value3",
-        };
-
-        chrome.storage.local.set(dataToStore, function () {
-            console.log("Data saved");
-        });
-
-        // Update storage when checkbox state changes
-        checkbox.addEventListener("change", function () {
-            const showPAA = checkbox.checked;
-
-            // Save the checkbox state to storage
-            chrome.storage.local.set({ showPAA: showPAA }, function () {
-                if (chrome.runtime.lastError) {
-                    console.error(
-                        "Error saving data:",
-                        chrome.runtime.lastError,
-                    );
-                } else {
-                    console.log("Data saved", showPAA);
-                }
-            });
-        });
-    }
-    // Error handling when saving data
-
-    // // Error handling when retrieving data
-    // chrome.storage.local.get('key', function(result) {
-    //   if (chrome.runtime.lastError) {
-    //     console.error('Error retrieving data:', chrome.runtime.lastError);
-    //   } else {
-    //     console.log('Retrieved value:', result.key);
-    //   }
-    // });
-}
 
 function everything() {
     let checkbox = document.getElementById("setting2");
     let paaFrom;
 
-    chromeStorageSet();
     // chrome.storage.sync.get({ showPAA: false }, function (items) {
     //     paaFrom = items.showPAA;
     //     console.log("paa from 1", paaFrom); // Move the console.log inside the callback
@@ -398,7 +481,7 @@ function everything() {
             // console.log(imagesSectionLinks);
         }
         // removeSection(peopleAlsoAskDiv);
-        removeSection(keyMomentsInVideo);
+        // removeSection(keyMomentsInVideo);
         // removeSection(imagesSection);
 
         // if (complementary && complementary === "complementary") {
@@ -563,6 +646,7 @@ function everything() {
         var hrefList = getHrefList();
         var setting1;
 
+        console.log(hrefList);
         // console.log(setting1);
 
         var filteredLinks;
@@ -570,7 +654,7 @@ function everything() {
         function getFilteredLinks() {
             // Remove links that match links in the linksToRemove array
             filteredLinks = hrefList.filter(function (link) {
-                if (paaFrom) {
+                if (isPaachecked) {
                     if (paaList && paaList.includes(link)) {
                         // console.log("removing paa section", paaFrom);
                         return true; // Exclude links that are in paaList
@@ -615,68 +699,73 @@ function everything() {
             filteredLinks.push(...uniqueVL);
             // console.log(filteredLinks);
             var center_col = document.getElementById("center_col");
-            for (let i = 0; i < filteredLinks.length; i++) {
-                // console.log(scores[i]);
-                // console.log(i);
-                targetHref = filteredLinks[i];
-                // Find anchor elements with the specified href
-                var targetElements = center_col.querySelectorAll(
-                    'a[href="' + targetHref + '"]',
-                );
+            if (center_col) {
 
-                // console.log("dict", i + "  " + targetElements);
-                if (targetElements) {
-                    // var imageElement = targetElements.querySelector("img");
 
-                    // console.log(imageElement);
+                for (let i = 0; i < filteredLinks.length; i++) {
+                    // console.log(scores[i]);
+                    // console.log(i);
+                    targetHref = filteredLinks[i];
+                    // Find anchor elements with the specified href
+                    var targetElements = center_col.querySelectorAll(
+                        'a[href="' + targetHref + '"]',
+                    );
 
-                    // var imgHtml = new XMLSerializer().serializeToString(imageElement);
-                    var spanTag = document.createElement("span");
-                    spanTag.setAttribute("style", "font-size: 1.0vw; color: green;");
-                    if (i >= 10) {
-                        spanTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
-                    } else {
-                        spanTag.innerText = " " + i + " ";
-                    }
-                    // Set the innerHTML of the target element to display the image
-                    // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
-                    for (target of targetElements) {
-                        if (target.querySelector("g-img")) {
-                            targetHeading = target
-                                .querySelector("g-img")
-                                .parentNode.querySelector("span");
-                            // console.log(targetHeading);
+                    // console.log("dict", i + "  " + targetElements);
+                    if (targetElements) {
+                        // var imageElement = targetElements.querySelector("img");
+
+                        // console.log(imageElement);
+
+                        // var imgHtml = new XMLSerializer().serializeToString(imageElement);
+                        var spanTag = document.createElement("span");
+                        spanTag.setAttribute("style", "font-size: 1.0vw;");
+                        spanTag.style.fontWeight = 'bold';
+                        if (i >= 10) {
+                            spanTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
                         } else {
-                            targetHeading = target.querySelector("cite");
+                            spanTag.innerText = " " + i + " ";
+                        }
+                        // Set the innerHTML of the target element to display the image
+                        // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
+                        for (target of targetElements) {
+                            if (target.querySelector("g-img")) {
+                                targetHeading = target
+                                    .querySelector("g-img")
+                                    .parentNode.querySelector("span");
+                                // console.log(targetHeading);
+                            } else {
+                                targetHeading = target.querySelector("cite");
+                                if (targetHeading) {
+                                    // console.log(
+                                    //     targetHeading.parentNode.parentNode.querySelector(
+                                    //         "span",
+                                    //     ),
+                                    // );
+                                    targetHeading =
+                                        targetHeading.parentNode.parentNode.querySelector(
+                                            "span",
+                                        );
+                                }
+                            }
+
                             if (targetHeading) {
-                                // console.log(
-                                //     targetHeading.parentNode.parentNode.querySelector(
-                                //         "span",
-                                //     ),
-                                // );
-                                targetHeading =
-                                    targetHeading.parentNode.parentNode.querySelector(
-                                        "span",
-                                    );
+                                targetHeading.append(spanTag);
                             }
                         }
+                        // targetElements.innerHTML =    i + " " + targetElements.innerText ;
 
-                        if (targetHeading) {
-                            targetHeading.append(spanTag);
-                        }
+                        // targetElements.innerText = i + " " + imageElement
+                        // targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
+
+                        // if (i === 0 && targetElements !== undefined) {
+                        //     targetElements.style.border = "2px solid red";
+                        // }
                     }
-                    // targetElements.innerHTML =    i + " " + targetElements.innerText ;
 
-                    // targetElements.innerText = i + " " + imageElement
-                    // targetElements.innerText = targetElements.appendChild(imageElement) + " " + i + " " + targetElements.innerText;
-
-                    // if (i === 0 && targetElements !== undefined) {
-                    //     targetElements.style.border = "2px solid red";
-                    // }
+                    replacementText = i + " " + targetHref;
+                    // Replace text content in each matching element
                 }
-
-                replacementText = i + " " + targetHref;
-                // Replace text content in each matching element
             }
         }
 
