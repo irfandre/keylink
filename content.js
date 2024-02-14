@@ -37,13 +37,15 @@ function scrollEvents(event) {
             window.location.hostname !== "www.youtube.com"
         ) {
             window.scrollBy(0, -100);
-        } else if (
-            window.location.hostname !== "www.google.com"
+        }  
+
+        if (
+            window.location.hostname !== "www.google.com" 
             ){
-            if (event.key.toLowerCase() === "j" || event.key.toLowerCase() === "z" ){
+            if ((event.key.toLowerCase() === "j" || event.key.toLowerCase() === "z" ) && window.location.hostname !== "www.youtube.com" ){
                 window.scrollBy(0, 100);
 
-            } else if (event.key.toLowerCase() === "k" || event.key.toLowerCase() === "w" 
+            } else if ((event.key.toLowerCase() === "k" || event.key.toLowerCase() === "w" ) && window.location.hostname !== "www.youtube.com"
                 ){
                 window.scrollBy(0, -100);
 
