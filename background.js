@@ -86,12 +86,12 @@ chrome.action.onClicked.addListener(getCurrentTab);
 /// background.js
 
 // Listen for messages from content scripts
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.action === "setCheckboxValue") {
         // Retrieve the value to set
         var value = request.value;
         // Set the value of the checkbox in Chrome storage
-        chrome.storage.local.set({ showPAA: value }, function() {
+        chrome.storage.local.set({ showPAA: value }, function () {
             console.log("Checkbox value set to", value);
         });
     } else if (request.action === "getCheckboxValue") {
@@ -104,8 +104,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         return true;
     }
 });
-
-
 
 // Listen for tab switching events
 chrome.tabs.onActivated.addListener((info) => {

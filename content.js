@@ -17,7 +17,6 @@ document.addEventListener("visibilitychange", (event) => {
 function scrollEvents(event) {
     // Check if the pressed key is 'j'
     if (event.key !== undefined) {
-
         var activeElement = document.activeElement;
 
         var input_fields = ["textarea", "input"];
@@ -37,20 +36,22 @@ function scrollEvents(event) {
             window.location.hostname !== "www.youtube.com"
         ) {
             window.scrollBy(0, -100);
-        }  
+        }
 
-        if (
-            window.location.hostname !== "www.google.com" 
-            ){
-            if ((event.key.toLowerCase() === "j" || event.key.toLowerCase() === "z" ) && window.location.hostname !== "www.youtube.com" ){
+        if (window.location.hostname !== "www.google.com") {
+            if (
+                (event.key.toLowerCase() === "j" ||
+                    event.key.toLowerCase() === "z") &&
+                window.location.hostname !== "www.youtube.com"
+            ) {
                 window.scrollBy(0, 100);
-
-            } else if ((event.key.toLowerCase() === "k" || event.key.toLowerCase() === "w" ) && window.location.hostname !== "www.youtube.com"
-                ){
+            } else if (
+                (event.key.toLowerCase() === "k" ||
+                    event.key.toLowerCase() === "w") &&
+                window.location.hostname !== "www.youtube.com"
+            ) {
                 window.scrollBy(0, -100);
-
             }
-
         }
 
         // Youtube
@@ -92,26 +93,26 @@ function scrollEvents(event) {
         }
 
         // go to textarea in chatgpt with /
-        if (
-
-            event.key === "/"
-        ) {
+        if (event.key === "/") {
+            // ## works only in chatgpt website
             const textarea = document.getElementById("prompt-textarea");
             if (textarea) {
                 textarea.focus();
             }
 
-            var inputField = document.querySelector('input');
-            if (inputField){
-                inputField.focus
-            }
+            // focus on input element
+            var inputField = document.querySelector('input[type="text"]');
 
+            if (inputField) {
+                if (activeElement.tagName.toLowerCase() !== "input") {
+                    inputField.focus();
+                }
+            }
         }
     }
 }
 
 let isPaachecked;
-
 
 // Get the value of the checkbox in the webpage's DOM
 function getCheckboxValue() {
@@ -124,27 +125,33 @@ function getCheckboxValue() {
 
 // Send a message to the background script requesting to set the value of the checkbox in Chrome storage
 function requestSetCheckboxValue(value) {
-    chrome.runtime.sendMessage({ action: "setCheckboxValue", value: value }, function() {
-        console.log("Checkbox value set to", value);
-    });
+    chrome.runtime.sendMessage(
+        { action: "setCheckboxValue", value: value },
+        function () {
+            console.log("Checkbox value set to", value);
+        },
+    );
 }
 
 // Send a message to the background script requesting to get the value of the checkbox from Chrome storage
 function requestGetCheckboxValue() {
-    chrome.runtime.sendMessage({ action: "getCheckboxValue" }, function(response) {
-        if (response && response.checkboxValue !== undefined) {
-            // Access the retrieved value
-            var checkboxValue = response.checkboxValue;
-            // Do something with the retrieved value
-            console.log("Checkbox Value:", checkboxValue);
-            // Update the checkbox state in the webpage's DOM
-            var checkbox = document.getElementById("setting2");
-            if (checkbox) {
-                checkbox.checked = checkboxValue;
-                updateAlpha();
+    chrome.runtime.sendMessage(
+        { action: "getCheckboxValue" },
+        function (response) {
+            if (response && response.checkboxValue !== undefined) {
+                // Access the retrieved value
+                var checkboxValue = response.checkboxValue;
+                // Do something with the retrieved value
+                console.log("Checkbox Value:", checkboxValue);
+                // Update the checkbox state in the webpage's DOM
+                var checkbox = document.getElementById("setting2");
+                if (checkbox) {
+                    checkbox.checked = checkboxValue;
+                    updateAlpha();
+                }
             }
-        }
-    });
+        },
+    );
 }
 
 // Example: Getting the checkbox value from Chrome storage
@@ -155,9 +162,8 @@ var checkboxValue = getCheckboxValue();
 requestSetCheckboxValue(checkboxValue);
 
 function chromeStorageSet() {
-    let checkbox ;
+    let checkbox;
     // content.js
-
 
     if (checkbox) {
         // Load the checkbox state from storage
@@ -169,9 +175,9 @@ function chromeStorageSet() {
         //     // updateUI(checkbox.checked);
         // });
         // Retrieving multiple values
-        alert('going here')
+        alert("going here");
         // Load the checkbox state from local storage
-        chrome.storage.local.get('showPAA', function (items) {
+        chrome.storage.local.get("showPAA", function (items) {
             checkbox.checked = items.showPAA;
             console.log("showPAAValue:", checkbox.checked);
             showPAA = checkbox.checked;
@@ -233,7 +239,6 @@ function wait() {
     setTimeout(() => {}, 2000);
     updateAlpha();
     // alert(isPaachecked);
-
 }
 
 document.addEventListener("keydown", scrollEvents);
@@ -418,8 +423,6 @@ const lowercaseAlphabets = [
 // chrome.storage.local.set(dataToStore, function() {
 //   console.log('Data saved');
 // });
-
-
 
 function everything() {
     let checkbox = document.getElementById("setting2");
@@ -702,8 +705,6 @@ function everything() {
             // console.log(filteredLinks);
             var center_col = document.getElementById("center_col");
             if (center_col) {
-
-
                 for (let i = 0; i < filteredLinks.length; i++) {
                     // console.log(scores[i]);
                     // console.log(i);
@@ -722,9 +723,10 @@ function everything() {
                         // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                         var spanTag = document.createElement("span");
                         spanTag.setAttribute("style", "font-size: 1.0vw;");
-                        spanTag.style.fontWeight = 'bold';
+                        spanTag.style.fontWeight = "bold";
                         if (i >= 10) {
-                            spanTag.innerText = " " + lowercaseAlphabets[i - 10] + " ";
+                            spanTag.innerText =
+                                " " + lowercaseAlphabets[i - 10] + " ";
                         } else {
                             spanTag.innerText = " " + i + " ";
                         }
