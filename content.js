@@ -342,10 +342,15 @@ function updateAlpha() {
     // body...
 
     removeSpanTag();
-    var aa = document.querySelectorAll("a[jsname]");
-    var allanchor = getList(aa);
+    const centerCol = document.getElementById('center_col');
 
+    if (centerCol) {
+        var aa = centerCol.querySelectorAll("a[jsname]");
+        var allanchor = getList(aa);
+
+    }
     everything();
+    
 }
 
 function removeSpanTag() {
@@ -677,7 +682,8 @@ function everything() {
 
         // #### Extract href attribute from selected anchor tags
         function getHrefList() {
-            var anchorTags = document.querySelectorAll("a[jsname]");
+            var center_col = document.getElementById('center_col')
+            var anchorTags = center_col.querySelectorAll("a[jsname]");
             // console.log("anchor tags", anchorTags);
 
             var hrefList = Array.from(anchorTags)
