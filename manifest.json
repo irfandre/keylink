@@ -4,7 +4,7 @@
     "name": "KeyLink",
     "version": "1.0",
     "description": "Linking keys to links",
-    "permissions": ["tabs", "activeTab", "storage"],
+    "permissions": ["tabs", "activeTab", "storage","declarativeContent"],
     "action": {
         "default_popup": "popup.html",
         "default_icon": {

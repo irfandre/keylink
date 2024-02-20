@@ -14,6 +14,14 @@ document.addEventListener("visibilitychange", (event) => {
     }
 });
 
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message.action === "isEnabled") {
+    const isEnabled = !window.location.host.includes('example.com'); // Check if the extension is enabled on the current website
+    sendResponse({ isEnabled });
+  }
+});
+
+
 function scrollEvents(event) {
     // Check if the pressed key is 'j'
     if (event.key !== undefined) {
@@ -25,20 +33,19 @@ function scrollEvents(event) {
             console.log("Cursor is in an input field.");
             // console.dir(activeElement);
         } else if (
-            event.key.toLowerCase() === "j" &&
+            event.key.toLowerCase() === "," &&
             window.location.hostname !== "www.youtube.com"
         ) {
             // Create a new keyboard event for the down arrow key
             window.scrollBy(0, 100);
             // document.dispatchEvent(downArrowEvent);
         } else if (
-            event.key.toLowerCase() === "k" &&
+            event.key.toLowerCase() === "." &&
             window.location.hostname !== "www.youtube.com"
         ) {
             window.scrollBy(0, -100);
         }
-
-        if (window.location.hostname !== "www.google.com") {
+        else if (window.location.hostname !== "www.google.com") {
             if (
                 (event.key.toLowerCase() === "j" ||
                     event.key.toLowerCase() === "z") &&
@@ -52,24 +59,6 @@ function scrollEvents(event) {
             ) {
                 window.scrollBy(0, -100);
             }
-        }
-
-        // Youtube
-        if (
-            event.key.toLowerCase() === "y" &&
-            window.location.hostname === "www.youtube.com"
-        ) {
-            // alert('lsjdlkf');
-            // document.dispatchEvent(downArrowEvent);
-            // const downArrowEvent = new KeyboardEvent("keydown", {
-            //     key: "ArrowDown",
-            //     code: "ArrowDown",
-            //     keyCode: 40,
-            //     which: 40,
-            //     // Add other properties as needed
-            // });
-            // alert("in youtube");
-            // document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown" }));
         }
 
         if (event.getModifierState("Alt") && event.code === "Minus") {
@@ -88,21 +77,19 @@ function scrollEvents(event) {
             } catch (error) {
                 console.error("An error occurred:", error.message);
             }
-
-            // Your logic when the Alt key and minus key are pressed
         }
 
         // go to textarea in chatgpt with /
         if (event.key === "/") {
-            // ## works only in chatgpt website
+            // focus on textarea of chatgpt website
             const textarea = document.getElementById("prompt-textarea");
             if (textarea) {
                 textarea.focus();
             }
 
-            // focus on input element
-            var inputField = document.querySelector('input[type="text"]');
-
+            // focus on first input element with type=text of any website
+            var inputField = document.querySelector('input');
+            
             if (inputField) {
                 if (activeElement.tagName.toLowerCase() !== "input") {
                     inputField.focus();
@@ -234,15 +221,80 @@ function chromeStorageSet() {
     // });
 }
 
+async function getCheckboxState() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get("checkboxState", function(data) {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(data.checkboxState || false);
+      }
+    });
+  });
+}
+
+// Function to set checkbox state in local storage
+async function setCheckboxState(state) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set({ "checkboxState": state }, function() {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+let paaPaa;
+
+document.addEventListener('DOMContentLoaded', onPopupOpened);
+
+function onPopupOpened() {
+  const checkbox = document.getElementById('setting2');
+  if (checkbox) {
+    // Checkbox element is now available, you can use it here
+    console.log('Checkbox element:', checkbox);
+
+    // Example: Add an event listener to the checkbox
+    checkbox.addEventListener('change', function() {
+      console.log('Checkbox state changed:', checkbox.checked);
+    });
+  } else {
+    console.error('Checkbox element not found');
+  }
+} ;
+
+
+
 function wait() {
     // isPaachecked = chromeStorageSet();
-    setTimeout(() => {}, 2000);
+    // setTimeout(() => {}, 3000);
     updateAlpha();
+    // Function to get checkbox state from local storage
+
+
+    // Get the checkbox element
+    const checkbox = document.getElementById('setting2');
+
+    // Initialize the checkbox state
+    // (async () => {
+    //   checkbox.checked = await getCheckboxState();
+    //   paaPaa = checkbox.checked;
+    //   // alert("paa is checked ", paaPaa);
+    // })();
+
+    // Store the checkbox state in local storage when it changes
+    // checkbox.addEventListener('change', async function() {
+    //   await setCheckboxState(checkbox.checked);
+    // });
     // alert(isPaachecked);
 }
 
 document.addEventListener("keydown", scrollEvents);
 window.onload = wait;
+
+// alert(paaPaa);
 
 var botstuffHrefList;
 // alert('sdjlfksd');
@@ -414,15 +466,23 @@ const lowercaseAlphabets = [
 ];
 
 // Storing multiple values
-// const dataToStore = {
-//   key1: 'value1',
-//   key2: 'value2',
-//   key3: 'value3'
-// };
+const dataToStore = {
+  key1: 'value1',
+  key2: 'value2',
+  key3: 'value3'
+};
 
 // chrome.storage.local.set(dataToStore, function() {
-//   console.log('Data saved');
+  // console.log('Data saved');
 // });
+
+// chrome.storage.local.get("checkboxState", function(item){
+//     alert("hel***************o",item.checkboxState);
+//     // var checkbox = document.getElementById("setting2");
+//     // checkbox.checked = true;
+//     // alert(checkbox);
+ 
+// })
 
 function everything() {
     let checkbox = document.getElementById("setting2");
@@ -875,9 +935,6 @@ function everything() {
             } else if (
                 (!event.metaKey &&
                     event.keyCode >= 65 &&
-                    event.keyCode <= 73) ||
-                (!event.metaKey &&
-                    event.keyCode >= 76 &&
                     event.keyCode <= 90 &&
                     window.location.hostname === "www.google.com")
             ) {
