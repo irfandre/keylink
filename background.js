@@ -80,16 +80,40 @@ function updateTabHistory(tab) {
     chrome.storage.local.set({ tabHistory: tabHistory });
 }
 
+function tabLeftToCurrentTab() {
+    chrome.tabs.query({ currentWindow: true }, function(tabs) {
+        if (tabs.length > 0) {
+            let currentTab = tabs.find(tab => tab.active);
+            if (currentTab) {
+                let currentIndex = currentTab.index;
+                let leftTab = tabs.find(tab => tab.index === currentIndex - 1);
+                if (leftTab) {
+                    console.log("Left tab:", leftTab);
+                    chrome.tabs.update(leftTab.id, {active: true});
+                } else {
+                    console.log("No tab to the left of the current tab");
+                }
+            } else {
+                console.error("No active tab found");
+            }
+        } else {
+            console.error("No tabs found in the current window");
+        }
+    });
+
+}
+
 // Function to switch to the previous tab
 function switchToPreviousTab() {
     if (tabHistory.length === 2) {
         const previousTab = tabHistory[0];
         chrome.tabs.update(previousTab.id, { active: true }, (updatedTab) => {
             if (chrome.runtime.lastError) {
-                console.error(
-                    "Error updating tab:",
-                    chrome.runtime.lastError.message,
-                );
+                // console.error(
+                    // "Error updating tab:",
+                    // chrome.runtime.lastError.message,
+                // );
+                tabLeftToCurrentTab()
             } else {
                 console.log("Switched to the previous tab:", updatedTab);
             }
