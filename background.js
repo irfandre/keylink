@@ -25,27 +25,43 @@
 //   }
 // });
 
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-    chrome.declarativeContent.onPageChanged.addRules([{
-      conditions: [
-        new chrome.declarativeContent.PageStateMatcher({
-          pageUrl: { hostEquals: 'example.com' } // Specify the website to disable the extension on
-        })
-      ],
-      actions: [ new chrome.declarativeContent.ShowPageAction() ]
-    }]);
-  });
+function createMenuItemWithIcon(iconUrl) {
+    chrome.contextMenus.create({
+        id: "myContextMenuItem",
+        title: "My Context Menu Item",
+        contexts: ["all"],
+    });
+}
+
+// Example usage: create a context menu item with an icon
+createMenuItemWithIcon("images/icon.png");
+
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    if (info.menuItemId === "myContextMenu") {
+        // Handle the context menu click
+        console.log("Context menu item clicked!");
+        console.log("Clicked element:", info.target);
+    }
 });
 
-
-chrome.runtime.onInstalled.addListener(() => {
-    console.log("Extension installed");
+chrome.runtime.onInstalled.addListener(function () {
+    chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
+        chrome.declarativeContent.onPageChanged.addRules([
+            {
+                conditions: [
+                    new chrome.declarativeContent.PageStateMatcher({
+                        pageUrl: { hostEquals: "example.com" }, // Specify the website to disable the extension on
+                    }),
+                ],
+                actions: [new chrome.declarativeContent.ShowPageAction()],
+            },
+        ]);
+    });
 });
 
 // Initialize tab history from local storage or create a new array
 let tabHistory = [];
-
+var currentTab;
 chrome.runtime.onInstalled.addListener(() => {
     console.log("Extension installed");
 });
@@ -84,7 +100,7 @@ function switchToPreviousTab() {
 // Function to get information about the current tab
 function getCurrentTab() {
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-        const currentTab = tabs[0];
+        currentTab = tabs[0];
         console.log("Current tab:", currentTab);
 
         // Update tab history
@@ -93,8 +109,13 @@ function getCurrentTab() {
 }
 
 // Execute the function when the extension is clicked
-chrome.action.onClicked.addListener(getCurrentTab);
+try {
+    chrome.action.onClicked.addListener(getCurrentTab);
+} catch (e) {
+    console.log("onClicked");
+}
 
+getCurrentTab();
 // background.js
 
 /// background.js
@@ -115,6 +136,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             sendResponse({ checkboxValue: items.showPAA });
         });
         // To indicate that sendResponse will be asynchronously
+        return true;
+    }
+
+    if (request.action === "switchTab") {
+        getCurrentTab();
+        sendResponse({ res: tabHistory });
+        switchToPreviousTab();
+        return true;
+    }
+
+    if (request.action === "visibilitychange") {
+        getCurrentTab();
         return true;
     }
 });

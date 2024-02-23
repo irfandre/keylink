@@ -2,9 +2,16 @@
 // alert("Content script loaded!");
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
-        console.log("tab is active");
+        console.log("tab is active", Object.keys(event));
         setTimeout(() => {}, 2000);
 
+        try {
+          sendMessageToBackground("getInfos");
+        } catch (e) {
+            console.log("error");
+        }
+        // updateTabHistory();
+        // console.log(tabHistory);
         if (window.location.hostname === "www.google.com") {
             updateAlpha();
             // alert("running alpha");
@@ -14,13 +21,23 @@ document.addEventListener("visibilitychange", (event) => {
     }
 });
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  if (message.action === "isEnabled") {
-    const isEnabled = !window.location.host.includes('example.com'); // Check if the extension is enabled on the current website
-    sendResponse({ isEnabled });
-  }
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.action === "isEnabled") {
+        const isEnabled = !window.location.host.includes("example.com"); // Check if the extension is enabled on the current website
+        sendResponse({ isEnabled });
+    }
 });
 
+function sendMessageToBackground(sendAction) {
+    try {
+        // Attempt to send a message
+        chrome.runtime.sendMessage({ action: sendAction }, function (response) {
+            console.log("Response from background script:", response);
+        });
+    } catch (error) {
+        console.log("console.error");
+    }
+}
 
 function scrollEvents(event) {
     // Check if the pressed key is 'j'
@@ -44,8 +61,7 @@ function scrollEvents(event) {
             window.location.hostname !== "www.youtube.com"
         ) {
             window.scrollBy(0, -100);
-        }
-        else if (window.location.hostname !== "www.google.com") {
+        } else if (window.location.hostname !== "www.google.com") {
             if (
                 (event.key.toLowerCase() === "j" ||
                     event.key.toLowerCase() === "z") &&
@@ -63,20 +79,7 @@ function scrollEvents(event) {
 
         if (event.getModifierState("Alt") && event.code === "Minus") {
             console.log("Alt key + Minus key pressed");
-            try {
-                // Attempt to send a message
-                chrome.runtime.sendMessage(
-                    { action: "switchToPreviousTab" },
-                    function (response) {
-                        console.log(
-                            "Response from background script:",
-                            response,
-                        );
-                    },
-                );
-            } catch (error) {
-                console.error("An error occurred:", error.message);
-            }
+            sendMessageToBackground("switchTab");
         }
 
         // go to textarea in chatgpt with /
@@ -88,8 +91,10 @@ function scrollEvents(event) {
             }
 
             // focus on first input element with type=text of any website
-            var inputField = document.querySelector('input');
-            
+            var inputField = document.querySelector(
+                'input[type="text"], input:not([type])',
+            );
+
             if (inputField) {
                 if (activeElement.tagName.toLowerCase() !== "input") {
                     inputField.focus();
@@ -222,50 +227,48 @@ function chromeStorageSet() {
 }
 
 async function getCheckboxState() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get("checkboxState", function(data) {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(data.checkboxState || false);
-      }
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get("checkboxState", function (data) {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                resolve(data.checkboxState || false);
+            }
+        });
     });
-  });
 }
 
 // Function to set checkbox state in local storage
 async function setCheckboxState(state) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set({ "checkboxState": state }, function() {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve();
-      }
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.set({ checkboxState: state }, function () {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                resolve();
+            }
+        });
     });
-  });
 }
 
 let paaPaa;
 
-document.addEventListener('DOMContentLoaded', onPopupOpened);
+document.addEventListener("DOMContentLoaded", onPopupOpened);
 
 function onPopupOpened() {
-  const checkbox = document.getElementById('setting2');
-  if (checkbox) {
-    // Checkbox element is now available, you can use it here
-    console.log('Checkbox element:', checkbox);
+    const checkbox = document.getElementById("setting2");
+    if (checkbox) {
+        // Checkbox element is now available, you can use it here
+        console.log("Checkbox element:", checkbox);
 
-    // Example: Add an event listener to the checkbox
-    checkbox.addEventListener('change', function() {
-      console.log('Checkbox state changed:', checkbox.checked);
-    });
-  } else {
-    console.error('Checkbox element not found');
-  }
-} ;
-
-
+        // Example: Add an event listener to the checkbox
+        checkbox.addEventListener("change", function () {
+            console.log("Checkbox state changed:", checkbox.checked);
+        });
+    } else {
+        console.error("Checkbox element not found");
+    }
+}
 
 function wait() {
     // isPaachecked = chromeStorageSet();
@@ -273,9 +276,8 @@ function wait() {
     updateAlpha();
     // Function to get checkbox state from local storage
 
-
     // Get the checkbox element
-    const checkbox = document.getElementById('setting2');
+    const checkbox = document.getElementById("setting2");
 
     // Initialize the checkbox state
     // (async () => {
@@ -342,15 +344,13 @@ function updateAlpha() {
     // body...
 
     removeSpanTag();
-    const centerCol = document.getElementById('center_col');
+    const centerCol = document.getElementById("center_col");
 
     if (centerCol) {
         var aa = centerCol.querySelectorAll("a[jsname]");
         var allanchor = getList(aa);
-
     }
     everything();
-    
 }
 
 function removeSpanTag() {
@@ -472,13 +472,13 @@ const lowercaseAlphabets = [
 
 // Storing multiple values
 const dataToStore = {
-  key1: 'value1',
-  key2: 'value2',
-  key3: 'value3'
+    key1: "value1",
+    key2: "value2",
+    key3: "value3",
 };
 
 // chrome.storage.local.set(dataToStore, function() {
-  // console.log('Data saved');
+// console.log('Data saved');
 // });
 
 // chrome.storage.local.get("checkboxState", function(item){
@@ -486,7 +486,7 @@ const dataToStore = {
 //     // var checkbox = document.getElementById("setting2");
 //     // checkbox.checked = true;
 //     // alert(checkbox);
- 
+
 // })
 
 function everything() {
@@ -682,7 +682,7 @@ function everything() {
 
         // #### Extract href attribute from selected anchor tags
         function getHrefList() {
-            var center_col = document.getElementById('center_col')
+            var center_col = document.getElementById("center_col");
             var anchorTags = center_col.querySelectorAll("a[jsname]");
             // console.log("anchor tags", anchorTags);
 
@@ -939,10 +939,10 @@ function everything() {
                 // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
                 window.location.href = filteredLinks[pressedKey];
             } else if (
-                (!event.metaKey &&
-                    event.keyCode >= 65 &&
-                    event.keyCode <= 90 &&
-                    window.location.hostname === "www.google.com")
+                !event.metaKey &&
+                event.keyCode >= 65 &&
+                event.keyCode <= 90 &&
+                window.location.hostname === "www.google.com"
             ) {
                 if (filteredLinks[event.keyCode - 55]) {
                     window.location.href = filteredLinks[event.keyCode - 55];

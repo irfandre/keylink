@@ -1,46 +1,45 @@
 // popup.js
 async function getCheckboxState() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get("checkboxState", function(data) {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(data.checkboxState || false);
-      }
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get("checkboxState", function (data) {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                resolve(data.checkboxState || false);
+            }
+        });
     });
-  });
 }
 
 // Function to set checkbox state in local storage
 async function setCheckboxState(state) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set({ "checkboxState": state }, function() {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve();
-      }
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.set({ checkboxState: state }, function () {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                resolve();
+            }
+        });
     });
-  });
 }
 
 function onPopupOpened() {
-    console.log('Popup opened');
+    console.log("Popup opened");
     // Your code here
     // alert("opened")
     var checkbox = document.getElementById("setting2");
 
     (async () => {
-          checkbox.checked = await getCheckboxState();
-          // paaPaa = checkbox.checked;
-          // alert("paa is checked ", paaPaa);
-          checkbox.checked = await getCheckboxState();
-        })();
-
+        checkbox.checked = await getCheckboxState();
+        // paaPaa = checkbox.checked;
+        // alert("paa is checked ", paaPaa);
+        checkbox.checked = await getCheckboxState();
+    })();
 }
 
 // Attach the function to the event listener
-document.addEventListener('DOMContentLoaded', onPopupOpened);
+document.addEventListener("DOMContentLoaded", onPopupOpened);
 
 // document.addEventListener("DOMContentLoaded", function () {
 //     // Button 1 click event
@@ -71,32 +70,21 @@ document.addEventListener('DOMContentLoaded', onPopupOpened);
 //       // Call the function when the popup is opened
 //     onPopupOpened();
 
-
 //     (async () => {
 //       checkbox.checked = await getCheckboxState();
 //       // paaPaa = checkbox.checked;
 //       // alert("paa is checked ", paaPaa);
 //     })();
 
-
-
 // });
 
-// document.addEventListener('DOMContentLoaded', function() {
-//   // Button 1 click event
-//   document.getElementById('setting1').addEventListener('input', function() {
+// document.getElementById('setting1').addEventListener('input', function() {
 //     console.log('Button 1 clicked!');
 //     // Add your code for Button 1 click event
 //     alert('jlskdj');
 //   });
 
-//   // Button 2 click event
-//   // document.getElementById('setting2').addEventListener('input', function() {
-//   //   console.log('Button 2 clicked!');
-//   //   // Add your code for Button 2 click event
-//   // });
-
-//   document
+// document
 //   .getElementById("setting2")
 //   .addEventListener("input", function () {
 //     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -104,4 +92,3 @@ document.addEventListener('DOMContentLoaded', onPopupOpened);
 //       console.log('2')
 //     });
 //   });
-// });
