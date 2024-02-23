@@ -50,15 +50,13 @@ function scrollEvents(event) {
             console.log("Cursor is in an input field.");
             // console.dir(activeElement);
         } else if (
-            event.key.toLowerCase() === "," &&
-            window.location.hostname !== "www.youtube.com"
+            event.key.toLowerCase() === ","
         ) {
             // Create a new keyboard event for the down arrow key
             window.scrollBy(0, 100);
             // document.dispatchEvent(downArrowEvent);
         } else if (
-            event.key.toLowerCase() === "." &&
-            window.location.hostname !== "www.youtube.com"
+            event.key.toLowerCase() === "." 
         ) {
             window.scrollBy(0, -100);
         } else if (window.location.hostname !== "www.google.com") {
