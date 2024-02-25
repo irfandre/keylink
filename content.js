@@ -1,5 +1,7 @@
 // content.js
 // alert("Content script loaded!");
+let isPaachecked;
+
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
         console.log("tab is active", Object.keys(event));
@@ -21,12 +23,6 @@ document.addEventListener("visibilitychange", (event) => {
     }
 });
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.action === "isEnabled") {
-        const isEnabled = !window.location.host.includes("example.com"); // Check if the extension is enabled on the current website
-        sendResponse({ isEnabled });
-    }
-});
 
 function sendMessageToBackground(sendAction) {
     try {
@@ -35,9 +31,12 @@ function sendMessageToBackground(sendAction) {
             console.log("Response from background script:", response);
         });
     } catch (error) {
-        console.log("console.error");
+        console.log("console.error",error);
     }
 }
+
+document.addEventListener("keydown", scrollEvents);
+window.onload = wait;
 
 function scrollEvents(event) {
     // Check if the pressed key is 'j'
@@ -73,12 +72,16 @@ function scrollEvents(event) {
             ) {
                 window.scrollBy(0, -100);
             }
-        }
-
+        } 
+        
         if (event.getModifierState("Alt") && event.code === "Minus") {
             console.log("Alt key + Minus key pressed");
-            sendMessageToBackground("switchTab");
-        }
+            try{
+                sendMessageToBackground("switchTab");
+            } catch(e){
+                console.log("error");
+            }
+        } 
 
         // go to textarea in chatgpt with /
         if (event.key === "/") {
@@ -90,7 +93,7 @@ function scrollEvents(event) {
 
             // focus on first input element with type=text of any website
             var inputField = document.querySelector(
-                'input[type="text"], input:not([type])',
+                'input[type="text"],  input[type="search"], input:not([type])',
             );
 
             if (inputField) {
@@ -102,12 +105,12 @@ function scrollEvents(event) {
     }
 }
 
-let isPaachecked;
 
 // Get the value of the checkbox in the webpage's DOM
 function getCheckboxValue() {
     var checkbox = document.getElementById("setting2");
     if (checkbox) {
+        isPaachecked = checkbox.checked;
         return checkbox.checked;
     }
     return false; // Return false if checkbox not found
@@ -137,6 +140,7 @@ function requestGetCheckboxValue() {
                 var checkbox = document.getElementById("setting2");
                 if (checkbox) {
                     checkbox.checked = checkboxValue;
+                    isPaachecked = checkboxValue;
                     updateAlpha();
                 }
             }
@@ -231,6 +235,7 @@ async function getCheckboxState() {
                 reject(chrome.runtime.lastError);
             } else {
                 resolve(data.checkboxState || false);
+                isPaachecked = data.checkboxState;
             }
         });
     });
@@ -258,10 +263,11 @@ function onPopupOpened() {
     if (checkbox) {
         // Checkbox element is now available, you can use it here
         console.log("Checkbox element:", checkbox);
-
+        isPaachecked = checkbox.checked;
         // Example: Add an event listener to the checkbox
         checkbox.addEventListener("change", function () {
             console.log("Checkbox state changed:", checkbox.checked);
+            isPaachecked = checkbox.checked
         });
     } else {
         console.error("Checkbox element not found");
@@ -291,8 +297,6 @@ function wait() {
     // alert(isPaachecked);
 }
 
-document.addEventListener("keydown", scrollEvents);
-window.onload = wait;
 
 // alert(paaPaa);
 
@@ -719,14 +723,14 @@ function everything() {
         // console.log(setting1);
 
         var filteredLinks;
-
+        // alert(isPaachecked);
         function getFilteredLinks() {
             // Remove links that match links in the linksToRemove array
             filteredLinks = hrefList.filter(function (link) {
                 if (isPaachecked) {
                     if (paaList && paaList.includes(link)) {
                         // console.log("removing paa section", paaFrom);
-                        return true; // Exclude links that are in paaList
+                        return false; // Exclude links that are in paaList
                     }
                 } else {
                     // if (paaList.includes(link) === hrefList.includes(link) ){
@@ -740,7 +744,7 @@ function everything() {
 
                     if (paaList && paaList.includes(link)) {
                         // console.log("removing paa section", paaFrom);
-                        return false; // Exclude links that are in paaList
+                        return true; // Exclude links that are in paaList
                     }
                 }
 

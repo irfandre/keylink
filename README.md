@@ -26,7 +26,9 @@ After enabling, select `Load Unpacked` button on top left corner and choose the 
 
 Pressing space bar move page alot, using this extension we can scroll properly.
 
-> use **j**/**z** and **k**/**w** keys to scroll down and up respectively # aka up and down
+> use <kbd> , </kbd> <kbd> . </kbd> in google search results for scrolling.
+
+> use **j**/**z** and **k**/**w** keys to scroll down and up respectively in any website other than google.com # aka up and down
 
 Note: Some website use custom script for scrolling **longpress scrolling** might not work properly on those websites (will try to fix that when i have time), normal keypress scrolling will work fine.
 
