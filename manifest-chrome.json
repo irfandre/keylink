@@ -8,12 +8,11 @@
         "tabs",
         "activeTab",
         "storage",
-        // "declarativeContent", //firefox compatibility
+        "declarativeContent",
         "contextMenus"
     ],
     "background": {
-        // firefox compatibility 
-        "scripts": ["background.js"]
+        "service_worker": "background.js",
     },
     "content_scripts": [
         {
