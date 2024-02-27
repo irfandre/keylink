@@ -8,12 +8,12 @@
         "tabs",
         "activeTab",
         "storage",
-        // "declarativeContent", //firefox compatibility
+        "declarativeContent", // Comment this line for firefox compatibility
         "contextMenus"
     ],
     "background": {
-        // firefox compatibility 
-        "scripts": ["background.js"]
+        "service_worker": "background.js" // Comment out this line when loading on firefox
+        // "scripts": ["background.js"] // Comment out this line when loading on chrome
     },
     "content_scripts": [
         {
