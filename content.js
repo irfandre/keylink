@@ -1,14 +1,20 @@
 // content.js
-// alert("Content script loaded!");
 let isPaachecked;
+let mainWeb;
 
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
-        console.log("tab is active", Object.keys(event));
+        // console.log("tab is active", Object.keys(event));
         setTimeout(() => {}, 2000);
 
         try {
-          sendMessageToBackground("getInfos");
+            // sendMessageToBackground("update");
+            // sendMessageToBackground("update");
+            // chrome.runtime.sendMessage({ action: "update", hostname: event.srcElement.URL });
+            // mainWeb[1] = event.srcElement.URL;
+
+            console.log("tab is active", event.srcElement.URL);
+            // alert(mainWeb);
         } catch (e) {
             console.log("error");
         }
@@ -19,7 +25,7 @@ document.addEventListener("visibilitychange", (event) => {
             // alert("running alpha");
         }
     } else {
-        console.log("tab is inactive");
+        console.log("tab is inactive", document.deferrer);
     }
 });
 
@@ -29,9 +35,29 @@ function sendMessageToBackground(sendAction) {
         // Attempt to send a message
         chrome.runtime.sendMessage({ action: sendAction }, function (response) {
             console.log("Response from background script:", response);
+            if (response.res && sendAction === "update"){
+                console.log(response.res[1].url);
+                mainWeb = response.res[1].url;
+                // alert("------"+ mainWeb + sendAction);
+                chrome.storage.local.get(['disabledWebsites'], function (data) {
+                      var disabledWebsites = data.disabledWebsites || [];
+                      if (!disabledWebsites.includes(mainWeb)) {
+                        disabledWebsites.push(mainWeb);
+                        chrome.storage.local.set({ 'disabledWebsites': disabledWebsites }, function() {
+                          // alert('Current URL added to disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
+                        // alert('set');
+
+                        });
+                      } else {
+                        // alert('Current URL is already in disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
+                        // alert("****"+disabledWebsites);
+                        console.log("****"+disabledWebsites);
+                      }
+                });
+            }
         });
     } catch (error) {
-        console.log("console.error",error);
+        console.log("console.error", error);
     }
 }
 
@@ -48,15 +74,11 @@ function scrollEvents(event) {
         if (input_fields.includes(activeElement.tagName.toLowerCase())) {
             console.log("Cursor is in an input field.");
             // console.dir(activeElement);
-        } else if (
-            event.key.toLowerCase() === ","
-        ) {
+        } else if (event.key.toLowerCase() === ",") {
             // Create a new keyboard event for the down arrow key
             window.scrollBy(0, 100);
             // document.dispatchEvent(downArrowEvent);
-        } else if (
-            event.key.toLowerCase() === "." 
-        ) {
+        } else if (event.key.toLowerCase() === ".") {
             window.scrollBy(0, -100);
         } else if (window.location.hostname !== "www.google.com") {
             if (
@@ -72,16 +94,16 @@ function scrollEvents(event) {
             ) {
                 window.scrollBy(0, -100);
             }
-        } 
-        
+        }
+
         if (event.getModifierState("Alt") && event.code === "Minus") {
             console.log("Alt key + Minus key pressed");
-            try{
+            try {
                 sendMessageToBackground("switchTab");
-            } catch(e){
+            } catch (e) {
                 console.log("error");
             }
-        } 
+        }
 
         // go to textarea in chatgpt with /
         if (event.key === "/") {
@@ -104,7 +126,6 @@ function scrollEvents(event) {
         }
     }
 }
-
 
 // Get the value of the checkbox in the webpage's DOM
 function getCheckboxValue() {
@@ -199,7 +220,7 @@ function chromeStorageSet() {
 
         // Update storage when checkbox state changes
         checkbox.addEventListener("change", function () {
-            alert(1);
+            // alert(1);
             const showPAA = checkbox.checked;
 
             // Save the checkbox state to storage
@@ -258,8 +279,51 @@ let paaPaa;
 
 document.addEventListener("DOMContentLoaded", onPopupOpened);
 
+var disabledWebsites;
+let currentHostName = window.location.hostname;
+
+function disabledWebsitesFunc() {
+    chrome.storage.local.get(["disabledWebsites"], function (data) {
+        var disabledWebsites = data.disabledWebsites || [];
+        // alert(disabledWebsites);
+        var listAsString = JSON.stringify(disabledWebsites);
+        console.log(listAsString);
+        // if (!disabledWebsites.includes(currentHostName)) {
+        //   disabledWebsites.push(currentHostName);
+        //   chrome.storage.local.set({ 'disabledWebsites': disabledWebsites }, function() {
+        //     alert('Current URL added to disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
+        //   });
+        // } else {
+        //   alert('Current URL is already in disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
+        // }
+    });
+}
+
 function onPopupOpened() {
     const checkbox = document.getElementById("setting2");
+
+    var icon = document.getElementById("icon");
+
+    var btn = document.getElementById("disableButton");
+    // if (disabledWebsites.includes(currentUrl)){
+
+    // }
+    // alert(currentHostName);
+
+    // alert(mainWeb);
+    if (btn) {
+        btn.addEventListener("click", function () {
+            sendMessageToBackground("update");
+
+            // alert(mainWeb);
+            icon.src = "images/1.png";
+            chrome.runtime.sendMessage({ action: "update", db: mainWeb });
+
+            var currentUrl = window.location.hostname;
+            
+        });
+    }
+    
     if (checkbox) {
         // Checkbox element is now available, you can use it here
         console.log("Checkbox element:", checkbox);
@@ -267,7 +331,7 @@ function onPopupOpened() {
         // Example: Add an event listener to the checkbox
         checkbox.addEventListener("change", function () {
             console.log("Checkbox state changed:", checkbox.checked);
-            isPaachecked = checkbox.checked
+            isPaachecked = checkbox.checked;
         });
     } else {
         console.error("Checkbox element not found");
@@ -277,7 +341,21 @@ function onPopupOpened() {
 function wait() {
     // isPaachecked = chromeStorageSet();
     // setTimeout(() => {}, 3000);
+
     updateAlpha();
+    // one = sendMessageToBackground("checkisdisabled");
+    var currentUrl;
+    // chrome.runtime.sendMessage({ action: "getCurrentUrl" }, function(response) {
+    //   if (response && response.url) {
+    //     currentUrl = response.url;
+    //     // Use the currentUrl variable as needed
+    //     console.log("Current URL:", currentUrl);
+    //   }
+    //   else{
+    //     alert('one')
+    //   }
+    // });
+
     // Function to get checkbox state from local storage
 
     // Get the checkbox element
@@ -295,8 +373,10 @@ function wait() {
     //   await setCheckboxState(checkbox.checked);
     // });
     // alert(isPaachecked);
+    // sendMessageToBackground("update");
+    // alert("came here")
+    // disabledWebsitesFunc();
 }
-
 
 // alert(paaPaa);
 
@@ -1064,9 +1144,30 @@ chrome.storage.local.get(["tabHistory"], function (result) {
     }
 });
 
+
+chrome.storage.local.get(['disabledWebsites'], function (data) {
+                      var disabledWebsites = data.disabledWebsites || [];
+                      // alert(disabledWebsites);
+                      if (disabledWebsites.includes(window.location.href)) {
+                        // alert("this page is disabled")
+                        if (window.location.hostname === "www.google.com"){
+                            setTimeout(() => {
+                                removeSpanTag();
+                        }, 1000);
+
+                            
+
+                        }
+                      }
+                });
+
 document.addEventListener("DOMContentLoaded", function () {
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
+            if (message.action === "getURL") {
+                sendResponse({ url: mainWeb });
+            }
+
             if (request.action === "extractCiteData") {
                 // Extract cite data from Google search results
                 var citeElements = document.querySelectorAll(".tF2Cxc cite"); // Adjust the selector based on the current Google search result page structure

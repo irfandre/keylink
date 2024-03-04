@@ -11,6 +11,13 @@ async function getCheckboxState() {
     });
 }
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.url) {
+    console.log("Tab URL:", message.url);
+  }
+});
+
+
 // Function to set checkbox state in local storage
 async function setCheckboxState(state) {
     return new Promise((resolve, reject) => {

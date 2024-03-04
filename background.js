@@ -27,23 +27,22 @@
 let reloaded = false;
 
 chrome.runtime.onStartup.addListener((details) => {
-  if (details.reason === 'update' && !reloaded) {
-    console.log('Extension updated. Reloading...');
-    reloaded = true;
-    chrome.runtime.reload();
-    reloadFlag = true; // Set the flag to true to prevent further reloads
-
-  }
-  // chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-  //     if (tabs.length > 0) {
-  //       chrome.tabs.sendMessage(tabs[0].id, { action: 'reloadContentScript' });
-  //     }
-  //   });
+    if (details.reason === "update" && !reloaded) {
+        console.log("Extension updated. Reloading...");
+        reloaded = true;
+        chrome.runtime.reload();
+        reloadFlag = true; // Set the flag to true to prevent further reloads
+    }
+    // chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    //     if (tabs.length > 0) {
+    //       chrome.tabs.sendMessage(tabs[0].id, { action: 'reloadContentScript' });
+    //     }
+    //   });
 });
 
 function createMenuItemWithIcon(iconUrl) {
     chrome.contextMenus.create({
-        id: "myContextMenuItem",
+        id: "myUniuContextMenuItem",
         title: "My Context Menu Item",
         contexts: ["all"],
     });
@@ -79,7 +78,6 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 let tabHistory = [];
 var currentTab;
 
-
 // Function to update tab history
 function updateTabHistory(tab) {
     // Push the current tab to the history
@@ -92,6 +90,28 @@ function updateTabHistory(tab) {
 
     // Save the updated tab history to local storage
     chrome.storage.local.set({ tabHistory: tabHistory });
+}
+
+let disabledWebsites = [];
+
+function getDisabledWebsites() {
+    // body...
+    chrome.storage.local.get(["disabledWebsites"], function (data) {
+        disabledWebsites = data.disabledWebsites || [];
+    });
+}
+
+function setDisabledWebsites(currentTab) {
+    // body...
+    disabledWebsites.push(currentTab);
+    chrome.storage.local.set(
+        { disabledWebsites: disabledWebsites },
+        function () {
+            // alert(disabledWebsites);
+
+            console.log("none");
+        },
+    );
 }
 
 function tabLeftToCurrentTab() {
@@ -146,7 +166,19 @@ function getCurrentTab() {
         updateTabHistory(currentTab);
     });
 }
+function justGetCurrentTab() {
+    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+        currentTab = tabs[0];
+        console.log("Current tab:", currentTab);
+    });
+}
+// function returnCurrentTab(){
+// chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+//         currentTab = tabs[0];
+//         return currentTab;
+//     }
 
+// }
 // Execute the function when the extension is clicked
 try {
     chrome.action.onClicked.addListener(getCurrentTab);
@@ -161,7 +193,6 @@ getCurrentTab();
 
 // Listen for messages from content scripts
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-
     if (request.action === "setCheckboxValue") {
         // Retrieve the value to set
         var value = request.value;
@@ -185,10 +216,32 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         return true;
     } else if (request.action === "visibilitychange") {
         getCurrentTab();
+        getDisabledWebsites();
+        setDisabledWebsites();
+        sendResponse({ res: tabHistory});
+        return true;
+    } else if (request.action === "update") {
+        // getCurrentTab();
+
+        // justGetCurrentTab();
+        // getDisabledWebsites();
+        // setDisabledWebsites(currentTab);
+        sendResponse({ res: tabHistory });
         return true;
     }
-
 });
+
+chrome.action.onClicked.addListener((tab) => {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: getURL,
+  });
+});
+
+function getURL() {
+  chrome.runtime.sendMessage({ action: "getURL" });
+}
+
 
 // Listen for tab switching events
 chrome.tabs.onActivated.addListener((info) => {

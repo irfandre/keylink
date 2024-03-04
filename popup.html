@@ -1,173 +1,178 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings Page</title>
-  <style>
-    body {
-  font-family: "Open Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 87.5;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align to the left */
-  justify-content: center;
-  height: 100vh;
-  min-width: 500px; /* Set minimum width */
-  margin: 0px;
-}
-kbd {
-  background-color: #8789F6;
-  border-radius: 3px;
-  border: 1px solid #8789F6;
-  box-shadow: 1px solid #8789F6; 
-  color: #fff;
-  display: inline-block;
-  font-size: 0.85em;
-  font-weight: 700;
-  line-height: 1;
-  padding: 2px 4px;
-  white-space: nowrap;
-}
-h1 {
-margin-bottom: 20px;
-  text-align: center; /* Center the text */
-  width: 100%; 
-}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Settings Page</title>
+        <style>
+            body {
+                font-family: "Open Sans", sans-serif;
+                font-optical-sizing: auto;
+                font-weight: 400;
+                font-style: normal;
+                font-variation-settings: "wdth" 87.5;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* Align to the left */
+                justify-content: center;
+                height: 100vh;
+                min-width: 400px; /* Set minimum width */
+                margin: 0px;
+                text-align: justify;
+            }
+            kbd {
+                background-color: #8789f6;
+                border-radius: 3px;
+                border: 1px solid #8789f6;
+                box-shadow: 1px solid #8789f6;
+                color: #fff;
+                display: inline-block;
+                font-size: 0.85em;
+                font-weight: 700;
+                line-height: 1;
+                padding: 2px 4px;
+                white-space: nowrap;
+            }
+            h1 {
+                margin-bottom: 20px;
+                text-align: center; /* Center the text */
+                width: 100%;
+            }
 
-img {
-  margin-top: 20px;
-  text-align: center;
-  width: 20%; 
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-.settings {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align to the left */
-  width: 90%;
-  padding: 0 30px; /* Add padding to the left and right */
-}
+            img {
+                margin-top: 80px;
+                text-align: center;
+                width: 20%;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .settings {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start; /* Align to the left */
+                width: 95%;
+                padding: 0 20px; /* Add padding to the left and right */
+            }
 
-.setting {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  width: 90%;
-}
+            .setting {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+                width: 95%;
+            }
 
-    .setting label {
-      margin-right: 10px;
-      font-size: 1.4em
-    }
+            .setting label {
+                margin-right: 10px;
+                font-size: 1.4em;
+            }
 
-    /* Style for the toggle switch */
-    .toggle {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-        margin-left: auto; /* Move the slider to the right */
+            /* Style for the toggle switch */
+            .toggle {
+                position: relative;
+                display: inline-block;
+                width: 60px;
+                height: 34px;
+                margin-left: auto; /* Move the slider to the right */
+            }
 
-    }
+            .toggle input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
 
-    .toggle input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                -webkit-transition: 0.4s;
+                transition: 0.4s;
+                border-radius: 34px;
+            }
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      -webkit-transition: .4s;
-      transition: .4s;
-      border-radius: 34px;
-    }
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                -webkit-transition: 0.4s;
+                transition: 0.4s;
+                border-radius: 50%;
+            }
 
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px;
-      width: 26px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      -webkit-transition: .4s;
-      transition: .4s;
-      border-radius: 50%;
-    }
+            input:checked + .slider {
+                background-color: #8789f6;
+            }
 
-    input:checked + .slider {
-      background-color:#8789F6 ;
-    }
+            input:focus + .slider {
+                box-shadow: 0 0 1px #8789f6;
+            }
 
-    input:focus + .slider {
-      box-shadow: 0 0 1px #8789F6;
-    }
+            input:checked + .slider:before {
+                -webkit-transform: translateX(26px);
+                -ms-transform: translateX(26px);
+                transform: translateX(26px);
+            }
+        </style>
+    </head>
+    <body>
+        <img id="icon" src="images/icon.png" width="40" />
+        <h1>KeyLink Navigation</h1>
+        <div style="margin: 0 20px; font-size: 1.4em">
+            <p>
+                In google search result keypress any alphanumeric(0-9a-z) value
+                which is associated with links to visit that link
+            </p>
 
-    input:checked + .slider:before {
-      -webkit-transform: translateX(26px);
-      -ms-transform: translateX(26px);
-      transform: translateX(26px);
-    }
+            <button id="disableButton">Disable</button>
+            <p>Use <kbd> / </kbd> to focus on first input field.</p>
+            <p>
+                Use (comma) <kbd> , </kbd> / <kbd> . </kbd> (period) for
+                scrolling in all websites.
+            </p>
+            <p>
+                Use <kbd> J </kbd> / <kbd>Z</kbd> and <kbd> K </kbd> /
+                <kbd>W</kbd> keys to scroll down and up respectively on all
+                website except google.
 
-  </style>
-</head>
-<body>
-  <img src="images/icon.png" width="40">
-  <h1>KeyLink Navigation</h1>
-  <div style="margin: 0 30px;font-size: 1.4em;">  
-    <p> In google search result keypress any alphanumeric(0-9a-z) value which is associated with links to visit that link</p>
+                <br />
+                <br />
 
-      <p>Use <kbd> / </kbd> to focus on first input field.</p>
-      <p>Use (comma) <kbd> , </kbd> / <kbd> . </kbd> (period) for scrolling in all websites.</p>
-      <p>Use <kbd> J </kbd> / <kbd>Z</kbd> and <kbd> K </kbd> / <kbd>W</kbd>  keys to scroll down and up respectively on all website except google. 
+                Use <kbd>Option</kbd> + <kbd>-</kbd> to switch to previously
+                visited tab.
+            </p>
+            <p>
+                Note: Some website use custom script for scrolling longpress
+                scrolling might slow on those websites.
+            </p>
+        </div>
+        <div class="settings">
+            <div class="setting">
+                <label for="setting1">Hide paa/images/videos </label>
+                <label class="toggle">
+                    <input type="checkbox" id="setting1" />
+                    <span class="slider"></span>
+                </label>
+            </div>
 
-        <br>
-        <br>
+            <div class="setting">
+                <label for="setting2">Show PAA</label>
+                <label class="toggle">
+                    <input type="checkbox" id="setting2" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
 
-        Use <kbd>Option</kbd> + <kbd>-</kbd> to switch to previously visited tab.
-      </p>
-      <p>
-      Note: Some website use custom script for scrolling longpress scrolling might slow on those websites. </p>
-
-  </div>
-  <div class="settings">
-    <div class="setting">
-      <label for="setting1">Hide paa/images/videos </label>
-      <label class="toggle">
-        <input type="checkbox" id="setting1">
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <div class="setting">
-      <label for="setting2">Show PAA</label>
-      <label class="toggle">
-        <input type="checkbox" id="setting2" >
-        <span class="slider"></span>
-      </label>
-    </div>
-
- <script src="popup.js"></script>
- <script src="content.js"></script>
-
-</body>
+        <script src="popup.js"></script>
+        <script src="content.js"></script>
+    </body>
 </html>
-
-  
-
-
