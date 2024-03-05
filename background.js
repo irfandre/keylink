@@ -226,7 +226,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // justGetCurrentTab();
         // getDisabledWebsites();
         // setDisabledWebsites(currentTab);
-
+        try {
+            chrome.browserAction.setBadgeText({ text: "42" }); // Set the badge text to "42"
+        } catch(e){
+            console.log('catch');
+        }
 
         sendResponse({ res: tabHistory });
         return true;
@@ -236,14 +240,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // justGetCurrentTab();
         // getDisabledWebsites();
         // setDisabledWebsites(currentTab);
-        chrome.storage.local.set(
-        { disabledWebsites: [] },
-                function () {
-                    // alert(disabledWebsites);
-
-                    console.log("none");
-                },
-            );
+        // if(disabledWebsites.includes(tabHistory[1])){
+            
+        // }
+        
         
 
         sendResponse({ res: tabHistory });

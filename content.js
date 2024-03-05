@@ -48,7 +48,7 @@ document.addEventListener("visibilitychange", (event) => {
         console.log("tab is inactive", document.deferrer);
     }
 });
-
+var disabledWebsites = [];
 function sendMessageToBackground(sendAction) {
     try {
         // Attempt to send a message
@@ -59,7 +59,7 @@ function sendMessageToBackground(sendAction) {
                 mainWeb = response.res[1].url;
                 alert("------"+ mainWeb + sendAction);
                 chrome.storage.local.get(["disabledWebsites"], function (data) {
-                    var disabledWebsites = data.disabledWebsites || [];
+                    disabledWebsites = data.disabledWebsites || [];
                     if (!disabledWebsites.includes(mainWeb)) {
                         disabledWebsites.push(mainWeb);
                         chrome.storage.local.set(
@@ -76,10 +76,23 @@ function sendMessageToBackground(sendAction) {
 
                     }
                 });
-            } else if (response && response.checkboxValue !== "undefined") {
+            } else if (response && response.checkboxValue !== "undefined" && sendAction !== "clear") {
                 // alert('check box value ' + response.checkboxValue );
                 one = response.checkboxValue;
-            }
+            } else if (sendAction === "clear") {
+                alert("inclear");
+                disabledWebsites = disabledWebsites.filter(item => item !== response.res[1].url);
+                    chrome.storage.local.set(
+                            { disabledWebsites: disabledWebsites },
+                                    function () {
+                                        // alert(disabledWebsites);
+
+                                        console.log("none");
+                            },
+                        );
+                } else{
+                    alert('message?: DOMString')
+                }
         });
     } catch (error) {
         console.log("console.error", error);
