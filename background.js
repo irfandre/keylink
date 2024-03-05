@@ -226,6 +226,26 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // justGetCurrentTab();
         // getDisabledWebsites();
         // setDisabledWebsites(currentTab);
+
+
+        sendResponse({ res: tabHistory });
+        return true;
+    } else if (request.action === "clear") {
+        // getCurrentTab();
+
+        // justGetCurrentTab();
+        // getDisabledWebsites();
+        // setDisabledWebsites(currentTab);
+        chrome.storage.local.set(
+        { disabledWebsites: [] },
+                function () {
+                    // alert(disabledWebsites);
+
+                    console.log("none");
+                },
+            );
+        
+
         sendResponse({ res: tabHistory });
         return true;
     }

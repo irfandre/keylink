@@ -57,7 +57,7 @@ function sendMessageToBackground(sendAction) {
             if (response.res && sendAction === "update") {
                 console.log(response.res[1].url);
                 mainWeb = response.res[1].url;
-                // alert("------"+ mainWeb + sendAction);
+                alert("------"+ mainWeb + sendAction);
                 chrome.storage.local.get(["disabledWebsites"], function (data) {
                     var disabledWebsites = data.disabledWebsites || [];
                     if (!disabledWebsites.includes(mainWeb)) {
@@ -66,13 +66,14 @@ function sendMessageToBackground(sendAction) {
                             { disabledWebsites: disabledWebsites },
                             function () {
                                 // alert('Current URL added to disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
-                                // alert('set');
+                                alert('set');
                             },
                         );
                     } else {
                         // alert('Current URL is already in disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
                         // alert("****"+disabledWebsites);
                         console.log("****" + disabledWebsites);
+
                     }
                 });
             } else if (response && response.checkboxValue !== "undefined") {
@@ -263,13 +264,27 @@ function onPopupOpened() {
     var icon = document.getElementById("icon");
 
     var btn = document.getElementById("disableButton");
+    var clearBtn = document.getElementById("clearButton");
+
     if (btn) {
         btn.addEventListener("click", function () {
             sendMessageToBackground("update");
 
             // alert(mainWeb);
             icon.src = "images/1.png";
-            chrome.runtime.sendMessage({ action: "update", db: mainWeb });
+            // chrome.runtime.sendMessage({ action: "update", db: mainWeb });
+
+            var currentUrl = window.location.hostname;
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener("click", function () {
+            sendMessageToBackground("clear");
+
+            // alert(mainWeb);
+            icon.src = "images/1.png";
+            // chrome.runtime.sendMessage({ action: "update", db: mainWeb });
 
             var currentUrl = window.location.hostname;
         });
