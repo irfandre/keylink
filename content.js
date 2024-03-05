@@ -1,7 +1,7 @@
 // content.js
 let isPaachecked;
 let mainWeb;
-
+var one;
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
         // console.log("tab is active", Object.keys(event));
@@ -29,31 +29,35 @@ document.addEventListener("visibilitychange", (event) => {
     }
 });
 
-
 function sendMessageToBackground(sendAction) {
     try {
         // Attempt to send a message
         chrome.runtime.sendMessage({ action: sendAction }, function (response) {
             console.log("Response from background script:", response);
-            if (response.res && sendAction === "update"){
+            if (response.res && sendAction === "update") {
                 console.log(response.res[1].url);
                 mainWeb = response.res[1].url;
                 // alert("------"+ mainWeb + sendAction);
-                chrome.storage.local.get(['disabledWebsites'], function (data) {
-                      var disabledWebsites = data.disabledWebsites || [];
-                      if (!disabledWebsites.includes(mainWeb)) {
+                chrome.storage.local.get(["disabledWebsites"], function (data) {
+                    var disabledWebsites = data.disabledWebsites || [];
+                    if (!disabledWebsites.includes(mainWeb)) {
                         disabledWebsites.push(mainWeb);
-                        chrome.storage.local.set({ 'disabledWebsites': disabledWebsites }, function() {
-                          // alert('Current URL added to disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
-                        // alert('set');
-
-                        });
-                      } else {
+                        chrome.storage.local.set(
+                            { disabledWebsites: disabledWebsites },
+                            function () {
+                                // alert('Current URL added to disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
+                                // alert('set');
+                            },
+                        );
+                    } else {
                         // alert('Current URL is already in disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
                         // alert("****"+disabledWebsites);
-                        console.log("****"+disabledWebsites);
-                      }
+                        console.log("****" + disabledWebsites);
+                    }
                 });
+            } else if (response && response.checkboxValue !== "undefined") {
+                // alert('check box value ' + response.checkboxValue );
+                one = response.checkboxValue;
             }
         });
     } catch (error) {
@@ -63,6 +67,8 @@ function sendMessageToBackground(sendAction) {
 
 document.addEventListener("keydown", scrollEvents);
 window.onload = wait;
+
+sendMessageToBackground("getCheckboxValue");
 
 function scrollEvents(event) {
     // Check if the pressed key is 'j'
@@ -169,86 +175,6 @@ function requestGetCheckboxValue() {
     );
 }
 
-// Example: Getting the checkbox value from Chrome storage
-requestGetCheckboxValue();
-
-// Example: Setting the checkbox value in Chrome storage
-var checkboxValue = getCheckboxValue();
-requestSetCheckboxValue(checkboxValue);
-
-function chromeStorageSet() {
-    let checkbox;
-    // content.js
-
-    if (checkbox) {
-        // Load the checkbox state from storage
-        // chrome.storage.sync.get({ showPAA: false }, function (items) {
-        //     checkbox.checked = items.showPAA;
-        //     console.log("showPAAValue:", checkbox.checked);
-        //     paaFrom = checkbox.checked;
-        //     // alert(checkbox.checked);
-        //     // updateUI(checkbox.checked);
-        // });
-        // Retrieving multiple values
-        alert("going here");
-        // Load the checkbox state from local storage
-        chrome.storage.local.get("showPAA", function (items) {
-            checkbox.checked = items.showPAA;
-            console.log("showPAAValue:", checkbox.checked);
-            showPAA = checkbox.checked;
-            // alert(checkbox.checked);
-            // updateUI(checkbox.checked);
-            isPaachecked = checkbox.checked;
-        });
-
-        // const keysToRetrieve = [{showPAA: false}];
-        // chrome.storage.local.get(keysToRetrieve, function(result) {
-        //     paaFrom = result.showPAA;
-        //     console.log("paa from 1", paaFrom);
-        //     alert(2)
-
-        // });
-        // const dataToStore = {
-        //     showPAA: false,
-        //     key2: "value2",
-        //     key3: "value3",
-        // };
-
-        // chrome.storage.local.set(dataToStore, function () {
-        //     console.log("Data saved");
-        // });
-
-        // Update storage when checkbox state changes
-        checkbox.addEventListener("change", function () {
-            // alert(1);
-            const showPAA = checkbox.checked;
-
-            // Save the checkbox state to storage
-            chrome.storage.local.set({ showPAA: showPAA }, function () {
-                if (chrome.runtime.lastError) {
-                    console.error(
-                        "Error saving data:",
-                        chrome.runtime.lastError,
-                    );
-                } else {
-                    console.log("Data saved", showPAA);
-                    isPaachecked = showPAA;
-                }
-            });
-        });
-    }
-    // Error handling when saving data
-
-    // // Error handling when retrieving data
-    // chrome.storage.local.get('key', function(result) {
-    //   if (chrome.runtime.lastError) {
-    //     console.error('Error retrieving data:', chrome.runtime.lastError);
-    //   } else {
-    //     console.log('Retrieved value:', result.key);
-    //   }
-    // });
-}
-
 async function getCheckboxState() {
     return new Promise((resolve, reject) => {
         chrome.storage.local.get("checkboxState", function (data) {
@@ -300,17 +226,21 @@ function disabledWebsitesFunc() {
 }
 
 function onPopupOpened() {
-    const checkbox = document.getElementById("setting2");
-
-    var icon = document.getElementById("icon");
-
-    var btn = document.getElementById("disableButton");
     // if (disabledWebsites.includes(currentUrl)){
 
     // }
     // alert(currentHostName);
 
     // alert(mainWeb);
+    // alert('comeing here');
+
+    setTimeout(() => {}, 3000);
+
+    var checkbox = document.getElementById("setting2");
+
+    var icon = document.getElementById("icon");
+
+    var btn = document.getElementById("disableButton");
     if (btn) {
         btn.addEventListener("click", function () {
             sendMessageToBackground("update");
@@ -320,19 +250,27 @@ function onPopupOpened() {
             chrome.runtime.sendMessage({ action: "update", db: mainWeb });
 
             var currentUrl = window.location.hostname;
-            
         });
     }
-    
+
     if (checkbox) {
         // Checkbox element is now available, you can use it here
         console.log("Checkbox element:", checkbox);
         isPaachecked = checkbox.checked;
         // Example: Add an event listener to the checkbox
+        // alert('check box is on' + isPaachecked);
         checkbox.addEventListener("change", function () {
             console.log("Checkbox state changed:", checkbox.checked);
             isPaachecked = checkbox.checked;
+            chrome.runtime.sendMessage(
+                { action: "setCheckboxValue", value: checkbox.checked },
+                function () {
+                    console.log("Checkbox value set to", checkbox.checked);
+                    // alert("checkbox set " + checkbox.checked);
+                },
+            );
         });
+        sendMessageToBackground("getCheckboxValue");
     } else {
         console.error("Checkbox element not found");
     }
@@ -344,7 +282,7 @@ function wait() {
 
     updateAlpha();
     // one = sendMessageToBackground("checkisdisabled");
-    var currentUrl;
+    // var currentUrl;
     // chrome.runtime.sendMessage({ action: "getCurrentUrl" }, function(response) {
     //   if (response && response.url) {
     //     currentUrl = response.url;
@@ -359,7 +297,7 @@ function wait() {
     // Function to get checkbox state from local storage
 
     // Get the checkbox element
-    const checkbox = document.getElementById("setting2");
+    // const checkbox = document.getElementById("setting2");
 
     // Initialize the checkbox state
     // (async () => {
@@ -807,10 +745,10 @@ function everything() {
         function getFilteredLinks() {
             // Remove links that match links in the linksToRemove array
             filteredLinks = hrefList.filter(function (link) {
-                if (isPaachecked) {
+                if (one) {
                     if (paaList && paaList.includes(link)) {
                         // console.log("removing paa section", paaFrom);
-                        return false; // Exclude links that are in paaList
+                        return true; // Exclude links that are in paaList
                     }
                 } else {
                     // if (paaList.includes(link) === hrefList.includes(link) ){
@@ -824,7 +762,7 @@ function everything() {
 
                     if (paaList && paaList.includes(link)) {
                         // console.log("removing paa section", paaFrom);
-                        return true; // Exclude links that are in paaList
+                        return false; // Exclude links that are in paaList
                     }
                 }
 
@@ -1144,22 +1082,18 @@ chrome.storage.local.get(["tabHistory"], function (result) {
     }
 });
 
-
-chrome.storage.local.get(['disabledWebsites'], function (data) {
-                      var disabledWebsites = data.disabledWebsites || [];
-                      // alert(disabledWebsites);
-                      if (disabledWebsites.includes(window.location.href)) {
-                        // alert("this page is disabled")
-                        if (window.location.hostname === "www.google.com"){
-                            setTimeout(() => {
-                                removeSpanTag();
-                        }, 1000);
-
-                            
-
-                        }
-                      }
-                });
+chrome.storage.local.get(["disabledWebsites"], function (data) {
+    var disabledWebsites = data.disabledWebsites || [];
+    // alert(disabledWebsites);
+    if (disabledWebsites.includes(window.location.href)) {
+        // alert("this page is disabled")
+        if (window.location.hostname === "www.google.com") {
+            setTimeout(() => {
+                removeSpanTag();
+            }, 1000);
+        }
+    }
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     chrome.runtime.onMessage.addListener(

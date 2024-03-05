@@ -218,7 +218,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         getCurrentTab();
         getDisabledWebsites();
         setDisabledWebsites();
-        sendResponse({ res: tabHistory});
+        sendResponse({ res: tabHistory });
         return true;
     } else if (request.action === "update") {
         // getCurrentTab();
@@ -232,16 +232,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 chrome.action.onClicked.addListener((tab) => {
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    function: getURL,
-  });
+    chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: getURL,
+    });
 });
 
 function getURL() {
-  chrome.runtime.sendMessage({ action: "getURL" });
+    chrome.runtime.sendMessage({ action: "getURL" });
 }
-
 
 // Listen for tab switching events
 chrome.tabs.onActivated.addListener((info) => {
