@@ -2,6 +2,26 @@
 let isPaachecked;
 let mainWeb;
 var one;
+var disableInCurrent = true;
+
+chrome.storage.local.get(["disabledWebsites"], function (data) {
+    var disabledWebsites = data.disabledWebsites || [];
+    // alert(disabledWebsites);
+    if (disabledWebsites.includes(window.location.href)) {
+        // alert("this page is disabled")
+        if (window.location.hostname === "www.google.com") {
+            setTimeout(() => {
+                removeSpanTag();
+                disableInCurrent = true;
+                // updateAlpha();
+            }, 1000);
+        }
+    } else {
+        disableInCurrent = false;
+        // updateAlpha();
+    }
+});
+
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
         // console.log("tab is active", Object.keys(event));
@@ -90,13 +110,15 @@ function scrollEvents(event) {
             if (
                 (event.key.toLowerCase() === "j" ||
                     event.key.toLowerCase() === "z") &&
-                window.location.hostname !== "www.youtube.com"
+                window.location.hostname !== "www.youtube.com" &&
+                !disableInCurrent
             ) {
                 window.scrollBy(0, 100);
             } else if (
                 (event.key.toLowerCase() === "k" ||
                     event.key.toLowerCase() === "w") &&
-                window.location.hostname !== "www.youtube.com"
+                window.location.hostname !== "www.youtube.com" &&
+                !disableInCurrent
             ) {
                 window.scrollBy(0, -100);
             }
@@ -370,7 +392,10 @@ function updateAlpha() {
         var aa = centerCol.querySelectorAll("a[jsname]");
         var allanchor = getList(aa);
     }
-    everything();
+    if (!disableInCurrent) {
+        everything();
+        // alert('came here')
+    }
 }
 
 function removeSpanTag() {
@@ -1079,19 +1104,6 @@ chrome.storage.local.get(["tabHistory"], function (result) {
     if (result.tabHistory) {
         tabHistory = result.tabHistory;
         // console.log("Tab history loaded from local storage:", tabHistory);
-    }
-});
-
-chrome.storage.local.get(["disabledWebsites"], function (data) {
-    var disabledWebsites = data.disabledWebsites || [];
-    // alert(disabledWebsites);
-    if (disabledWebsites.includes(window.location.href)) {
-        // alert("this page is disabled")
-        if (window.location.hostname === "www.google.com") {
-            setTimeout(() => {
-                removeSpanTag();
-            }, 1000);
-        }
     }
 });
 

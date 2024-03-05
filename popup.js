@@ -20,16 +20,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 const powerBtn = document.getElementById("power");
 const powerIcon = document.querySelector(".power-icon");
 
-powerBtn.addEventListener("change", () => {
-    if (powerBtn.checked) {
-        powerIcon.style.opacity = 0;
-        alert("message?: DOMString");
-        // alternativeIcon.style.opacity = 1;
-    } else {
-        powerIcon.style.opacity = 1;
-        // alternativeIcon.style.opacity = 0;
-    }
-});
+// powerBtn.addEventListener("change", () => {
+//     if (powerBtn.checked) {
+//         powerIcon.style.opacity = 0;
+//         alert("message?: DOMString");
+//         // alternativeIcon.style.opacity = 1;
+//     } else {
+//         powerIcon.style.opacity = 1;
+//         // alternativeIcon.style.opacity = 0;
+//     }
+// });
 
 // Function to set checkbox state in local storage
 async function setCheckboxState(state) {
