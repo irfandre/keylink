@@ -57,7 +57,7 @@ function sendMessageToBackground(sendAction) {
             if (response.res && sendAction === "update") {
                 console.log(response.res[1].url);
                 mainWeb = response.res[1].url;
-                alert("------"+ mainWeb + sendAction);
+                alert("------" + mainWeb + sendAction);
                 chrome.storage.local.get(["disabledWebsites"], function (data) {
                     disabledWebsites = data.disabledWebsites || [];
                     if (!disabledWebsites.includes(mainWeb)) {
@@ -66,33 +66,37 @@ function sendMessageToBackground(sendAction) {
                             { disabledWebsites: disabledWebsites },
                             function () {
                                 // alert('Current URL added to disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
-                                alert('set');
+                                alert("set");
                             },
                         );
                     } else {
                         // alert('Current URL is already in disabled websites:\n\nDisabled Websites:\n' + disabledWebsites.join('\n') + '\n\nCurrent URL:\n' + currentHostName);
                         // alert("****"+disabledWebsites);
                         console.log("****" + disabledWebsites);
-
                     }
                 });
-            } else if (response && response.checkboxValue !== "undefined" && sendAction !== "clear") {
+            } else if (
+                response &&
+                response.checkboxValue !== "undefined" &&
+                sendAction !== "clear"
+            ) {
                 // alert('check box value ' + response.checkboxValue );
                 one = response.checkboxValue;
             } else if (sendAction === "clear") {
                 alert("inclear");
-                disabledWebsites = disabledWebsites.filter(item => item !== response.res[1].url);
-                    chrome.storage.local.set(
-                            { disabledWebsites: disabledWebsites },
-                                    function () {
-                                        // alert(disabledWebsites);
-
-                                        console.log("none");
-                            },
-                        );
-                } else{
-                    alert('message?: DOMString')
-                }
+                disabledWebsites = disabledWebsites.filter(
+                    (item) => item !== response.res[1].url,
+                );
+                chrome.storage.local.set(
+                    { disabledWebsites: disabledWebsites },
+                    function () {
+                        // alert(disabledWebsites);
+                        console.log("none");
+                    },
+                );
+            } else {
+                alert("message?: DOMString");
+            }
         });
     } catch (error) {
         console.log("console.error", error);
@@ -124,17 +128,22 @@ function scrollEvents(event) {
             if (
                 (event.key.toLowerCase() === "j" ||
                     event.key.toLowerCase() === "z") &&
-                window.location.hostname !== "www.youtube.com" &&
-                !disableInCurrent
+                window.location.hostname !== "www.youtube.com"
             ) {
                 window.scrollBy(0, 100);
             } else if (
                 (event.key.toLowerCase() === "k" ||
                     event.key.toLowerCase() === "w") &&
-                window.location.hostname !== "www.youtube.com" &&
-                !disableInCurrent
+                window.location.hostname !== "www.youtube.com"
             ) {
                 window.scrollBy(0, -100);
+            }
+        } else if (event.shiftKey && event.key === "g") {
+            console.log("Alt key + G key pressed");
+            try {
+                window.scrollTo(0, 0);
+            } catch (e) {
+                console.log("error");
             }
         }
 
@@ -153,6 +162,10 @@ function scrollEvents(event) {
             const textarea = document.getElementById("prompt-textarea");
             if (textarea) {
                 textarea.focus();
+                textarea.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                }); // scroll to active element
             }
 
             // focus on first input element with type=text of any website
@@ -163,6 +176,10 @@ function scrollEvents(event) {
             if (inputField) {
                 if (activeElement.tagName.toLowerCase() !== "input") {
                     inputField.focus();
+                    inputField.parentElement.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    }); // scroll to active element
                 }
             }
         }
@@ -309,20 +326,26 @@ function onPopupOpened() {
         isPaachecked = checkbox.checked;
         // Example: Add an event listener to the checkbox
         // alert('check box is on' + isPaachecked);
-        checkbox.addEventListener("change", function () {
-            console.log("Checkbox state changed:", checkbox.checked);
-            isPaachecked = checkbox.checked;
-            chrome.runtime.sendMessage(
-                { action: "setCheckboxValue", value: checkbox.checked },
-                function () {
-                    console.log("Checkbox value set to", checkbox.checked);
-                    // alert("checkbox set " + checkbox.checked);
-                },
-            );
-        });
-        sendMessageToBackground("getCheckboxValue");
+        try {
+            // statements
+            checkbox.addEventListener("change", function () {
+                console.log("Checkbox state changed:", checkbox.checked);
+                isPaachecked = checkbox.checked;
+                chrome.runtime.sendMessage(
+                    { action: "setCheckboxValue", value: checkbox.checked },
+                    function () {
+                        console.log("Checkbox value set to", checkbox.checked);
+                        // alert("checkbox set " + checkbox.checked);
+                    },
+                );
+            });
+            sendMessageToBackground("getCheckboxValue");
+        } catch (e) {
+            // statements
+            console.log(e);
+        }
     } else {
-        console.error("Checkbox element not found");
+        console.log("Checkbox element not found");
     }
 }
 
@@ -1015,11 +1038,16 @@ function everything() {
                 !event.metaKey &&
                 event.keyCode >= 65 &&
                 event.keyCode <= 90 &&
-                window.location.hostname === "www.google.com"
+                window.location.hostname === "www.google.com" &&
+                !(event.shiftKey && event.key === "G")
             ) {
                 if (filteredLinks[event.keyCode - 55]) {
                     window.location.href = filteredLinks[event.keyCode - 55];
                 }
+            }
+            if (event.shiftKey && event.key === "G") {
+                // scrolls to top when shift + G is pressed
+                window.scrollTo(0, 0);
             }
         }
     }
@@ -1138,9 +1166,9 @@ chrome.storage.local.get(["tabHistory"], function (result) {
 document.addEventListener("DOMContentLoaded", function () {
     chrome.runtime.onMessage.addListener(
         function (request, sender, sendResponse) {
-            if (message.action === "getURL") {
-                sendResponse({ url: mainWeb });
-            }
+            // if (message.action === "getURL") {
+            //     sendResponse({ url: mainWeb });
+            // }
 
             if (request.action === "extractCiteData") {
                 // Extract cite data from Google search results

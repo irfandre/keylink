@@ -49,7 +49,11 @@ function createMenuItemWithIcon(iconUrl) {
 }
 
 // Example usage: create a context menu item with an icon
-createMenuItemWithIcon("images/icon.png");
+try {
+    createMenuItemWithIcon("images/icon.png");
+} catch (e) {
+    console.log("duplicate error");
+}
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     if (info.menuItemId === "myContextMenu") {
@@ -142,6 +146,11 @@ function tabLeftToCurrentTab() {
 function switchToPreviousTab() {
     if (tabHistory.length === 2) {
         const previousTab = tabHistory[0];
+        console.log(
+            "switch to previous tab window id ",
+            tabHistory[0].windowId,
+        );
+        chrome.windows.update(previousTab.windowId, { focused: false });
         chrome.tabs.update(previousTab.id, { active: true }, (updatedTab) => {
             if (chrome.runtime.lastError) {
                 // console.error(
@@ -155,6 +164,27 @@ function switchToPreviousTab() {
         });
     }
 }
+
+// background.js
+// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+//     if (message.action === 'windowFocused') {
+//         console.log('Window focused!');
+//         // Perform your actions here
+//     }
+// });
+
+chrome.windows.onFocusChanged.addListener(function (windowId) {
+    console.log("Focus changed to window with ID:", windowId);
+    // You can perform any actions you need here
+    // chrome.windows.update(1651283528, { focused: true });
+    // switchToPreviousTab();
+    getCurrentTab();
+});
+
+// content.js
+// window.addEventListener('focus', function() {
+//     chrome.runtime.sendMessage({ action: 'windowFocused' });
+// });
 
 // Function to get information about the current tab
 function getCurrentTab() {
@@ -227,9 +257,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // getDisabledWebsites();
         // setDisabledWebsites(currentTab);
         try {
-            chrome.browserAction.setBadgeText({ text: "42" }); // Set the badge text to "42"
-        } catch(e){
-            console.log('catch');
+            chrome.action.setBadgeText({ text: "42" }); // Set the badge text to "42"
+        } catch (e) {
+            console.log("catch");
         }
 
         sendResponse({ res: tabHistory });
@@ -241,22 +271,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         // getDisabledWebsites();
         // setDisabledWebsites(currentTab);
         // if(disabledWebsites.includes(tabHistory[1])){
-            
+
         // }
-        
-        
 
         sendResponse({ res: tabHistory });
         return true;
     }
 });
-
+chrome.action.setBadgeText({ text: "2" });
 chrome.action.onClicked.addListener((tab) => {
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
         function: getURL,
     });
 });
+
+console.log("Button");
 
 function getURL() {
     chrome.runtime.sendMessage({ action: "getURL" });
