@@ -115,7 +115,7 @@ function scrollEvents(event) {
 
         var input_fields = ["textarea", "input"];
 
-        if (input_fields.includes(activeElement.tagName.toLowerCase())) {
+        if (input_fields.includes(activeElement.tagName.toLowerCase()) || activeElement.getAttribute('contenteditable') === 'true' ) {
             console.log("Cursor is in an input field.");
             // console.dir(activeElement);
         } else if (event.key.toLowerCase() === ",") {
