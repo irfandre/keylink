@@ -30,11 +30,16 @@ Pressing space bar move page alot, using this extension we can scroll properly.
 
 > use **j**/**z** and **k**/**w** keys to scroll down and up respectively in any website other than google.com # aka up and down
 
-Note: Some website use custom script for scrolling **longpress scrolling** might not work properly on those websites (will try to fix that when i have time), normal keypress scrolling will work fine.
+Note: Note: Some website use custom script which interfere with default behaviour, some functionality might not work on those websites.
 
 ### Navigation
 
 This extension scrapes the google search results and append a alphanumeric characters at the end, we can navigate to corresponding link by just pressing the alphanumeric characters associated with it.
 
-Use Alt/Opt + minus(-) to switch to previous tab.
+
+Use <kbd>Option</kbd> + <kbd>-</kbd> to switch to previously visited tab.
+
+Use <kbd>Shift</kbd> + <kbd>G</kbd> to scroll to top.
+
+Use <kbd>CMD</kbd> + <kbd>U</kbd> to encode clipboard content.
 
