@@ -484,7 +484,7 @@ function updateAlpha() {
 function removeSpanTag() {
     // body...
     const spanElements = document.querySelectorAll(
-        'span[style="font-size: 1vw; font-weight: bold;"]',
+        'span[style="font-size: inherit; font-weight: bold;"]',
     );
 
     // Remove each selected span element
@@ -916,7 +916,7 @@ function everything() {
 
                         // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                         var spanTag = document.createElement("span");
-                        spanTag.setAttribute("style", "font-size: 1.0vw;");
+                        spanTag.setAttribute("style", "font-size: inherit;");
                         spanTag.style.fontWeight = "bold";
                         if (i >= 10) {
                             spanTag.innerText =
