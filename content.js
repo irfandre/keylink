@@ -22,11 +22,35 @@ chrome.storage.local.get(["disabledWebsites"], function (data) {
     }
 });
 
+function writeToClipboard(text) {
+    navigator.clipboard
+        .writeText(text)
+        .then(function () {
+            console.log("Text copied to clipboard successfully: " + text);
+        })
+        .catch(function (error) {
+            console.error("Unable to copy text to clipboard: ", error);
+        });
+}
+
+async function readFromClipboard() {
+    try {
+        const text = await navigator.clipboard.readText();
+        console.log("Text from clipboard:", text);
+        // return text;
+        alert(encodeURI(text));
+
+        writeToClipboard(encodeURI(text));
+    } catch (error) {
+        console.error("Failed to read from clipboard:", error);
+        // return null;
+    }
+}
+
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
         // console.log("tab is active", Object.keys(event));
         setTimeout(() => {}, 2000);
-
         try {
             // sendMessageToBackground("update");
             // sendMessageToBackground("update");
@@ -115,7 +139,10 @@ function scrollEvents(event) {
 
         var input_fields = ["textarea", "input"];
 
-        if (input_fields.includes(activeElement.tagName.toLowerCase()) || activeElement.getAttribute('contenteditable') === 'true' ) {
+        if (
+            input_fields.includes(activeElement.tagName.toLowerCase()) ||
+            activeElement.getAttribute("contenteditable") === "true"
+        ) {
             console.log("Cursor is in an input field.");
             // console.dir(activeElement);
         } else if (event.key.toLowerCase() === ",") {
@@ -145,6 +172,11 @@ function scrollEvents(event) {
             } catch (e) {
                 console.log("error");
             }
+        }
+
+        if (event.metaKey && event.key === "u") {
+            console.log("comand and u enteredl");
+            readFromClipboard();
         }
 
         if (event.getModifierState("Alt") && event.code === "Minus") {

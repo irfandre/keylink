@@ -10,7 +10,9 @@
         "storage",
         "declarativeContent", // Comment this line for firefox compatibility
         "contextMenus",
-        "scripting"
+        "scripting",
+        "clipboardRead",
+        "clipboardWrite"
     ],
     "background": {
         "service_worker": "background.js" // Comment out this line when loading on firefox
