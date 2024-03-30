@@ -22,6 +22,9 @@ chrome.storage.local.get(["disabledWebsites"], function (data) {
     }
 });
 
+/* 
+Clipboard Functionality 
+*/
 function writeToClipboard(text) {
     navigator.clipboard
         .writeText(text)
@@ -46,6 +49,7 @@ async function readFromClipboard() {
         // return null;
     }
 }
+// End
 
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
@@ -141,7 +145,7 @@ function scrollEvents(event) {
 
         if (
             input_fields.includes(activeElement.tagName.toLowerCase()) ||
-            activeElement.getAttribute("contenteditable") === "true"
+            activeElement.getAttribute("contenteditable") === "true" // DISABLE SCROLLING WHEN IN INPUT FIELDS OR CONTENTEDITABLE DIVS
         ) {
             console.log("Cursor is in an input field.");
             // console.dir(activeElement);
@@ -174,11 +178,13 @@ function scrollEvents(event) {
             }
         }
 
+        // ENCODE COPIED TEXT
         if (event.metaKey && event.key === "u") {
             console.log("comand and u enteredl");
             readFromClipboard();
         }
 
+        // SWITCH TO PREVIOUS TAB
         if (event.getModifierState("Alt") && event.code === "Minus") {
             console.log("Alt key + Minus key pressed");
             try {
@@ -188,7 +194,7 @@ function scrollEvents(event) {
             }
         }
 
-        // go to textarea in chatgpt with /
+        // FOCUS ON INPUT_FIELDS AND TEXTAREA 
         if (event.key === "/") {
             // focus on textarea of chatgpt website
             const textarea = document.getElementById("prompt-textarea");
@@ -197,10 +203,10 @@ function scrollEvents(event) {
                 textarea.scrollIntoView({
                     behavior: "smooth",
                     block: "center",
-                }); // scroll to active element
+                }); // SCROLL TO ACTIVE ELEMENT
             }
 
-            // focus on first input element with type=text of any website
+            // FOCUS ON FIRST INPUT ELEMENT OF ANY WEBSITE
             var inputField = document.querySelector(
                 'input[type="text"],  input[type="search"], input:not([type])',
             );
@@ -211,7 +217,7 @@ function scrollEvents(event) {
                     inputField.parentElement.scrollIntoView({
                         behavior: "smooth",
                         block: "center",
-                    }); // scroll to active element
+                    }); // SCROLL TO ACTIVE ELEMENT
                 }
             }
         }
@@ -273,7 +279,7 @@ async function getCheckboxState() {
     });
 }
 
-// Function to set checkbox state in local storage
+// fUNCTION TO SET CHECKBOX STATE IN LOCAL STORAGE
 async function setCheckboxState(state) {
     return new Promise((resolve, reject) => {
         chrome.storage.local.set({ checkboxState: state }, function () {
@@ -481,10 +487,11 @@ function updateAlpha() {
     }
 }
 
+// REMOVE ALPHANUMERIC SPANTAG WHEN UPDATING VALUES
 function removeSpanTag() {
     // body...
     const spanElements = document.querySelectorAll(
-        'span[style="font-size: inherit; font-weight: bold;"]',
+        'span[style="font-size: inherit; font-weight: bolder; text-transform: uppercase;"]',
     );
 
     // Remove each selected span element
@@ -536,6 +543,7 @@ if (targetNode) {
     observer.observe(targetNode, { childList: true, subtree: true });
 }
 
+// THROTTLE FUNCTION TO STOP OVERLOADING THE BROWSER
 function throttle(func, delay) {
     let lastCallTime = 0;
 
@@ -917,12 +925,13 @@ function everything() {
                         // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                         var spanTag = document.createElement("span");
                         spanTag.setAttribute("style", "font-size: inherit;");
-                        spanTag.style.fontWeight = "bold";
+                        spanTag.style.fontWeight = "bolder";
+                        spanTag.style.textTransform = 'uppercase';
                         if (i >= 10) {
                             spanTag.innerText =
-                                " " + lowercaseAlphabets[i - 10] + " ";
+                                " \u25B8 " + lowercaseAlphabets[i - 10] + " ";
                         } else {
-                            spanTag.innerText = " " + i + " ";
+                            spanTag.innerText = " \u25B8 " + i + " ";
                         }
                         // Set the innerHTML of the target element to display the image
                         // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
