@@ -1090,6 +1090,13 @@ function everything() {
                 // scrolls to top when shift + G is pressed
                 window.scrollTo(0, 0);
             }
+
+            // GOTO NEXT PAGE IN GOOGLE PAGINATION
+            if (event.shiftKey && event.key === ">") {
+               // 1. Get the div element with role="navigation"
+              const anchorElement = document.getElementById('pnnext');
+              window.location.href = anchorElement.href;
+            }
         }
     }
 
