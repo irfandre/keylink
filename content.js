@@ -1095,7 +1095,18 @@ function everything() {
             if (event.shiftKey && event.key === ">") {
                // 1. Get the div element with role="navigation"
               const anchorElement = document.getElementById('pnnext');
-              window.location.href = anchorElement.href;
+              if (anchorElement) {
+                  window.location.href = anchorElement.href;
+              }
+            }
+
+            // GOTO PREVIOUS PAGE IN GOOGLE PAGINATION
+            if (event.shiftKey && event.key === "<") {
+               // 1. Get the div element with role="navigation"
+              const anchorElement = document.getElementById('pnprev');
+              if (anchorElement) {
+                  window.location.href = anchorElement.href;
+              }
             }
         }
     }
