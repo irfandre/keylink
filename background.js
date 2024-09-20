@@ -27,11 +27,14 @@
 let reloaded = false;
 
 chrome.runtime.onStartup.addListener((details) => {
-    if (details.reason === "update" && !reloaded) {
-        console.log("Extension updated. Reloading...");
-        reloaded = true;
-        chrome.runtime.reload();
-        reloadFlag = true; // Set the flag to true to prevent further reloads
+    if ( details.reason !== undefined ){
+
+        if (details.reason === "update" && !reloaded) {
+            console.log("Extension updated. Reloading...");
+            reloaded = true;
+            chrome.runtime.reload();
+            reloadFlag = true; // Set the flag to true to prevent further reloads
+        }
     }
     // chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     //     if (tabs.length > 0) {
@@ -310,3 +313,31 @@ chrome.storage.local.get(["tabHistory"], function (result) {
         console.log("Tab history loaded from local storage:", tabHistory);
     }
 });
+
+// Background script to listen to messages from popup
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+  if (message.action === 'checkDisabledState') {
+    chrome.storage.local.get([message.tabId], function(result) {
+      sendResponse(result[message.tabId] ? result[message.tabId].disabled : false);
+    });
+    // Required to indicate that you will send a response asynchronously
+    return true;
+  }
+});
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log("Message received:", message);
+
+  if (message.action === "showAlert") {
+    chrome.scripting.executeScript({
+      target: { tabId: sender.tab.id },
+      function: showAlert,
+      args: ["Button clicked!"]
+    });
+  }
+});
+
+function showAlert(message) {
+  alert(message);
+}

@@ -3,6 +3,7 @@ let isPaachecked;
 let mainWeb;
 var one;
 var disableInCurrent = true;
+let isJkwz; 
 
 chrome.storage.local.get(["disabledWebsites"], function (data) {
     var disabledWebsites = data.disabledWebsites || [];
@@ -19,6 +20,20 @@ chrome.storage.local.get(["disabledWebsites"], function (data) {
     } else {
         disableInCurrent = false;
         // updateAlpha();
+    }
+});
+
+chrome.storage.local.get(null, function(items) {
+  console.log('All items in storage:', items);
+  // alert(items);
+  // Using Object.entries() to iterate
+  if (items) {
+      Object.entries(items).forEach(([key, value]) => {
+        console.log(`Key: ${key}, Value:`, value);
+        if (key === 'setting1'){
+            isJkwz = value;
+        }
+      });
     }
 });
 
@@ -136,6 +151,28 @@ window.onload = wait;
 
 sendMessageToBackground("getCheckboxValue");
 
+// Get the current date
+const currentDate = new Date();
+
+// Calculate 30 days before
+const date30DaysBefore = new Date(currentDate);
+date30DaysBefore.setDate(currentDate.getDate() - 30);
+
+// Calculate 6 months before
+const date6MonthsBefore = new Date(currentDate);
+date6MonthsBefore.setMonth(currentDate.getMonth() - 6);
+
+// Calculate 1 year before
+const date1YearBefore = new Date(currentDate);
+date1YearBefore.setFullYear(currentDate.getFullYear() - 1);
+
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 function scrollEvents(event) {
     // Check if the pressed key is 'j'
     if (event.key !== undefined) {
@@ -145,7 +182,7 @@ function scrollEvents(event) {
 
         if (
             input_fields.includes(activeElement.tagName.toLowerCase()) ||
-            activeElement.getAttribute("contenteditable") === "true" // DISABLE SCROLLING WHEN IN INPUT FIELDS OR CONTENTEDITABLE DIVS
+            activeElement.getAttribute("contenteditable") === "true" // DISABLE SCROLLING WHEN IN INPUT FIELDS OR CONTENTEDITABL    E DIVS
         ) {
             console.log("Cursor is in an input field.");
             // console.dir(activeElement);
@@ -155,7 +192,7 @@ function scrollEvents(event) {
             // document.dispatchEvent(downArrowEvent);
         } else if (event.key.toLowerCase() === ".") {
             window.scrollBy(0, -100);
-        } else if (window.location.hostname !== "www.google.com") {
+        } else if (isJkwz || window.location.hostname !== "www.google.com") {
             if (
                 (event.key.toLowerCase() === "j" ||
                     event.key.toLowerCase() === "z") &&
@@ -176,7 +213,53 @@ function scrollEvents(event) {
             } catch (e) {
                 console.log("error");
             }
-        }
+        } 
+        
+        var textarea = document.getElementsByTagName("textarea");
+
+        if (activeElement.tagName.toLowerCase() !== "textarea" && window.location.hostname === "www.google.com") {
+                // Additional actions when the textarea is not in focus can go here
+                if (event.shiftKey && event.key === "M") {
+                    console.log("shift key + M key pressed");
+                    try {
+                        // var textarea = document.getElementsByTagName("textarea");
+                        textarea[0].value = textarea[0].value.replace(/\s*after:.*$/, '');
+                        textarea[0].value = textarea[0].value.trim();
+                        var form = document.getElementsByTagName("form");
+                        textarea[0].value +=  " after:" + formatDate(date30DaysBefore);
+                        form[0].submit();
+                    } catch (e) {
+                        console.log("error");
+                    }
+                }
+
+                if (event.shiftKey && event.key === "^") {
+                    console.log("shift key + 6 key pressed");
+                    try {
+                        textarea[0].value = textarea[0].value.replace(/\s*after:.*$/, '');
+                        textarea[0].value = textarea[0].value.trim();
+                        var form = document.getElementsByTagName("form");
+                        textarea[0].value += " after:" + formatDate(date6MonthsBefore);
+                        form[0].submit();
+                    } catch (e) {
+                        console.log("error");
+                    }
+                }
+
+                if (event.shiftKey && event.key === "Y") {
+                    console.log("shift key + Y key pressed");
+                    try {
+                        textarea[0].value = textarea[0].value.replace(/\s*after:.*$/, '');
+                        textarea[0].value = textarea[0].value.trim();
+                        var form = document.getElementsByTagName("form");
+                        textarea[0].value += " after:" + formatDate(date1YearBefore);
+                        form[0].submit();
+                    } catch (e) {
+                        console.log("error");
+                    }
+                }
+            };
+        
 
         // ENCODE COPIED TEXT
         if (event.metaKey && event.key === "u") {
@@ -328,6 +411,7 @@ function onPopupOpened() {
     setTimeout(() => {}, 3000);
 
     var checkbox = document.getElementById("setting2");
+    var jkwzCheckbox = document.getElementById("setting1");
 
     var icon = document.getElementById("icon");
 
@@ -373,6 +457,34 @@ function onPopupOpened() {
                     { action: "setCheckboxValue", value: checkbox.checked },
                     function () {
                         console.log("Checkbox value set to", checkbox.checked);
+                        // alert("checkbox set " + checkbox.checked);
+                    },
+                );
+            });
+            sendMessageToBackground("getCheckboxValue");
+        } catch (e) {
+            // statements
+            console.log(e);
+        }
+    } else {
+        console.log("Checkbox element not found");
+    }
+
+    if (jkwzCheckbox) {
+        // Checkbox element is now available, you can use it here
+        console.log("Checkbox element:", checkbox);
+        isJkwz = jkwzCheckbox.checked;
+        // Example: Add an event listener to the checkbox
+        // alert('check box is on' + isPaachecked);
+        try {
+            // statements
+            checkbox.addEventListener("change", function () {
+                console.log("Checkbox state changed:", checkbox.checked);
+                isJkwz = jkwzCheckbox.checked;
+                chrome.runtime.sendMessage(
+                    { action: "setjkwzCheckboxValue", value: jkwzCheckbox.checked },
+                    function () {
+                        console.log("Checkbox value set to", jkwzCheckbox.checked);
                         // alert("checkbox set " + checkbox.checked);
                     },
                 );
@@ -821,8 +933,8 @@ function everything() {
             var center_col = document.getElementById("center_col");
             var anchorTags = center_col.querySelectorAll("a[jsname]");
             // console.log("anchor tags", anchorTags);
-
-            var hrefList = Array.from(anchorTags)
+            if (anchorTags) {
+                var hrefList = Array.from(anchorTags)
                 .map(function (a, index) {
                     // console.log(a.innerText);
                     // console.log(Object.keys(a));
@@ -848,7 +960,8 @@ function everything() {
                     return href !== null; // Filter out null values from the array
                 });
             // console.log("href list", hrefList);
-            return hrefList;
+                 return hrefList;
+            }
         }
         var hrefList = getHrefList();
         var setting1;
@@ -1061,6 +1174,8 @@ function everything() {
             ) {
                 console.log("Cmd or Ctrl + Number key combination allowed.");
             } else if (
+                !event.shiftKey && // disable triggering shift + key commands while textarea in focus
+                !input_fields.includes(activeElement.tagName.toLowerCase()) && // " "
                 event.keyCode >= 48 &&
                 event.keyCode <= 57 &&
                 // (event.keyCode >= 65 &&event.keyCode <= 73 ) &&

@@ -51,7 +51,12 @@ function onPopupOpened() {
     var checkbox = document.getElementById("setting2");
 
     (async () => {
-        checkbox.checked = await getCheckboxState();
+         try {
+              checkbox.checked = await getCheckboxState();
+            } catch (error) {
+              console.error("Failed to get checkbox state:", error);
+            }
+
         // paaPaa = checkbox.checked;
         // alert("paa is checked ", paaPaa);
         checkbox.checked = await getCheckboxState();
@@ -112,3 +117,73 @@ document.addEventListener("DOMContentLoaded", onPopupOpened);
 //       console.log('2')
 //     });
 //   });
+document.getElementById('toggleButton').addEventListener('click', () => {
+  // chrome.runtime.sendMessage({ action: "showAlert" });
+      alert('Button clicked!');
+
+});
+
+
+document.addEventListener('DOMContentLoaded', onPopupOpened);
+
+function onPopupOpened() {
+  console.log("Popup opened");
+
+  document.getElementById('disableButton').addEventListener('click', function() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      chrome.storage.local.set({ [tabs[0].id]: { disabled: true } }, function() {
+        console.log('Extension disabled for tab ' + tabs[0].id);
+      });
+    });
+  });
+
+  // Define the list of switch IDs
+  const switchIds = ['setting1', 'setting2'];
+
+  // Load states for all switches
+  (async () => {
+    try {
+      const states = await getSwitchStates(switchIds);
+      switchIds.forEach(id => {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+          checkbox.checked = states[id] || false; // Default to false if not set
+        }
+      });
+    } catch (error) {
+      console.error("Failed to get switch states:", error);
+    }
+  })();
+
+  // Add event listeners to save state on change
+  switchIds.forEach(id => {
+    const checkbox = document.getElementById(id);
+    if (checkbox) {
+      checkbox.addEventListener('change', async function() {
+        try {
+          await saveSwitchState(id, checkbox.checked);
+        } catch (error) {
+          console.error(`Failed to save state for ${id}:`, error);
+        }
+      });
+    }
+  });
+}
+
+async function getSwitchStates(ids) {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(ids, function(result) {
+      resolve(result);
+    });
+  });
+}
+
+async function saveSwitchState(id, state) {
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [id]: state }, function() {
+      resolve();
+    });
+  });
+}
+
+
