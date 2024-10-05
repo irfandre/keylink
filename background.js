@@ -44,10 +44,26 @@ chrome.runtime.onStartup.addListener((details) => {
 });
 
 function createMenuItemWithIcon(iconUrl) {
-    chrome.contextMenus.create({
-        id: "myUniuContextMenuItem",
-        title: "My Context Menu Item",
-        contexts: ["all"],
+    const menuItemId = "myUniuContextMenuItem";
+
+    // Remove the existing menu item if it exists
+    chrome.contextMenus.remove(menuItemId, () => {
+        // Check for errors in removing
+        if (chrome.runtime.lastError) {
+            console.warn(`Error removing context menu item: ${chrome.runtime.lastError.message}`);
+        }
+
+        // Create the new context menu item
+        chrome.contextMenus.create({
+            id: menuItemId,
+            title: "My Context Menu Item",
+            contexts: ["all"],
+        }, () => {
+            // Check for errors in creating
+            if (chrome.runtime.lastError) {
+                console.error(`Error creating context menu item: ${chrome.runtime.lastError.message}`);
+            }
+        });
     });
 }
 

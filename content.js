@@ -23,13 +23,14 @@ chrome.storage.local.get(["disabledWebsites"], function (data) {
     }
 });
 
+// RETRIEVE LOCAL VARIABLES 
 chrome.storage.local.get(null, function(items) {
-  console.log('All items in storage:', items);
+  // console.log('All items in storage:', items);
   // alert(items);
   // Using Object.entries() to iterate
   if (items) {
       Object.entries(items).forEach(([key, value]) => {
-        console.log(`Key: ${key}, Value:`, value);
+        // console.log(`Key: ${key}, Value:`, value);
         if (key === 'setting1'){
             isJkwz = value;
         }
@@ -168,7 +169,7 @@ date1YearBefore.setFullYear(currentDate.getFullYear() - 1);
 
 function formatDate(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    var month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
@@ -599,12 +600,27 @@ function updateAlpha() {
     }
 }
 
+// height:18px;line-height:18px;width:18px
+
+const spanElementsHamburgs = document.querySelectorAll(
+    'span[style="height:18px;line-height:18px;width:18px"]',);
+
+if (spanElementsHamburgs.length) {
+    spanElementsHamburgs.forEach((span) => {
+        // Set the margin-left style before removing it
+        span.style.marginLeft = "20px"; // Add the margin-left
+
+        // Optionally, you could remove it after setting the style
+        // span.remove(); // Uncomment this line if you still want to remove it
+    });
+}
+
 // REMOVE ALPHANUMERIC SPANTAG WHEN UPDATING VALUES
 function removeSpanTag() {
     // body...
     const spanElements = document.querySelectorAll(
         'span[style="font-size: inherit; font-weight: bolder; text-transform: uppercase;"]',
-    );
+    )
 
     // Remove each selected span element
     if (spanElements) {
@@ -1028,7 +1044,7 @@ function everything() {
                     var targetElements = center_col.querySelectorAll(
                         'a[href="' + targetHref + '"]',
                     );
-
+                    var divInsideSpan;
                     // console.log("dict", i + "  " + targetElements);
                     if (targetElements) {
                         // var imageElement = targetElements.querySelector("img");
@@ -1044,7 +1060,7 @@ function everything() {
                             spanTag.innerText =
                                 " \u25B8 " + lowercaseAlphabets[i - 10] + " ";
                         } else {
-                            spanTag.innerText = " \u25B8 " + i + " ";
+                            spanTag.innerText = " \u25B8 " + i + " \u0020";
                         }
                         // Set the innerHTML of the target element to display the image
                         // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
@@ -1063,14 +1079,17 @@ function everything() {
                                     //     ),
                                     // );
                                     targetHeading =
-                                        targetHeading.parentNode.parentNode.querySelector(
-                                            "span",
+                                        targetHeading.parentElement.parentElement.querySelectorAll(
+                                            "div",
                                         );
+                                    divInsideSpan = targetHeading[targetHeading.length - 1]; // Get the last <div> in the NodeList
+
                                 }
                             }
 
                             if (targetHeading) {
-                                targetHeading.append(spanTag);
+                                targetHeading = targetHeading[1].querySelector("span");
+                                targetHeading.parentElement.parentElement.append(spanTag);
                             }
                         }
                         // targetElements.innerHTML =    i + " " + targetElements.innerText ;
@@ -1192,13 +1211,18 @@ function everything() {
                 window.location.href = filteredLinks[pressedKey];
             } else if (
                 !event.metaKey &&
+                !event.shiftKey && // disable triggering shift + key commands while textarea in focus
+                !input_fields.includes(activeElement.tagName.toLowerCase()) && // " "
                 event.keyCode >= 65 &&
                 event.keyCode <= 90 &&
                 window.location.hostname === "www.google.com" &&
                 !(event.shiftKey && event.key === "G")
             ) {
-                if (filteredLinks[event.keyCode - 55]) {
+                if (filteredLinks[event.keyCode - 55] && filteredLinks.length <= 18 && isJkwz ) {
                     window.location.href = filteredLinks[event.keyCode - 55];
+                } 
+                else if (filteredLinks.length >= 18 && isJkwz) {
+                    alert("jk/wz will not work in this particular page");
                 }
             }
             if (event.shiftKey && event.key === "G") {
@@ -1222,6 +1246,27 @@ function everything() {
               if (anchorElement) {
                   window.location.href = anchorElement.href;
               }
+            }
+            isOpening = false;
+            if (event.shiftKey && event.key === "N" && !isOpening) {
+                isOpening = true; // Set the flag to true
+
+                // Get the current URL
+                const url = window.location.href;
+
+                // Create a URL object
+                const currentUrl = new URL(url);
+
+                // Extract the domain name
+                const domainName = `${currentUrl.protocol}//${currentUrl.hostname}`;
+                
+                // Open the new window
+                window.open(domainName, '_blank');
+
+                // Reset the flag after a short timeout
+                setTimeout(() => {
+                    isOpening = false;
+                }, 500); // Adjust the timeout as needed
             }
         }
     }
