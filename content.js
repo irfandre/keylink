@@ -605,7 +605,8 @@ function updateAlpha() {
 function removeSpanTag() {
     // body...
     const spanElements = document.querySelectorAll(
-        'span[style="font-size: 0.85em; font-weight: bolder; text-transform: uppercase;"]',
+        // 'span[style="font-size: 0.85em; font-weight: bolder; text-transform: uppercase;"]',
+        'span[id="custom_alpha"]',
     )
 
     // Remove each selected span element
@@ -672,6 +673,7 @@ function throttle(func, delay) {
 }
 
 if (window.location.hostname === "www.google.com") {
+    updateAlpha();
     const throttledScrollHandler = throttle(function () {
         console.log("Scrolled!");
         var scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -688,7 +690,7 @@ if (window.location.hostname === "www.google.com") {
         }
     }, 2000); // Throttle to specified milliseconds
 
-    window.addEventListener("scroll", throttledScrollHandler);
+    // window.addEventListener("scroll", throttledScrollHandler);
 }
 
 const lowercaseAlphabets = [
@@ -1040,7 +1042,7 @@ function everything() {
                         // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                         var spanTag = document.createElement("span");
                         spanTag.setAttribute("style", "font-size: 0.85em;");
-                        // spanTag.setAttribute("id", "custom_alpha");
+                        spanTag.setAttribute("id", "custom_alpha");
                         spanTag.style.fontWeight = "bolder";
                         spanTag.style.textTransform = 'uppercase';
 
@@ -1062,7 +1064,7 @@ function everything() {
                                 // console.log(targetHeading);
                             } else {
                                 targetHeading = target.querySelector("h3");
-                                if (targetHeading) {
+                                // if (targetHeading) {
                                     // console.log(
                                     //     targetHeading.parentNode.parentNode.querySelector(
                                     //         "span",
@@ -1072,7 +1074,7 @@ function everything() {
                                         // targetHeading.parentElement.parentElement.querySelectorAll(
                                         //     "div",
                                         // );
-                                    console.log("x: number")
+                                    // console.log("x: number")
                                     //CODE FOR H3
                                     // targetHeading = targetHeading.parentElement.parentElement.parentElement.parentElement.querySelectorAll("h3")
 
@@ -1081,7 +1083,7 @@ function everything() {
 
                                     // divInsideSpan = targetHeading[targetHeading.length - 1]; // Get the last <div> in the NodeList
 
-                                }
+                                // }
                             }
 
                             if (targetHeading) {
@@ -1337,7 +1339,7 @@ window.onscroll = function () {
         // Add your code to handle reaching the bottom of the page
     }
 };
-console.dir(window);
+// console.dir(window);
 updateAlpha();
 
 // window.onloadeddata = function () {
