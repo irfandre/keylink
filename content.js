@@ -619,7 +619,7 @@ if (spanElementsHamburgs.length) {
 function removeSpanTag() {
     // body...
     const spanElements = document.querySelectorAll(
-        'span[style="font-size: inherit; font-weight: bolder; text-transform: uppercase;"]',
+        'span[style="font-size: 0.85em; font-weight: bolder; text-transform: uppercase;"]',
     )
 
     // Remove each selected span element
@@ -1053,14 +1053,16 @@ function everything() {
 
                         // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                         var spanTag = document.createElement("span");
-                        spanTag.setAttribute("style", "font-size: inherit;");
+                        spanTag.setAttribute("style", "font-size: 0.85em;");
                         spanTag.style.fontWeight = "bolder";
                         spanTag.style.textTransform = 'uppercase';
                         if (i >= 10) {
                             spanTag.innerText =
                                 " \u25B8 " + lowercaseAlphabets[i - 10] + " ";
+                                // lowercaseAlphabets[i - 10] + " ";
                         } else {
                             spanTag.innerText = " \u25B8 " + i + " \u0020";
+                            // spanTag.innerText = i + " ";
                         }
                         // Set the innerHTML of the target element to display the image
                         // targetElements.innerHTML = imgHtml +  " " + i + " " + targetElements.innerText;
@@ -1078,18 +1080,33 @@ function everything() {
                                     //         "span",
                                     //     ),
                                     // );
-                                    targetHeading =
-                                        targetHeading.parentElement.parentElement.querySelectorAll(
-                                            "div",
-                                        );
-                                    divInsideSpan = targetHeading[targetHeading.length - 1]; // Get the last <div> in the NodeList
+                                    // targetHeading =
+                                        // targetHeading.parentElement.parentElement.querySelectorAll(
+                                        //     "div",
+                                        // );
+
+                                    //CODE FOR H3
+                                    targetHeading = targetHeading.parentElement.parentElement.parentElement.parentElement.querySelectorAll("h3")
+
+                                    // targetHeading = targetHeading.parentElement.parentElement.querySelector("h3")
+                                    // targetHeading = targetHeading.parentElement.parentElement.querySelectorAll("h3")
+
+                                    // divInsideSpan = targetHeading[targetHeading.length - 1]; // Get the last <div> in the NodeList
 
                                 }
                             }
 
                             if (targetHeading) {
-                                targetHeading = targetHeading[1].querySelector("span");
-                                targetHeading.parentElement.parentElement.append(spanTag);
+                                // targetHeading = targetHeading.querySelector("span");
+                                // targetHeading.prepend(spanTag);
+
+                                //CODE FOR H3
+                                if (targetHeading[0] != undefined){
+                                    targetHeading[0].append(spanTag)
+                                }else {
+                                    targetHeading.append(spanTag)
+                                }
+
                             }
                         }
                         // targetElements.innerHTML =    i + " " + targetElements.innerText ;
