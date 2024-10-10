@@ -600,20 +600,6 @@ function updateAlpha() {
     }
 }
 
-// height:18px;line-height:18px;width:18px
-
-const spanElementsHamburgs = document.querySelectorAll(
-    'span[style="height:18px;line-height:18px;width:18px"]',);
-
-if (spanElementsHamburgs.length) {
-    spanElementsHamburgs.forEach((span) => {
-        // Set the margin-left style before removing it
-        span.style.marginLeft = "20px"; // Add the margin-left
-
-        // Optionally, you could remove it after setting the style
-        // span.remove(); // Uncomment this line if you still want to remove it
-    });
-}
 
 // REMOVE ALPHANUMERIC SPANTAG WHEN UPDATING VALUES
 function removeSpanTag() {
@@ -1054,8 +1040,10 @@ function everything() {
                         // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                         var spanTag = document.createElement("span");
                         spanTag.setAttribute("style", "font-size: 0.85em;");
+                        // spanTag.setAttribute("id", "custom_alpha");
                         spanTag.style.fontWeight = "bolder";
                         spanTag.style.textTransform = 'uppercase';
+
                         if (i >= 10) {
                             spanTag.innerText =
                                 " \u25B8 " + lowercaseAlphabets[i - 10] + " ";
@@ -1073,7 +1061,7 @@ function everything() {
                                     .parentNode.querySelector("span");
                                 // console.log(targetHeading);
                             } else {
-                                targetHeading = target.querySelector("cite");
+                                targetHeading = target.querySelector("h3");
                                 if (targetHeading) {
                                     // console.log(
                                     //     targetHeading.parentNode.parentNode.querySelector(
@@ -1084,9 +1072,9 @@ function everything() {
                                         // targetHeading.parentElement.parentElement.querySelectorAll(
                                         //     "div",
                                         // );
-
+                                    console.log("x: number")
                                     //CODE FOR H3
-                                    targetHeading = targetHeading.parentElement.parentElement.parentElement.parentElement.querySelectorAll("h3")
+                                    // targetHeading = targetHeading.parentElement.parentElement.parentElement.parentElement.querySelectorAll("h3")
 
                                     // targetHeading = targetHeading.parentElement.parentElement.querySelector("h3")
                                     // targetHeading = targetHeading.parentElement.parentElement.querySelectorAll("h3")
