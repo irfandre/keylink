@@ -1041,9 +1041,11 @@ function everything() {
 
                         // var imgHtml = new XMLSerializer().serializeToString(imageElement);
                         var spanTag = document.createElement("span");
-                        spanTag.setAttribute("style", "font-size: 0.85em;");
+                        // spanTag.setAttribute("style", "font-size: 0.85em;");
+                        // spanTag.setAttribute("style", "font-size: 0.85em;    align-items: center;background-color: #f4f6f7;border-radius: 100px;    display: inline-flex; margin-left:8px;   margin-right: 12px;  padding: 4px 16px 4px 8px");
                         spanTag.setAttribute("id", "custom_alpha");
-                        spanTag.style.fontWeight = "bolder";
+                        // spanTag.style.fontWeight = "bolder";
+                        spanTag.style.fontWeight = "inherit";
                         spanTag.style.textTransform = 'uppercase';
 
                         if (i >= 10) {
@@ -1094,6 +1096,7 @@ function everything() {
                                 if (targetHeading[0] != undefined){
                                     targetHeading[0].append(spanTag)
                                 }else {
+                                    // targetHeading.prepend(spanTag)
                                     targetHeading.append(spanTag)
                                 }
 
@@ -1162,23 +1165,15 @@ function everything() {
     //           alert('one')
     //       });
     //   });
+    let currentIndex = -1; // To track the current highlighted suggestion
 
     function handleKeyDown(event) {
         const pressedKey = String.fromCharCode(event.keyCode);
-        // console.log(pressedKey);
-        // alert(pressedKey);
-
-        // Check if the pressed key is a number
-
-        //   window.onkeydown = function(e){
-        //   if ( e.target.nodeName == 'INPUT' ) return;
-
-        //   handle_shortcut();
-        // };
 
         var activeElement = document.activeElement;
 
         var input_fields = ["textarea", "input"];
+        var ulbox=document.querySelectorAll('li[role="presentation"]');
 
         if (
             event.ctrlKey &&
@@ -1190,6 +1185,45 @@ function everything() {
 
         if (input_fields.includes(activeElement.tagName.toLowerCase())) {
             console.log("Cursor is in an input field.");
+                // const textarea = document.querySelector('textarea');
+                if (activeElement.tagName.toLowerCase() === "textarea" && window.location.hostname === "www.google.com") {
+                    if (event.ctrlKey && event.key === "n"){
+
+
+                    if (activeElement.hasAttribute('aria-expanded') && activeElement.getAttribute('aria-expanded') === 'true') {
+                        // alert('Textarea has data-enabled attribute set to true.');
+                        ulbox = document.querySelectorAll('li[role="presentation"]')
+                        if (ulbox != undefined){
+                            currentIndex = currentIndex + 1
+                            var newbox = ''
+                            ulbox.forEach(child =>
+                            {
+                                child.style.backgroundColor = '';
+                                newbox += child.tagName + " \n"
+                            })
+                            ulbox[currentIndex].style.backgroundColor = 'yellow';
+                        }
+                    } else {
+                        alert('Textarea does not have data-enabled attribute set to true.');
+                    }
+
+                }
+                 if (event.key === "Enter"){
+                                event.preventDefault(); // Prevent new line in textarea
+                                // Get the selected suggestion
+                                const selectedSuggestion = ulbox[currentIndex];
+                                if (selectedSuggestion) {
+                                    // const searchURL = `https://www.google.com/search?q=${encodeURIComponent(selectedSuggestion)}`;
+                                    // window.location.href = searchURL; // Navigate to the search URL
+
+                                    activeElement.value += selectedSuggestion.textContent + ' '; // Add a space after
+                                    selectedSuggestion.click();
+                                    currentIndex = -1; // Reset index after selection
+                                }
+                            }
+
+
+            }
             // console.dir(activeElement);
         } else {
             // console.log("Cursor is not in an input field. " + event.key);
@@ -1276,7 +1310,7 @@ function everything() {
                 }, 500); // Adjust the timeout as needed
             }
         }
-    }
+   }
 
     // window.addEventListener('scroll', function() {
     //   // Get the current vertical scroll position
