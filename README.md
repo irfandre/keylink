@@ -14,7 +14,7 @@ This is extension is not on **Chrome Web Store** as of yet, we can use developer
 
 `git clone https://github.com/irfandre/keylink.git`
 
-Open google chrome and go to `manaage extension` via settings or by entering the below in address bar.
+Open google chrome and go to `manage extension` via settings or by entering the below in address bar.
 
 `chrome://extensions/`
 

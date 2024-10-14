@@ -1183,46 +1183,51 @@ function everything() {
             console.log("Ctrl and Minus keys pressed together");
         }
 
+        // if (event.key === "Enter") {
+        //         event.preventDefault(); // Prevent new line in textarea
+
+        //         alert('coming here')
+        //     }
+
         if (input_fields.includes(activeElement.tagName.toLowerCase())) {
             console.log("Cursor is in an input field.");
                 // const textarea = document.querySelector('textarea');
                 if (activeElement.tagName.toLowerCase() === "textarea" && window.location.hostname === "www.google.com") {
-                    if (event.ctrlKey && event.key === "n"){
-
-
-                    if (activeElement.hasAttribute('aria-expanded') && activeElement.getAttribute('aria-expanded') === 'true') {
-                        // alert('Textarea has data-enabled attribute set to true.');
-                        ulbox = document.querySelectorAll('li[role="presentation"]')
-                        if (ulbox != undefined){
-                            currentIndex = currentIndex + 1
-                            var newbox = ''
-                            ulbox.forEach(child =>
-                            {
-                                child.style.backgroundColor = '';
-                                newbox += child.tagName + " \n"
-                            })
-                            ulbox[currentIndex].style.backgroundColor = 'yellow';
-                        }
-                    } else {
-                        alert('Textarea does not have data-enabled attribute set to true.');
-                    }
-
-                }
-                 if (event.key === "Enter"){
-                                event.preventDefault(); // Prevent new line in textarea
-                                // Get the selected suggestion
-                                const selectedSuggestion = ulbox[currentIndex];
-                                if (selectedSuggestion) {
-                                    // const searchURL = `https://www.google.com/search?q=${encodeURIComponent(selectedSuggestion)}`;
-                                    // window.location.href = searchURL; // Navigate to the search URL
-
-                                    activeElement.value += selectedSuggestion.textContent + ' '; // Add a space after
-                                    selectedSuggestion.click();
-                                    currentIndex = -1; // Reset index after selection
-                                }
+                    if (event.ctrlKey && event.key === "n") {
+                        if (
+                            activeElement.hasAttribute("aria-expanded") &&
+                            activeElement.getAttribute("aria-expanded") === "true"
+                        ) {
+                            // alert('Textarea has data-enabled attribute set to true.');
+                            ulbox = document.querySelectorAll('li[role="presentation"]');
+                            if (ulbox != undefined) {
+                                currentIndex = currentIndex + 1;
+                                var newbox = "";
+                                ulbox.forEach((child) => {
+                                    child.style.backgroundColor = "";
+                                    newbox += child.tagName + " \n";
+                                });
+                                ulbox[currentIndex].style.backgroundColor = "#878BF7";
                             }
+                        } else {
+                            alert("Textarea does not have data-enabled attribute set to true.");
+                        }
+                    }
+                    if (event.ctrlKey && event.key === "b" ) {
+                        event.preventDefault(); // Prevent new line in textarea
+                        // Get the selected suggestion
+
+                        const selectedSuggestion = ulbox[currentIndex];
+                        if (selectedSuggestion) {
+                            // const searchURL = `https://www.google.com/search?q=${encodeURIComponent(selectedSuggestion)}`;
+                            // window.location.href = searchURL; // Navigate to the search URL
+                            activeElement.value += selectedSuggestion.textContent + " "; // Add a space after
+                            selectedSuggestion.click();
 
 
+                            currentIndex = -1; // Reset index after selection
+                        }
+                    }
             }
             // console.dir(activeElement);
         } else {
@@ -1241,14 +1246,6 @@ function everything() {
                 // (event.keyCode >= 65 &&event.keyCode <= 73 ) &&
                 window.location.hostname === "www.google.com"
             ) {
-                // Run your function here
-                // event.preventDefault();
-                // console.log(
-                //     "Pressed key is a number:",
-                //     pressedKey + "\n" + filteredLinks[pressedKey],
-                // );
-                // Replace the following line with your custom function
-                // alert('Pressed key is a number: ' + pressedKey + hrefList[pressedKey]);
                 window.location.href = filteredLinks[pressedKey];
             } else if (
                 !event.metaKey &&
@@ -1289,20 +1286,18 @@ function everything() {
               }
             }
             isOpening = false;
+
+            // if (event.key === "Enter") {
+            //     alert('coming here')
+            // }
+
             if (event.shiftKey && event.key === "N" && !isOpening) {
                 isOpening = true; // Set the flag to true
 
-                // Get the current URL
-                const url = window.location.href;
 
-                // Create a URL object
-                const currentUrl = new URL(url);
-
-                // Extract the domain name
-                const domainName = `${currentUrl.protocol}//${currentUrl.hostname}`;
                 
                 // Open the new window
-                window.open(domainName, '_blank');
+                window.open(get_domain_name(), '_blank');
 
                 // Reset the flag after a short timeout
                 setTimeout(() => {
@@ -1311,6 +1306,32 @@ function everything() {
             }
         }
    }
+
+   function get_domain_name() {
+       // body...
+        // Get the current URL
+        const url = window.location.href;
+
+        // Create a URL object
+        const currentUrl = new URL(url);
+
+        // Extract the domain name
+        const domainName = `${currentUrl.protocol}//${currentUrl.hostname}`;
+
+        return domainName
+   }
+
+   function ignore_website_list () {
+       // body...
+        const  ignore_website_list = ['www.google.com/maps'];
+
+        const currentUrl = get_domain_name();
+
+        const isNotMatch = !ignore_website_list.some(url => currentUrl.includes(url));
+
+        return isNotMatch;
+   }
+
 
     // window.addEventListener('scroll', function() {
     //   // Get the current vertical scroll position
