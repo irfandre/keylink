@@ -281,27 +281,25 @@ function scrollEvents(event) {
         // FOCUS ON INPUT_FIELDS AND TEXTAREA 
         if (event.key === "/") {
             // focus on textarea of chatgpt website
-            const textarea = document.getElementById("prompt-textarea");
-            if (textarea) {
-                textarea.focus();
-                textarea.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
-                }); // SCROLL TO ACTIVE ELEMENT
-            }
 
             // FOCUS ON FIRST INPUT ELEMENT OF ANY WEBSITE
             var inputField = document.querySelector(
-                'input[type="text"],  input[type="search"], input:not([type])',
+                'input[type="text"],  input[type="search"], input:not([type]), textarea',
             );
 
             if (inputField) {
-                if (activeElement.tagName.toLowerCase() !== "input") {
+                // if (activeElement.tagName.toLowerCase() !== "input") {
+                if (!input_fields.includes(activeElement.tagName.toLowerCase())) {
+                    event.preventDefault()
                     inputField.focus();
-                    inputField.parentElement.scrollIntoView({
+                    inputField.scrollIntoView({
                         behavior: "smooth",
                         block: "center",
                     }); // SCROLL TO ACTIVE ELEMENT
+
+                // Set the cursor position to the end of the input field
+                const length = inputField.value.length;
+                inputField.setSelectionRange(length, length);
                 }
             }
         }
@@ -547,7 +545,7 @@ var botstuffHrefList;
 const targetDiv = document.querySelector("div[jsaction]");
 // Select the container where the dynamic divs might be added
 // const container = document.getElementById('yourContainerId');
-
+updateAlpha()
 const callback = function (mutationsList, observer) {
     for (const mutation of mutationsList) {
         // alert('lkjds');
@@ -935,7 +933,9 @@ function everything() {
         // #### Extract href attribute from selected anchor tags
         function getHrefList() {
             var center_col = document.getElementById("center_col");
+            if (center_col){
             var anchorTags = center_col.querySelectorAll("a[jsname]");
+            }
             // console.log("anchor tags", anchorTags);
             if (anchorTags) {
                 var hrefList = Array.from(anchorTags)
@@ -1254,6 +1254,7 @@ function everything() {
                 event.keyCode >= 65 &&
                 event.keyCode <= 90 &&
                 window.location.hostname === "www.google.com" &&
+                !(event.shiftKey && event.key === "U") &&
                 !(event.shiftKey && event.key === "G")
             ) {
                 if (filteredLinks[event.keyCode - 55] && filteredLinks.length <= 18 && isJkwz ) {
@@ -1264,7 +1265,12 @@ function everything() {
                 }
             }
             if (event.shiftKey && event.key === "G") {
-                // scrolls to top when shift + G is pressed
+                // scrolls to bottom when shift + G is pressed
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+
+            if (event.shiftKey && event.key === "U"){
+                // SCROLL TO TOP WHEN SHIFT + U IS PRESSED
                 window.scrollTo(0, 0);
             }
 
