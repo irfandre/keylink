@@ -1213,6 +1213,29 @@ function everything() {
                             alert("Textarea does not have data-enabled attribute set to true.");
                         }
                     }
+
+                    //CTRL + P TO GO TO PREVIOUS ITEM IN SUGGESSTIONS LIST
+                    if (event.ctrlKey && event.key === "p") {
+                        if (
+                            activeElement.hasAttribute("aria-expanded") &&
+                            activeElement.getAttribute("aria-expanded") === "true"
+                        ) {
+                            // alert('Textarea has data-enabled attribute set to true.');
+                            ulbox = document.querySelectorAll('li[role="presentation"]');
+                            if (ulbox != undefined) {
+                                currentIndex = currentIndex - 1;
+                                var newbox = "";
+                                ulbox.forEach((child) => {
+                                    child.style.backgroundColor = "";
+                                    newbox += child.tagName + " \n";
+                                });
+                                ulbox[currentIndex].style.backgroundColor = "#878BF7";
+                            }
+                        } else {
+                            alert("Textarea does not have data-enabled attribute set to true.");
+                        }
+                    }
+
                     if (event.ctrlKey && event.key === "b" ) {
                         event.preventDefault(); // Prevent new line in textarea
                         // Get the selected suggestion
