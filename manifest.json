@@ -12,6 +12,7 @@
         "contextMenus",
         "scripting",
         "clipboardRead",
+        "notifications",
         "clipboardWrite"
     ],
     "background": {

@@ -28,9 +28,9 @@ Pressing space bar move page alot, using this extension we can scroll properly.
 
 > use <kbd> , </kbd> <kbd> . </kbd> in google search results for scrolling.
 
-> use **j**/**z** and **k**/**w** keys to scroll down and up respectively in any website other than google.com # aka up and down
+> use **j**/**z** and **k**/**w** keys to scroll down and up respectively in any website # aka up and down
 
-Note: Note: Some website use custom script which interfere with default behaviour, some functionality might not work on those websites.
+Note: Some website use custom script which interfere with default behaviour, some functionality might not work on those websites.
 
 ### Navigation
 
@@ -39,7 +39,30 @@ This extension scrapes the google search results and append a alphanumeric chara
 
 Use <kbd>Option</kbd> + <kbd>-</kbd> to switch to previously visited tab.
 
-Use <kbd>Shift</kbd> + <kbd>G</kbd> to scroll to top.
+Use <kbd>Shift</kbd> + <kbd>U</kbd> to scroll to top.
+
+Use <kbd>Shift</kbd> + <kbd>G</kbd> to scroll to bottom of page.
 
 Use <kbd>CMD</kbd> + <kbd>U</kbd> to encode clipboard content.
+
+Use <kbd>Shift</kbd> + <kbd>></kbd> to go to next page in google search page.
+
+Use <kbd>Shift</kbd> + <kbd><</kbd> to go to previous page in google search page.
+
+### Google search box shortcuts
+
+Use <kbd>Shift</kbd> + <kbd>M</kbd> while inside google search textarea to search for the results of last 30 days.
+
+Use <kbd>Shift</kbd> + <kbd>6</kbd> while inside google search textarea to search for the results of last 6 months.
+
+Use <kbd>Shift</kbd> + <kbd>Y</kbd> while inside google search textarea to search for the results of last 1 year.
+
+In Suggestion list:
+
+Use  <kbd>Ctrl</kbd> + <kbd>n</kbd> to go down the suggestion list.
+
+use <kbd>Ctrl</kbd> + <kbd>p</kbd> to go up the suggestion list.
+
+use <kbd>Ctrl</kbd> + <kbd>b</kbd> to select the highlighted suggestion and search it.
+
 
