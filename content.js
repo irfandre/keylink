@@ -279,34 +279,69 @@ function scrollEvents(event) {
                 }
 
                 // FOCUS ON INPUT_FIELDS AND TEXTAREA
-                if (event.key === "/") {
-                        // focus on textarea of chatgpt website
+								if (event.key === "/") {
+												// focus on textarea of chatgpt website
 
-                        // FOCUS ON FIRST INPUT ELEMENT OF ANY WEBSITE
-                        var inputField = document.querySelector(
-                                'input[type="text"],  input[type="search"], input:not([type]), textarea',
-                        );
+												// FOCUS ON FIRST INPUT ELEMENT OF ANY WEBSITE
+												var inputField = document.querySelector(
+																'input[type="text"],  input[type="search"], input:not([type]), textarea',
+												);
 
-                        if (inputField) {
-                                // if (activeelement.tagname.tolowercase() !== "input") {
-                                if (!activeElement){
-                                        activeElement.tagname = 'string'
-                                }
-                                if (!input_fields.includes(typeof activeElement === 'undefined' ? 'myString is undefined' : activeElement.tagName.toLowerCase())) {
-                                        event.preventDefault()
-                                        inputField.focus();
-                                        inputField.scrollIntoView({
-                                                behavior: "smooth",
-                                                block: "center",
-                                        }); // scroll to active element
+												if (inputField) {
+																// if (activeelement.tagname.tolowercase() !== "input") {
+																if (!activeElement){
+																				activeElement.tagname = 'string'
+																}
+																if (!input_fields.includes(typeof activeElement === 'undefined' ? 'myString is undefined' : activeElement.tagName.toLowerCase())) {
+																				event.preventDefault()
+																				inputField.focus();
+																				inputField.scrollIntoView({
+																								behavior: "smooth",
+																								block: "center",
+																				}); // scroll to active element
 
-                                        // set the cursor position to the end of the input field
-                                        const length = inputField.value.length;
-                                        inputField.setSelectionRange(length, length);
-                                }
-                        }
-                }
-        }
+																				// set the cursor position to the end of the input field
+																				const length = inputField.value.length;
+																				inputField.setSelectionRange(length, length);
+																}
+												}
+								}                        
+								isOpening = false;
+
+
+								// if (event.key === "Enter") {
+								//     alert('coming here')
+								// }
+
+								if (event.shiftKey && event.key === "N" && !isOpening) {
+												isOpening = true; // Set the flag to true
+
+
+
+												// Open the new window
+												window.open(get_domain_name(), '_blank');
+
+												// Reset the flag after a short timeout
+												setTimeout(() => {
+																isOpening = false;
+												}, 300); // Adjust the timeout as needed
+								}
+
+								function get_domain_name() {
+												// body...
+												// Get the current URL
+												const url = window.location.href;
+
+												// Create a URL object
+												const currentUrl = new URL(url);
+
+												// Extract the domain name
+												const domainName = `${currentUrl.protocol}//${currentUrl.hostname}`;
+
+												return domainName
+								}
+
+				}
 }
 
 // Get the value of the checkbox in the webpage's DOM
@@ -1317,41 +1352,9 @@ function everything() {
                                         window.location.href = anchorElement.href;
                                 }
                         }
-                        isOpening = false;
-
-                        // if (event.key === "Enter") {
-                        //     alert('coming here')
-                        // }
-
-                        if (event.shiftKey && event.key === "N" && !isOpening) {
-                                isOpening = true; // Set the flag to true
-
-
-
-                                // Open the new window
-                                window.open(get_domain_name(), '_blank');
-
-                                // Reset the flag after a short timeout
-                                setTimeout(() => {
-                                        isOpening = false;
-                                }, 500); // Adjust the timeout as needed
-                        }
                 }
         }
 
-        function get_domain_name() {
-                // body...
-                // Get the current URL
-                const url = window.location.href;
-
-                // Create a URL object
-                const currentUrl = new URL(url);
-
-                // Extract the domain name
-                const domainName = `${currentUrl.protocol}//${currentUrl.hostname}`;
-
-                return domainName
-        }
 
         function ignore_website_list () {
                 // body...

@@ -29,7 +29,7 @@ chrome.runtime.onStartup.addListener((details) => {
         if (details) {
                 //pass
                 var test;
-        } else if ( details.reason !== undefined ){
+        } else if ( details !== undefined ){
                 if (details.reason === "update" && !reloaded) {
                         console.log("Extension updated. Reloading...");
                         reloaded = true;
